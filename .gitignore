@@ -1,0 +1,32 @@
+## .NET / Visual Studio
+[Bb]in/
+[Oo]bj/
+out/
+.vscode/
+.vs/
+user.config
+*.user
+*.userosscache
+*.sln.docstates
+
+## Publish output
+publish/
+
+## Test results
+TestResults/
+
+## Tooling
+.tools/
+.config/dotnet-tools.json
+
+## Rider / JetBrains
+.idea/
+*.sln.iml
+
+## OS specific
+.DS_Store
+Thumbs.db
+
+## User-specific / Local settings
+appsettings.Development.json
+appsettings.Local.json
