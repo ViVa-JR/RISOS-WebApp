@@ -1,0 +1,60 @@
+@using RISOS.Services
+
+@inject ThemeStateService ThemeStateService
+
+<style>
+    .app-title {
+        transition: transform 225ms ease-in-out;
+        font-size: 32px;
+    }
+
+    .text-sideways {
+        transform: rotate(-90deg);
+        margin-top: 40px !important;
+    }
+
+    .app-buttons {
+        flex-direction: @(_drawerOpen ? "row" : "column-reverse") !important;
+    }
+</style>
+
+<MudDrawer @bind-Open="_drawerOpen" Elevation="1" Breakpoint="Breakpoint.Sm" Variant="@DrawerVariant.Mini" Color="Color.Primary" Class="@($"mt-n5 {Class}")">
+    <MudStack Justify="Justify.SpaceBetween" Class="mb-4" Spacing="1" Style="flex-shrink: 0;">
+        <MudStack Spacing="2" Justify="Justify.FlexEnd" AlignItems="AlignItems.Center" Class="app-buttons">
+            <MudToggleIconButton Toggled="ThemeStateService.IsDarkMode" ToggledChanged="ThemeStateService.SetDarkMode"
+                                 Icon="@Icons.Material.Filled.NightsStay"
+                                 Color="@Color.Dark"
+                                 ToggledIcon="@Icons.Material.Filled.WbSunny"
+                                 ToggledColor="@Color.Secondary"/>
+            <MudIconButton OnClick="@DrawerToggle"
+                           Icon="@(_drawerOpen ? Icons.Material.Filled.KeyboardArrowLeft : Icons.Material.Filled.KeyboardArrowRight)"
+                           Color="@Color.Default"/>
+        </MudStack>
+        <MudStack Row Justify="Justify.Center" AlignItems="AlignItems.Center">
+            <MudText Class="@($"{NameClass} mt-2")" Typo="Typo.h5" Color="Color.Surface"
+                     Style="font-weight: 500; letter-spacing: 3px; font-family:'Poppins', sans-serif;">
+                RISØS
+            </MudText>
+        </MudStack>
+    </MudStack>
+    @if (_drawerOpen && ChildContent is not null)
+    {
+        <div style="overflow-y: auto; flex: 1;">
+            @ChildContent
+        </div>
+    }
+</MudDrawer>
+
+@code {
+    [Parameter]
+    public RenderFragment? ChildContent { get; set; }
+
+    [Parameter]
+    public string Class { get; set; } = string.Empty;
+
+    private bool _drawerOpen = true;
+
+    private string NameClass => _drawerOpen ? "app-title" : "app-title text-sideways";
+
+    private void DrawerToggle() => _drawerOpen = !_drawerOpen;
+}

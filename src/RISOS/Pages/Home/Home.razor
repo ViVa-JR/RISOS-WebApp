@@ -1,0 +1,27 @@
+﻿@page "/"
+@using RISOS.Pages.Home.Components
+
+<style>
+    .side-bar .mud-expand-panel {
+        background: var(--mud-palette-primary);
+        color: white;
+    }
+</style>
+
+<SideBar Class="side-bar">
+    <MudExpansionPanels MultiExpansion="true" Elevation="3">
+        <MudExpansionPanel Text="Study program">
+            Test
+        </MudExpansionPanel>
+        <MudExpansionPanel Text="Mandatory subjects">
+            Test
+        </MudExpansionPanel>
+        <MudExpansionPanel Text="Non-Mandatory subjects">
+            Test
+        </MudExpansionPanel>
+        <MudExpansionPanel Text="Custom subjects">
+            Test
+        </MudExpansionPanel>
+    </MudExpansionPanels>
+</SideBar>
+
