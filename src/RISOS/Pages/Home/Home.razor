@@ -1,10 +1,29 @@
 ﻿@page "/"
+@using Humanizer
+@using RISOS.Enums
+@using RISOS.Extensions
+@using RISOS.Models
 @using RISOS.Pages.Home.Components
+@using RISOS.Pages.Home.Models
 
 <style>
     .side-bar .mud-expand-panel {
         background: var(--mud-palette-primary);
         color: white;
+    }
+
+    .card-text {
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        overflow: hidden;
+    }
+
+    .mud-drawer.mud-drawer-mini.mud-drawer-pos-left.mud-drawer--open ~ div:not(.mud-main-content), .mud-drawer.mud-drawer-persistent.mud-drawer-pos-left.mud-drawer--open ~ div:not(.mud-main-content) {
+        margin-left: 0 !important;
+    }
+
+    .mud-drawer.mud-drawer-mini.mud-drawer-pos-left.mud-drawer--closed ~ div:not(.mud-main-content) {
+        margin-left: 0 !important;
     }
 </style>
 
@@ -25,3 +44,22 @@
     </MudExpansionPanels>
 </SideBar>
 
+<StudiumDropContainer @bind-Subjects="@_subjects"/>
+
+@code {
+    private List<SubjectEntry> _subjects = [];
+    
+    protected override void OnInitialized()
+    {
+        var dummySubjects = new List<Subject>
+        {
+            new("Algorithms and Data Structures", "ALG", 6, 2, SubjectType.Mandatory, SemesterSeason.Summer),
+            new("Operating Systems", "OS", 5, 3, SubjectType.Mandatory),
+            new("Relational Databases", "RDB", 4, 1, SubjectType.SemiMandatory, SemesterSeason.Winter, "DB_Track"),
+            new("Web Development", "WEB", 5, 4, SubjectType.SemiMandatory, SemesterSeason.Both, "DEV_Track"),
+        };
+
+        _subjects = dummySubjects.Select(s => new SubjectEntry(s)).ToList();
+    }
+
+}

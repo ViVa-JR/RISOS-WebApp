@@ -1,0 +1,89 @@
+@using Humanizer
+@using RISOS.Enums
+@using RISOS.Extensions
+@using RISOS.Pages.Home.Models
+
+<MudPaper Elevation="2" Style="cursor: grab; min-width: 250px">
+    <MudMenu ActivationEvent="MouseEvent.RightClick" Dense Class="pa-2 d-flex align-center" Style="width: 100%">
+        <ActivatorContent>
+            <MudStack Row AlignItems="AlignItems.Center" Style="width: 100%">
+                <MudAvatar Variant="Variant.Filled" Color="Color.Primary" Class="rounded" Style="width: 48px; height: 48px; flex-shrink: 0;">
+                    <MudText Typo="Typo.button" Style="font-size: 0.85rem; font-weight: bold;">
+                        @Entry.Subject.ShortName
+                    </MudText>
+                </MudAvatar>
+
+                <div class="d-flex flex-column flex-grow-1 overflow-hidden">
+
+                    <MudTooltip RootClass="d-flex" Text="@Entry.Subject.Name">
+                        <MudText Typo="Typo.subtitle2" Class="card-text">
+                            @Entry.Subject.Name
+                        </MudText>
+                    </MudTooltip>
+
+                    <MudStack Row AlignItems="AlignItems.Center" Spacing="1" Class="@(Entry.IsAssigned ? string.Empty : "mb-2")">
+                        @if (!Entry.IsAssigned)
+                        {
+                            <MudChip T="SemesterSeason" Value="@Entry.Subject.SemesterSeason" Text="@Entry.Subject.SemesterSeason.Humanize()" Size="Size.Small" Variant="Variant.Text"
+                                     Color="@Entry.Subject.SemesterSeason.ToColor()" Style="font-size: 0.7rem;"/>
+                            <MudText Typo="Typo.caption" Color="Color.Secondary">•</MudText>
+                        }
+                        <MudText Typo="Typo.caption" Color="Color.Secondary">
+                            @Entry.Subject.Credits cr
+                        </MudText>
+                    </MudStack>
+                </div>
+                @if (Entry.IsAssigned)
+                {
+                    <MudCheckBox T="bool?" @bind-Value="Entry.Subject.Completed"
+                                 TriState="true"
+                                 CheckedIcon="@Icons.Material.Filled.CheckCircle"
+                                 UncheckedIcon="@Icons.Material.Filled.Cancel"
+                                 IndeterminateIcon="@Icons.Material.Outlined.RadioButtonUnchecked"
+                                 Color="Color.Success"
+                                 UnCheckedColor="Color.Error"
+                                 Class="ma-0 pa-1"/>
+                }
+            </MudStack>
+        </ActivatorContent>
+        <ChildContent>
+            <MudMenu StartIcon="@Icons.Material.Filled.Subject" IconColor="Color.Primary" Label="Move to" Dense>
+                @if (Entry.Semester != SubjectEntry.Unassigned)
+                {
+                    <MudMenuItem Label="Unassigned" OnClick="@(() => MoveEntry(SubjectEntry.Unassigned))"/>
+                }
+
+                @foreach (var semester in Enumerable.Range(1, SemesterCount))
+                {
+                    if (Entry.Semester != semester.ToString())
+                    {
+                        <MudMenuItem Label="@($"{semester}. Semester")" OnClick="@(() => MoveEntry(semester.ToString()))"/>
+                    }
+                }
+            </MudMenu>
+            <MudMenuItem Icon="@Icons.Material.Filled.Delete" IconColor="Color.Error" Label="Delete" OnClick="@(() => RemoveEntry.InvokeAsync(Entry))"/>
+        </ChildContent>
+    </MudMenu>
+</MudPaper>
+
+@code {
+
+    [Parameter, EditorRequired]
+    public required SubjectEntry Entry { get; set; }
+
+    [Parameter]
+    public EventCallback<SubjectEntry> EntryChanged { get; set; }
+
+    [Parameter]
+    public int SemesterCount { get; set; }
+
+    [Parameter]
+    public EventCallback<SubjectEntry> RemoveEntry { get; set; }
+
+    private async Task MoveEntry(string zone)
+    {
+        Entry.Semester = zone;
+        await EntryChanged.InvokeAsync(Entry);
+    }
+
+}

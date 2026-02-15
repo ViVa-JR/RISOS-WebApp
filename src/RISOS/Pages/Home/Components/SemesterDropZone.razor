@@ -1,0 +1,41 @@
+@using Humanizer
+@using RISOS.Enums
+@using RISOS.Extensions
+@using RISOS.Pages.Home.Models
+
+<MudStack Spacing="0" Class="flex-grow-1">
+    <MudDropZone T="SubjectEntry" Identifier="@Semester.ToString()"
+                 Class="pa-2 flex-grow-1 d-flex flex-column gap-2 border-2 border-b-0 border-dashed mud-border-lines-default rounded-t-lg"
+                 Style="min-height: 250px"
+                 CanDrop="CanDrop">
+        <ChildContent>
+            <MudStack Row Spacing="1" AlignItems="AlignItems.Center" Class="pa-2 border-b mud-border-lines-default mud-background-gray rounded-t-lg">
+                <MudText Typo="Typo.subtitle1" Class="font-weight-bold">@Semester. Semester •</MudText>
+                <MudChip T="SemesterSeason" Value="@SemesterSeason" Text="@SemesterSeason.Humanize()" Size="Size.Small" Variant="Variant.Text"
+                         Color="@SemesterSeason.ToColor()"/>
+            </MudStack>
+        </ChildContent>
+    </MudDropZone>
+
+    <div class="pa-2 border-2 border-t-0 border-dashed mud-border-lines-default rounded-b-lg d-flex justify-end"
+         style="border-top: 1px solid var(--mud-palette-lines-default);">
+        <MudText Typo="Typo.caption" Color="Color.Secondary"><b>@Credits</b> credits</MudText>
+    </div>
+
+</MudStack>
+
+@code {
+    [Parameter, EditorRequired]
+    public required int Semester { get; set; }
+
+    [Parameter]
+    public SemesterSeason SemesterSeason { get; set; }
+
+    [Parameter]
+    public int Credits { get; set; }
+
+    public bool CanDrop(SubjectEntry entry)
+        => (entry.Subject.SemesterSeason == SemesterSeason || entry.Subject.SemesterSeason == SemesterSeason.Both)
+           && entry.Subject.MinSemester <= Semester;
+
+}
