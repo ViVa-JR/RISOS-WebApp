@@ -21,10 +21,10 @@
     <MudStack AlignItems="AlignItems.Center" Row Justify="Justify.FlexEnd" Spacing="1" Class="border-2 border-t-0 border-dashed mud-border-lines-default rounded-b-lg pa-2">
         @if (Credits.Completed > 0)
         {
-            <MudText Typo="Typo.caption" Color="Color.Success">@Credits.Completed</MudText>
-            <MudText Typo="Typo.caption" Color="Color.Secondary">/</MudText>
+            <MudText Typo="Typo.body1" Color="Color.Success">@Credits.Completed</MudText>
+            <MudText Typo="Typo.body1" Color="Color.Secondary">/</MudText>
         }
-        <MudText Typo="Typo.caption" Color="Color.Secondary">
+        <MudText Typo="Typo.body1" Color="Color.Secondary">
             @Credits.Registered credits
         </MudText>
     </MudStack>
