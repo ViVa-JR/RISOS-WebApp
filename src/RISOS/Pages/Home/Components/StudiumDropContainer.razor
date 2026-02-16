@@ -1,21 +1,35 @@
+@using Humanizer
 @using RISOS.Enums
+@using RISOS.Extensions
 @using RISOS.Pages.Home.Models
 
-<MudDropContainer T="SubjectEntry" Items="@Subjects" ItemsSelector="@Selector" ItemDropped="@ItemUpdated" Class="d-flex flex-column gap-6 mb-2"
+<MudDropContainer T="SubjectEntry" @ref="_dropContainer" Items="@Subjects" ItemsSelector="@Selector" ItemDropped="@ItemUpdated" Class="d-flex flex-column gap-6 mb-2"
                   ApplyDropClassesOnDragStarted
                   CanDropClass="mud-alert-text-primary mud-border-primary"
                   NoDropClass="mud-alert-text-error mud-border-error">
     <ChildContent>
         <div class="rounded-lg border-2 border-dashed mud-border-lines-default mud-background-gray w-100 d-flex flex-column">
-    
-            <div class="px-4 pt-4 pb-2">
-                <MudText Typo="Typo.h6">Unassigned Subjects</MudText>
-                <MudText Typo="Typo.body2" Color="Color.Secondary">Drag subjects to the semesters below</MudText>
-            </div>
+
+            <MudStack Row Spacing="2" StretchItems="StretchItems.Start" Class="px-4 pt-4 pb-2">
+                <MudStack Spacing="1">
+                    <MudText Typo="Typo.h6">Unassigned Subjects</MudText>
+                    <MudText Typo="Typo.body2" Color="Color.Secondary">Drag subjects to the semesters below</MudText>
+                </MudStack>
+                <MudStack Spacing="1">
+                    @foreach (var type in Enum.GetValues<SubjectType>())
+                    {
+                        <MudStack Row Spacing="1" Wrap="Wrap.NoWrap">
+                            <MudIcon Size="Size.Small" Color="@type.ToColor()" Icon="@Icons.Material.Filled.Circle"/>
+                            <MudText Typo="Typo.caption">@type.Humanize()</MudText>
+                        </MudStack>
+                    }
+                </MudStack>
+            </MudStack>
+
 
             <MudDropZone T="SubjectEntry" Identifier="@SubjectEntry.Unassigned"
-                         Class="px-4 pb-4 pt-2 d-flex flex-wrap gap-2 border-transparent rounded-b-lg"
-                         Style="max-height: max(220px, 20vh); min-height: 100px;" />
+                         Class="px-4 pb-4 pt-2 d-flex flex-wrap gap-2 border-transparent rounded-b-lg overflow-y-auto"
+                         Style="max-height: max(220px, 20vh); min-height: 100px;"/>
 
         </div>
         <MudGrid>
@@ -45,18 +59,21 @@
         </MudGrid>
     </ChildContent>
     <ItemRenderer>
-        <SemesterDropZoneItemTemplate Entry="context" EntryChanged="@(async () => await InvokeAsync(StateHasChanged))" SemesterCount="@(Years * 2)" RemoveEntry="@RemoveEntry"/>
+        <SemesterDropZoneItemTemplate Entry="context" EntryChanged="@_dropContainer.Refresh" SemesterCount="@(Years * 2)" RemoveEntry="@RemoveEntry"/>
     </ItemRenderer>
 </MudDropContainer>
 
 @code {
+
     [Parameter]
     public List<SubjectEntry> Subjects { get; set; } = [];
-    
+
     [Parameter]
     public EventCallback<List<SubjectEntry>> SubjectsChanged { get; set; }
 
     private const int Years = 3;
+
+    private MudDropContainer<SubjectEntry> _dropContainer = null!;
 
     private static bool Selector(SubjectEntry item, string dropzone)
     {
@@ -87,6 +104,7 @@
     {
         Subjects.Remove(entry);
         await SubjectsChanged.InvokeAsync(Subjects);
+        _dropContainer.Refresh();
     }
 
 }
