@@ -1,6 +1,7 @@
 @using Humanizer
 @using RISOS.Enums
 @using RISOS.Extensions
+@using RISOS.Models
 @using RISOS.Pages.Home.Models
 
 <MudStack Spacing="0" Class="flex-grow-1">
@@ -17,10 +18,16 @@
         </ChildContent>
     </MudDropZone>
 
-    <div class="pa-2 border-2 border-t-0 border-dashed mud-border-lines-default rounded-b-lg d-flex justify-end"
-         style="border-top: 1px solid var(--mud-palette-lines-default);">
-        <MudText Typo="Typo.caption" Color="Color.Secondary"><b>@Credits</b> credits</MudText>
-    </div>
+    <MudStack AlignItems="AlignItems.Center" Row Justify="Justify.FlexEnd" Spacing="1" Class="border-2 border-t-0 border-dashed mud-border-lines-default rounded-b-lg pa-2">
+        @if (Credits.Completed > 0)
+        {
+            <MudText Typo="Typo.caption" Color="Color.Success">@Credits.Completed</MudText>
+            <MudText Typo="Typo.caption" Color="Color.Secondary">/</MudText>
+        }
+        <MudText Typo="Typo.caption" Color="Color.Secondary">
+            @Credits.Registered credits
+        </MudText>
+    </MudStack>
 
 </MudStack>
 
@@ -32,7 +39,7 @@
     public SemesterSeason SemesterSeason { get; set; }
 
     [Parameter]
-    public int Credits { get; set; }
+    public Credits Credits { get; set; } = new();
 
     public bool CanDrop(SubjectEntry entry)
         => (entry.Subject.SemesterSeason == SemesterSeason || entry.Subject.SemesterSeason == SemesterSeason.Both)

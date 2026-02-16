@@ -1,6 +1,7 @@
 @using Humanizer
 @using RISOS.Enums
 @using RISOS.Extensions
+@using RISOS.Models
 @using RISOS.Pages.Home.Models
 
 <MudDropContainer T="SubjectEntry" @ref="_dropContainer" Items="@Subjects" ItemsSelector="@Selector" ItemDropped="@ItemUpdated" Class="d-flex flex-column gap-6 mb-2"
@@ -39,7 +40,7 @@
                 var summerSem = year * 2;
 
                 <MudItem xs="12" md="@(12 / Years)">
-                    <div class="rounded-lg pa-4 d-flex flex-column gap-4 mt-4" style="position: relative; border: 2px dotted var(--mud-palette-lines-default); height: 100%;">
+                    <div class="rounded-lg pa-4 d-flex flex-column mt-4" style="position: relative; border: 2px dotted var(--mud-palette-lines-default); height: 100%;">
                         <div style="position: absolute; top: -16px; left: 15%; transform: translateX(-50%); background-color: var(--mud-palette-background); padding: 0 16px;">
                             <MudText Typo="Typo.h6" Color="Color.Primary" Class="font-weight-bold">@year. Year</MudText>
                         </div>
@@ -48,11 +49,22 @@
                             <SemesterDropZone Semester="@winterSem" Credits="@GetSemesterCredits(winterSem)" SemesterSeason="SemesterSeason.Winter"/>
                             <SemesterDropZone Semester="@summerSem" Credits="@GetSemesterCredits(summerSem)" SemesterSeason="SemesterSeason.Summer"/>
                         </MudStack>
-
-                        <div class="mt-auto pt-2 border-t mud-border-lines-default d-flex justify-space-between align-center">
+                        <MudStack AlignItems="AlignItems.Center" Row StretchItems="StretchItems.Start" Spacing="1" Class="pt-2" Style="border-top: solid 1px var(--mud-palette-background-gray)">
                             <MudText Typo="Typo.subtitle2" Color="Color.Default">Year Total</MudText>
-                            <MudText Typo="Typo.subtitle1" Color="Color.Primary" Class="font-weight-bold">@GetYearCredits(year) cr</MudText>
-                        </div>
+
+                            @{
+                                var yearCredits = GetYearCredits(year);
+                            }
+
+                            @if (yearCredits.Completed > 0)
+                            {
+                                <MudText Typo="Typo.caption" Color="Color.Success">@yearCredits.Completed</MudText>
+                                <MudText Typo="Typo.caption" Color="Color.Secondary">/</MudText>
+                            }
+                            <MudText Typo="Typo.caption" Color="Color.Primary">
+                                <b>@yearCredits.Registered</b> credits
+                            </MudText>
+                        </MudStack>
                     </div>
                 </MudItem>
             }
@@ -85,14 +97,19 @@
         dropItem.Item?.Semester = dropItem.DropzoneIdentifier;
     }
 
-    private int GetSemesterCredits(int semesterIdentifier)
+    private Credits GetSemesterCredits(int semesterIdentifier)
     {
-        return Subjects
+        var semesterSubjects = Subjects
             .Where(s => s.Semester == semesterIdentifier.ToString())
-            .Sum(s => s.Subject.Credits);
+            .ToArray();
+
+        return new Credits(
+            Registered: semesterSubjects.Sum(s => s.Subject.Credits),
+            Completed: semesterSubjects.Where(s => s.Subject.Completed == true).Sum(s => s.Subject.Credits)
+        );
     }
 
-    private int GetYearCredits(int year)
+    private Credits GetYearCredits(int year)
     {
         var winterSem = year * 2 - 1;
         var summerSem = year * 2;

@@ -35,7 +35,9 @@
                 </div>
                 @if (Entry.IsAssigned)
                 {
-                    <MudCheckBox T="bool?" @bind-Value="Entry.Subject.Completed"
+                    <MudCheckBox T="bool?" 
+                                 Value="Entry.Subject.Completed"
+                                 ValueChanged="CompletedChanged"
                                  TriState="true"
                                  CheckedIcon="@Icons.Material.Filled.CheckCircle"
                                  UncheckedIcon="@Icons.Material.Filled.Cancel"
@@ -87,6 +89,12 @@
     private async Task MoveEntry(string zone)
     {
         Entry.Semester = zone;
+        await EntryChanged.InvokeAsync(Entry);
+    }
+
+    private async Task CompletedChanged(bool? arg)
+    {
+        Entry.Subject.Completed = arg;
         await EntryChanged.InvokeAsync(Entry);
     }
 
