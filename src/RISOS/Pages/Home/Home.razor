@@ -42,7 +42,6 @@
     </MudExpansionPanels>
 </SideBar>
 
-
 <StudiumDropContainer @bind-Subjects="@_subjects"/>
 
 @code {
@@ -53,7 +52,7 @@
         var dummySubjects = new List<Subject>
         {
             new("Algorithms and Data Structures", "ALG", 6, 2, SubjectType.Compulsory, SemesterSeason.Summer),
-            new("Operating Systems", "OS", 5, 3, SubjectType.Compulsory),
+            new("Operating Systems", "MPC-MNM", 5, 3, SubjectType.Compulsory),
             new("Relational Databases", "RDB", 4, 1, SubjectType.CompulsoryElective, SemesterSeason.Winter, "DB_Track"),
             new("Web Development", "WEB", 5, 4, SubjectType.CompulsoryElective, SemesterSeason.Both, "DEV_Track"),
         };

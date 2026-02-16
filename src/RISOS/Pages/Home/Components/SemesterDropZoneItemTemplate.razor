@@ -3,12 +3,13 @@
 @using RISOS.Extensions
 @using RISOS.Pages.Home.Models
 
-<MudPaper Elevation="2" Style="cursor: grab; min-width: 250px">
+<MudPaper Elevation="2" Style="cursor: grab; min-width: 280px">
     <MudMenu ActivationEvent="MouseEvent.RightClick" Dense Class="pa-2 d-flex align-center" Style="width: 100%">
         <ActivatorContent>
             <MudStack Row AlignItems="AlignItems.Center" Style="width: 100%">
-                <MudAvatar Variant="Variant.Filled" Color="@Entry.Subject.Type.ToColor()" Class="rounded" Style="width: 48px; height: 48px; flex-shrink: 0;">
-                    <MudText Typo="Typo.button" Style="font-size: 0.85rem; font-weight: bold;">
+                <MudAvatar Variant="Variant.Filled" Color="@Entry.Subject.Type.ToColor()" Class="rounded" 
+                           Style="min-width: 48px; width: auto; padding: 0 8px; height: 48px; flex-shrink: 0;">
+                    <MudText Typo="Typo.button" Style="font-size: 0.85rem; font-weight: bold; white-space: nowrap;">
                         @Entry.Subject.ShortName
                     </MudText>
                 </MudAvatar>
