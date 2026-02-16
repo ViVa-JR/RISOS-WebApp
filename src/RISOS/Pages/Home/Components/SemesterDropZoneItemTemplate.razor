@@ -29,13 +29,18 @@
                             <MudText Typo="Typo.caption" Color="Color.Secondary">•</MudText>
                         }
                         <MudText Typo="Typo.caption" Color="Color.Secondary">
-                            @Entry.Subject.Credits cr
+                            @Entry.Subject.Credits cr •
                         </MudText>
+                        <MudTooltip Text="@Entry.Subject.CompletionType.GetDescription()">
+                            <MudText Typo="Typo.caption" Color="Color.Secondary">
+                                @Entry.Subject.CompletionType.Humanize()
+                            </MudText>
+                        </MudTooltip>
                     </MudStack>
                 </div>
                 @if (Entry.IsAssigned)
                 {
-                    <MudCheckBox T="bool?" 
+                    <MudCheckBox T="bool?"
                                  Value="Entry.Subject.Completed"
                                  ValueChanged="CompletedChanged"
                                  TriState="true"
