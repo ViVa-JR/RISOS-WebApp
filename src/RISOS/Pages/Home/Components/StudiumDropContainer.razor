@@ -1,0 +1,159 @@
+@using Humanizer
+@using RISOS.Enums
+@using RISOS.Extensions
+@using RISOS.Models
+@using RISOS.Pages.Home.Models
+
+<MudDropContainer T="SubjectEntry" @ref="_dropContainer" Items="@Subjects" ItemsSelector="@Selector" ItemDropped="@ItemUpdated" Class="d-flex flex-column gap-3 mb-2"
+                  ApplyDropClassesOnDragStarted
+                  CanDropClass="mud-alert-text-primary mud-border-primary"
+                  NoDropClass="mud-alert-text-error mud-border-error">
+    <ChildContent>
+        <div class="rounded-lg border-2 border-dashed mud-border-lines-default mud-background-gray w-100 d-flex flex-column">
+            <MudStack Row Spacing="2" StretchItems="StretchItems.Start" Class="px-4 pt-4 pb-2" AlignItems="AlignItems.Center">
+                <MudStack Spacing="1">
+                    <MudText Typo="Typo.h6">Unassigned Subjects</MudText>
+                </MudStack>
+                <MudStack Spacing="2" Row AlignItems="AlignItems.Center">
+                    @foreach (var type in Enum.GetValues<SubjectType>())
+                    {
+                        <MudStack Row Spacing="1" Wrap="Wrap.NoWrap">
+                            <MudIcon Size="Size.Small" Color="@type.ToColor()" Icon="@Icons.Material.Filled.Circle"/>
+                            <MudText Typo="Typo.caption">@type.Humanize()</MudText>
+                        </MudStack>
+                    }
+                </MudStack>
+            </MudStack>
+
+            <MudDropZone T="SubjectEntry" Identifier="@SubjectEntry.Unassigned"
+                         Class="px-4 pb-4 pt-2 d-flex flex-wrap gap-2 border-transparent rounded-b-lg overflow-y-auto"
+                         Style="max-height: max(220px, 20vh); min-height: 100px;"/>
+
+        </div>
+
+        <ControlCenter @bind-RecognizedYear="_recognizedYear" Years="_years" YearsChanged="OnYearsChanged" TotalCredits="TotalCredits"/>
+
+        <MudStack Row Style="overflow-x: scroll">
+            @foreach (var year in Enumerable.Range(StartYear, Years))
+            {
+                var winterSem = year * 2 - 1;
+                var summerSem = year * 2;
+
+                <div class="rounded-lg pa-4 d-flex flex-column mt-4" style="position: relative; border: 2px dotted var(--mud-palette-lines-default); height: 100%; min-width: 336px; flex: 1;">
+                    <div style="position: absolute; top: -16px; left: 15%; transform: translateX(-50%); background-color: var(--mud-palette-background); padding: 0 16px;">
+                        <MudText Typo="Typo.h6" Color="Color.Primary" Class="font-weight-bold">@year. Year</MudText>
+                    </div>
+
+                    <MudStack Class="flex-grow-1">
+                        <SemesterDropZone Semester="@winterSem" Credits="@GetSemesterCredits(winterSem)" SemesterSeason="SemesterSeason.Winter"/>
+                        <SemesterDropZone Semester="@summerSem" Credits="@GetSemesterCredits(summerSem)" SemesterSeason="SemesterSeason.Summer"/>
+                    </MudStack>
+                    <MudStack AlignItems="AlignItems.Center" Row StretchItems="StretchItems.Start" Spacing="1" Class="pt-2" Style="border-top: solid 1px var(--mud-palette-background-gray)">
+                        <MudText Typo="Typo.subtitle2" Color="Color.Default">Year Total</MudText>
+
+                        @{
+                            var yearCredits = GetYearCredits(year);
+                        }
+
+                        @if (yearCredits.Completed > 0)
+                        {
+                            <MudText Typo="Typo.body1" Color="Color.Success">@yearCredits.Completed</MudText>
+                            <MudText Typo="Typo.body1" Color="Color.Secondary">/</MudText>
+                        }
+                        <MudText Typo="Typo.body1" Color="Color.Primary">
+                            <b>@yearCredits.Registered</b> credits
+                        </MudText>
+                    </MudStack>
+                </div>
+            }
+        </MudStack>
+    </ChildContent>
+    <ItemRenderer>
+        <SemesterDropZoneItemTemplate Entry="context" EntryChanged="@_dropContainer.Refresh" SemesterCount="@(Years * 2)" RemoveEntry="@RemoveEntry"/>
+    </ItemRenderer>
+</MudDropContainer>
+
+@code {
+
+    [Parameter]
+    public List<SubjectEntry> Subjects { get; set; } = [];
+
+    [Parameter]
+    public EventCallback<List<SubjectEntry>> SubjectsChanged { get; set; }
+
+    private int _years = 3;
+    private bool _recognizedYear;
+
+    private int StartYear => _recognizedYear ? 0 : 1;
+    private int Years => _years + (_recognizedYear ? 1 : 0);
+
+    private Credits TotalCredits => GetTotalCredits();
+
+    private MudDropContainer<SubjectEntry> _dropContainer = null!;
+
+    private static bool Selector(SubjectEntry item, string dropzone)
+    {
+        return item.Semester == dropzone;
+    }
+
+    private static void ItemUpdated(MudItemDropInfo<SubjectEntry> dropItem)
+    {
+        dropItem.Item?.Semester = dropItem.DropzoneIdentifier;
+    }
+
+    private Credits GetSemesterCredits(int semesterIdentifier)
+    {
+        var semesterSubjects = Subjects
+            .Where(s => s.Semester == semesterIdentifier.ToString())
+            .ToArray();
+
+        return new Credits(
+            Registered: semesterSubjects.Sum(s => s.Subject.Credits),
+            Completed: semesterSubjects.Where(s => s.Subject.Completed == true).Sum(s => s.Subject.Credits)
+        );
+    }
+
+    private Credits GetYearCredits(int year)
+    {
+        var winterSem = year * 2 - 1;
+        var summerSem = year * 2;
+
+        return GetSemesterCredits(winterSem) + GetSemesterCredits(summerSem);
+    }
+
+    private Credits GetTotalCredits()
+    {
+        var allSubjects = Subjects.Where(x => x.Semester != SubjectEntry.Unassigned).ToArray();
+
+        return new Credits(
+            Registered: allSubjects.Sum(s => s.Subject.Credits),
+            Completed: allSubjects.Where(s => s.Subject.Completed == true).Sum(s => s.Subject.Credits)
+        );
+    }
+
+    private async Task RemoveEntry(SubjectEntry entry)
+    {
+        Subjects.Remove(entry);
+        await SubjectsChanged.InvokeAsync(Subjects);
+        _dropContainer.Refresh();
+    }
+
+    private void OnYearsChanged(int years)
+    {
+        _years = years;
+        var maxValidSemester = _years * 2;
+        Subjects.ForEach(x =>
+        {
+            if (!int.TryParse(x.Semester, out var semesterNum) || semesterNum <= maxValidSemester)
+            {
+                return;
+            }
+            
+            x.Semester = SubjectEntry.Unassigned;
+            x.Subject.Completed = null;
+        });
+
+        _dropContainer.Refresh();
+    }
+
+}
