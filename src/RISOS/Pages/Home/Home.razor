@@ -53,8 +53,8 @@
         {
             new("Algorithms and Data Structures", "ALG", 6, 2, SubjectType.Compulsory, SemesterSeason.Summer),
             new("Operating Systems", "MPC-MNM", 5, 3, SubjectType.Compulsory),
-            new("Relational Databases", "RDB", 4, 1, SubjectType.CompulsoryElective, SemesterSeason.Winter, "DB_Track"),
-            new("Web Development", "WEB", 5, 4, SubjectType.CompulsoryElective, SemesterSeason.Both, "DEV_Track"),
+            new("Relational Databases", "RDB", 4, 1, SubjectType.CompulsoryElective, SemesterSeason.Winter, CompletionType.CrEx, "DB_Track"),
+            new("Web Development", "WEB", 5, 4, SubjectType.CompulsoryElective, SemesterSeason.Any, CompletionType.Cr, "DEV_Track"),
         };
 
         _subjects = dummySubjects.Select(s => new SubjectEntry(s)).ToList();

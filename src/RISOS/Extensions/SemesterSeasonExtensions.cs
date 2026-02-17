@@ -16,7 +16,7 @@ public static class SemesterSeasonExtensions
 
         public bool IsValidForSemester(int semester)
         {
-            if (season is SemesterSeason.Both)
+            if (season is SemesterSeason.Any)
             {
                 return true;
             }
