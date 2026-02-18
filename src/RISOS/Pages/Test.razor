@@ -1,0 +1,15 @@
+@page "/funny"
+
+@inject IDialogService DialogService
+
+<MudButton OnClick="@OpenDialog">
+    Open dialog
+</MudButton>
+
+@code {
+    private async Task OpenDialog()
+    {
+        await DialogService.ShowAsync<TestDialog>();
+    }
+
+}

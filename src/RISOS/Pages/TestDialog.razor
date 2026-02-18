@@ -1,0 +1,158 @@
+@inject ISnackbar Snackbar
+
+<MudDialog Class="pa-2">
+    <TitleContent>
+        <MudStack Row Spacing="3" AlignItems="AlignItems.Center">
+            <MudIcon Icon="@Icons.Material.Filled.Person" Color="Color.Primary"/>
+            <MudText Typo="Typo.h6" Class="font-weight-bold">
+                Sign in
+            </MudText>
+        </MudStack>
+        <MudDivider/>
+    </TitleContent>
+    <DialogContent>
+        <MudForm Class="mt-2 pb-4">
+            <MudStack Spacing="4" Style="max-width: 600px; margin: auto; padding-top: 50px;">
+                <MudStack Row="true">
+                    <MudTextField Label="Name" Placeholder="Something nice"
+                                  Error="@(!string.IsNullOrWhiteSpace(_name))"
+                                  @bind-Value="_name" Immediate="true"/>
+
+                    <MudTextField Label="Surname"
+                                  Error="@(!string.IsNullOrWhiteSpace(_surname))"
+                                  @bind-Value="_surname" Immediate="true"/>
+                </MudStack>
+
+                <MudPaper Class="pa-4" Elevation="0" Outlined="true">
+                    <MudText>Phone Number: +@_phone</MudText>
+                    <MudSlider T="long" Min="1000000000" Max="9999999999" Step="3" @bind-Value="_phone" Color="Color.Error">
+                        Slide carefully to select your phone number...
+                    </MudSlider>
+                </MudPaper>
+
+                <MudStack Row StretchItems="StretchItems.Start">
+                    <MudNumericField T="double?" Label="Age" Step="0.01" @bind-Value="_age" HelperText="Please enter your exact age. We round down to the nearest hundredth." Variant="Variant.Outlined" Format="F2"/>
+                    <MudSelect T="string" Label="Country" @bind-Value="_country" AnchorOrigin="Origin.BottomCenter" Variant="Variant.Outlined">
+                        <MudSelectItem Value="@("🇩🇪")"/>
+                        <MudSelectItem Value="@("🇧🇪")"/>
+                        <MudSelectItem Value="@("🇦🇹")"/>
+                        <MudSelectItem Value="@("🇱🇻")"/>
+                        <MudSelectItem Value="@("🇵🇪")"/>
+                        <MudSelectItem Value="@("🇳🇬")"/>
+                        <MudSelectItem Value="@("🇬🇳")"/>
+                        <MudSelectItem Value="@("🇸🇳")"/>
+                        <MudSelectItem Value="@("🇲🇩")"/>
+                        <MudSelectItem Value="@("🇦🇩")"/>
+                        <MudSelectItem Value="@("🇾🇪")"/>
+                        <MudSelectItem Value="@("🇪🇬")"/>
+                        <MudSelectItem Value="@("🇸🇾")"/>
+                        <MudSelectItem Value="@("🇮🇶")"/>
+                        <MudSelectItem Value="@("🇭🇺")"/>
+                        <MudSelectItem Value="@("🇧🇬")"/>
+                        <MudSelectItem Value="@("🇱🇹")"/>
+                        <MudSelectItem Value="@("🇪🇪")"/>
+                        <MudSelectItem Value="@("🇸🇱")"/>
+                        <MudSelectItem Value="@("🇬🇦")"/>
+                        <MudSelectItem Value="@("🇫🇮")"/>
+                        <MudSelectItem Value="@("🇸🇪")"/>
+                        <MudSelectItem Value="@("🇳🇴")"/>
+                        <MudSelectItem Value="@("🇩🇰")"/>
+                        <MudSelectItem Value="@("🇮🇸")"/>
+                        <MudSelectItem Value="@("🇨🇿")"/>
+                        <MudSelectItem Value="@("🇸🇰")"/>
+                        <MudSelectItem Value="@("🇵🇱")"/>
+                        <MudSelectItem Value="@("🇮🇩")"/>
+                        <MudSelectItem Value="@("🇲🇨")"/>
+                        <MudSelectItem Value="@("🇺🇸")"/>
+                        <MudSelectItem Value="@("🇬🇧")"/>
+                        <MudSelectItem Value="@("🇨🇦")"/>
+                        <MudSelectItem Value="@("🇦🇺")"/>
+                        <MudSelectItem Value="@("🇳🇿")"/>
+                        <MudSelectItem Value="@("🇧🇷")"/>
+                        <MudSelectItem Value="@("🇦🇷")"/>
+                        <MudSelectItem Value="@("🇨🇱")"/>
+                        <MudSelectItem Value="@("🇨🇴")"/>
+                        <MudSelectItem Value="@("🇻🇪")"/>
+                        <MudSelectItem Value="@("🇪🇨")"/>
+                        <MudSelectItem Value="@("🇨🇳")"/>
+                        <MudSelectItem Value="@("🇯🇵")"/>
+                        <MudSelectItem Value="@("🇰🇷")"/>
+                        <MudSelectItem Value="@("🇿🇦")"/>
+                        <MudSelectItem Value="@("🇮🇳")"/>
+                        <MudSelectItem Value="@("🇵🇰")"/>
+                        <MudSelectItem Value="@("🇹🇷")"/>
+                        <MudSelectItem Value="@("🇬🇷")"/>
+                        <MudSelectItem Value="@("🇲🇽")"/>
+                        <MudSelectItem Value="@("🇪🇸")"/>
+                        <MudSelectItem Value="@("🇵🇹")"/>
+                        <MudSelectItem Value="@("🇨🇭")"/>
+                        <MudSelectItem Value="@("🇺🇦")"/>
+                        <MudSelectItem Value="@("🇭🇷")"/>
+                        <MudSelectItem Value="@("🇷🇸")"/>
+                        <MudSelectItem Value="@("🇧🇦")"/>
+                        <MudSelectItem Value="@("🇦🇱")"/>
+                        <MudSelectItem Value="@("🇲🇰")"/>
+                        <MudSelectItem Value="@("🇨🇺")"/>
+                        <MudSelectItem Value="@("🇯🇲")"/>
+                        <MudSelectItem Value="@("🇰🇪")"/>
+                        <MudSelectItem Value="@("🇲🇦")"/>
+                        <MudSelectItem Value="@("🇩🇿")"/>
+                    </MudSelect>
+                </MudStack>
+
+                <MudPaper Class="pa-4" Elevation="0" Outlined="true">
+                    <MudText Typo="Typo.body2" Class="mb-2">Exact Time of Birth (Required for Astrology checks)</MudText>
+                    <MudStack Row="true" AlignItems="AlignItems.Center" StretchItems="StretchItems.Start">
+                        <MudDatePicker Label="Date" @bind-Date="_dob"/>
+                        <MudNumericField T="int?" Label="Hr" Min="0" Max="23" @bind-Value="_hour" HideSpinButtons="true"/>
+                        <MudText>:</MudText>
+                        <MudNumericField T="int?" Label="Min" Min="0" Max="59" @bind-Value="_minute" HideSpinButtons="true"/>
+                        <MudText>:</MudText>
+                        <MudNumericField T="int?" Label="Sec" Min="0" Max="59" @bind-Value="_second" HideSpinButtons="true"/>
+                    </MudStack>
+                </MudPaper>
+            </MudStack>
+        </MudForm>
+    </DialogContent>
+    <DialogActions>
+        <MudButton Color="Color.Default" Variant="Variant.Text" StartIcon="@Icons.Material.Filled.Close" Size="Size.Small">
+            Create
+        </MudButton>
+        <MudSpacer/>
+        <MudButton Color="Color.Primary" Variant="Variant.Filled" StartIcon="@Icons.Material.Filled.Add" Size="Size.Large" OnClick="@(() =>
+                                                                                                                                    {
+                                                                                                                                        MudDialog.Close();
+                                                                                                                                        Snackbar.Add("Dialog cancelled successfully", Severity.Success);
+                                                                                                                                    })">
+            Cancel
+        </MudButton>
+    </DialogActions>
+</MudDialog>
+
+<style>
+    .mud-list-item {
+        filter: grayscale(100%);
+        text-align: center;
+    }
+
+    .mud-list-item:hover {
+        filter: grayscale(0%);
+    }
+</style>
+
+@code {
+    [CascadingParameter]
+    IMudDialogInstance MudDialog { get; set; } = null!;
+    
+    private string? _name;
+    private string? _surname;
+    private long _phone = 5550000000;
+    private double? _age;
+
+    private DateTime? _dob;
+    private int? _hour;
+    private int? _minute;
+    private int? _second;
+
+    private string? _country;
+}
