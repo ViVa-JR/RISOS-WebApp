@@ -30,16 +30,17 @@
         <MudExpansionPanel Text="Study program">
             Test
         </MudExpansionPanel>
-        <MudExpansionPanel Text="Mandatory subjects">
+        <MudExpansionPanel Text="Compulsory subjects">
             Test
         </MudExpansionPanel>
-        <MudExpansionPanel Text="Non-Mandatory subjects">
-            Test
-        </MudExpansionPanel>
-        <MudExpansionPanel Text="Custom subjects">
+        <MudExpansionPanel Text="Elective subjects">
             Test
         </MudExpansionPanel>
     </MudExpansionPanels>
+    <MudSpacer/>
+    <MudButton StartIcon="@Icons.Material.Filled.Settings">
+        Settings
+    </MudButton>
 </SideBar>
 
 <StudiumDropContainer @bind-Subjects="@_subjects"/>
@@ -53,8 +54,8 @@
         {
             new("Algorithms and Data Structures", "ALG", 6, 2, SubjectType.Compulsory, SemesterSeason.Summer),
             new("Operating Systems", "MPC-MNM", 5, 3, SubjectType.Compulsory),
-            new("Relational Databases", "RDB", 4, 1, SubjectType.CompulsoryElective, SemesterSeason.Winter, "DB_Track"),
-            new("Web Development", "WEB", 5, 4, SubjectType.CompulsoryElective, SemesterSeason.Both, "DEV_Track"),
+            new("Relational Databases", "RDB", 4, 1, SubjectType.CompulsoryElective, SemesterSeason.Winter, CompletionType.CrEx, "DB_Track"),
+            new("Web Development", "WEB", 5, 4, SubjectType.CompulsoryElective, SemesterSeason.Any, CompletionType.Cr, "DEV_Track"),
         };
 
         _subjects = dummySubjects.Select(s => new SubjectEntry(s)).ToList();

@@ -1,0 +1,139 @@
+@using RISOS.Enums
+@using RISOS.Extensions
+@using RISOS.Models
+@using RISOS.Pages.Home.Models
+
+<style>
+
+</style>
+
+<MudDialog Class="pa-2">
+    <TitleContent>
+        <MudStack Row Spacing="3" AlignItems="AlignItems.Center">
+            <MudIcon Icon="@Icons.Material.Filled.School" Color="Color.Primary"/>
+            <MudText Typo="Typo.h6" Class="font-weight-bold">
+                Add Custom Subject
+            </MudText>
+        </MudStack>
+        <MudDivider/>
+    </TitleContent>
+    <DialogContent>
+        <MudForm @ref="_form" @bind-IsValid="_isValid" Class="mt-2 pb-4">
+            <MudGrid Spacing="3">
+
+                <MudItem xs="12">
+                    <MudText Typo="Typo.subtitle2" Color="Color.Primary" Class="font-weight-bold mb-n2">Basic Information</MudText>
+                </MudItem>
+                <MudItem xs="12" md="8">
+                    <MudTextField @bind-Value="_model.Name" Label="Subject Name" Required="true" RequiredError="Name is required" Variant="Variant.Outlined" Placeholder="e.g. Mathematical Analysis"/>
+                </MudItem>
+                <MudItem xs="12" md="4">
+                    <MudTextField @bind-Value="_model.ShortName" Label="Short Name" Required="true" RequiredError="Short name is required" MaxLength="10" Variant="Variant.Outlined"
+                                  Placeholder="e.g. IMA1, IMA2" Class="hlinena-rapuje"/>
+                </MudItem>
+
+                <MudItem xs="12">
+                    <MudText Typo="Typo.subtitle2" Color="Color.Primary" Class="mt-2 font-weight-bold mb-n2">Academic Details</MudText>
+                </MudItem>
+                <MudItem xs="12" sm="6">
+                    <MudNumericField @bind-Value="_model.Credits" Label="Credits" Min="0" Required="true" Variant="Variant.Outlined" Adornment="Adornment.End" AdornmentText="cr"/>
+                </MudItem>
+                <MudItem xs="12" sm="6">
+                    <MudNumericField @bind-Value="_model.MinSemester" Label="Minimum Semester" Min="1" Required="true" Variant="Variant.Outlined" HelperText="Earliest allowed semester"/>
+                </MudItem>
+
+                <MudItem xs="12">
+                    <MudText Typo="Typo.subtitle2" Color="Color.Primary" Class="mt-2 font-weight-bold mb-n2">Classification</MudText>
+                </MudItem>
+                <MudItem xs="12" sm="6">
+                    <MudSelect T="SubjectType" Label="Subject Type" @bind-Value="_model.Type" @bind-Value:after="OnTypeChanged" Required="true" Variant="Variant.Outlined"
+                               AnchorOrigin="Origin.BottomCenter">
+                        @foreach (var type in Enum.GetValues<SubjectType>())
+                        {
+                            <MudSelectItem Value="@type">@type.ToString()</MudSelectItem>
+                        }
+                    </MudSelect>
+                </MudItem>
+                <MudItem xs="12" sm="6">
+                    <MudTextField @ref="_groupIdField"
+                                  @bind-Value="_model.GroupId"
+                                  Label="Group"
+                                  Disabled="@(_model.Type != SubjectType.CompulsoryElective)"
+                                  Required="@(_model.Type == SubjectType.CompulsoryElective)"
+                                  RequiredError="Group is required"
+                                  Variant="Variant.Outlined"
+                                  Placeholder="@(_model.Type == SubjectType.CompulsoryElective ? "e.g. PV, A, B" : "Not applicable")"/>
+                </MudItem>
+                <MudItem xs="12" sm="8">
+                    <MudSelect T="CompletionType" Label="Completion Type" @bind-Value="_model.CompletionType" Required="true" Variant="Variant.Outlined" AnchorOrigin="Origin.BottomCenter">
+                        @foreach (var comp in Enum.GetValues<CompletionType>())
+                        {
+                            <MudSelectItem Value="@comp">@comp.GetDescription()</MudSelectItem>
+                        }
+                    </MudSelect>
+                </MudItem>
+                <MudItem xs="12" sm="4">
+                    <MudSelect T="SemesterSeason" Label="Semester Season" @bind-Value="_model.SemesterSeason" Required="true" Variant="Variant.Outlined" AnchorOrigin="Origin.BottomCenter">
+                        @foreach (var season in Enum.GetValues<SemesterSeason>())
+                        {
+                            <MudSelectItem Value="@season">@season.ToString()</MudSelectItem>
+                        }
+                    </MudSelect>
+                </MudItem>
+            </MudGrid>
+        </MudForm>
+    </DialogContent>
+    <DialogActions>
+        <MudButton OnClick="@Cancel" Color="Color.Default" StartIcon="@Icons.Material.Filled.Close">
+            Cancel
+        </MudButton>
+        <MudButton Color="Color.Primary" Variant="Variant.Outlined" StartIcon="@Icons.Material.Filled.Add" OnClick="@Submit">
+            Add
+        </MudButton>
+    </DialogActions>
+</MudDialog>
+
+@code {
+
+    [CascadingParameter]
+    IMudDialogInstance MudDialog { get; set; } = null!;
+
+    private MudForm _form = null!;
+    private bool _isValid;
+    private MudTextField<string> _groupIdField = null!;
+    private AddCustomSubjectModel _model = new();
+
+    private void OnTypeChanged()
+    {
+        if (_model.Type == SubjectType.CompulsoryElective)
+        {
+            return;
+        }
+        _model.GroupId = null;
+        _groupIdField.ResetValidation();
+    }
+
+    private void Cancel()
+    {
+        MudDialog.Cancel();
+    }
+
+    private async Task Submit()
+    {
+        await _form.Validate();
+        if (_isValid)
+        {
+            MudDialog.Close(DialogResult.Ok(_model.ToSubjectEntry()));
+        }
+    }
+
+    public static async Task<DialogResult<SubjectEntry>> ShowAsync(IDialogService dialogService)
+    {
+        var dialog = await dialogService.ShowAsync<AddCustomSubjectDialog>(string.Empty, new DialogOptions
+        {
+            FullWidth = true
+        });
+        return await dialog.GetResultAsync<SubjectEntry>();
+    }
+
+}
