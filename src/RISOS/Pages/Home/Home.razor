@@ -30,16 +30,17 @@
         <MudExpansionPanel Text="Study program">
             Test
         </MudExpansionPanel>
-        <MudExpansionPanel Text="Mandatory subjects">
+        <MudExpansionPanel Text="Compulsory subjects">
             Test
         </MudExpansionPanel>
-        <MudExpansionPanel Text="Non-Mandatory subjects">
-            Test
-        </MudExpansionPanel>
-        <MudExpansionPanel Text="Custom subjects">
+        <MudExpansionPanel Text="Elective subjects">
             Test
         </MudExpansionPanel>
     </MudExpansionPanels>
+    <MudSpacer/>
+    <MudButton StartIcon="@Icons.Material.Filled.Settings">
+        Settings
+    </MudButton>
 </SideBar>
 
 <StudiumDropContainer @bind-Subjects="@_subjects"/>
