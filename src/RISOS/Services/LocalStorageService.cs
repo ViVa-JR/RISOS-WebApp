@@ -5,6 +5,7 @@ namespace RISOS.Services;
 public class LocalStorageService(IJSRuntime js)
 {
     private const string UserTheme = "user-theme";
+    private const string UserLanguage = "user-language";
 
     public async Task SaveTheme(bool isDark)
     {
@@ -21,6 +22,25 @@ public class LocalStorageService(IJSRuntime js)
         {
             await js.InvokeVoidAsync("localStorage.removeItem", UserTheme);
             return true;
+        }
+    }
+    
+    public async Task SaveLanguage(string language)
+    {
+        await js.InvokeVoidAsync("localStorage.setItem", UserLanguage, language);
+    }
+
+    public async Task<string> LoadLanguage()
+    {
+        try
+        {
+            var language = await js.InvokeAsync<string>("localStorage.getItem", UserLanguage);
+            return string.IsNullOrEmpty(language) ? "en" : language;
+        }
+        catch
+        {
+            await js.InvokeVoidAsync("localStorage.removeItem", UserLanguage);
+            return "en";
         }
     }
 }

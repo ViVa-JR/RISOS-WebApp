@@ -1,0 +1,26 @@
+@using MudExtensions
+@using RISOS.Pages.Home.Models
+
+<MudListItemExtended T="StudyProgram" Value="@Program">
+    <MudTooltip Text="@Program.Title" RootStyle="width: 100%; display: flex; padding: 8px">
+        @if (Program.Specialization != null)
+        {
+            <MudChip T="string" Size="Size.Small" Variant="Variant.Outlined" Color="Color.Primary" Class="ma-0">
+                @Program.Abbreviation
+            </MudChip>
+            <MudText Typo="Typo.body2">
+                <b>@Program.Specialization</b>
+            </MudText>
+        }
+        else
+        {
+            <MudText Typo="Typo.body2">
+                <b>@Program.Abbreviation</b>
+            </MudText>
+        }
+    </MudTooltip>
+</MudListItemExtended>
+
+@code {
+    [Parameter,EditorRequired] public required StudyProgram Program { get; set; }
+}

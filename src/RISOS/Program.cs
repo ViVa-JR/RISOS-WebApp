@@ -8,7 +8,8 @@ var builder = WebAssemblyHostBuilder.CreateDefault(args);
 builder.RootComponents.Add<App>("#app");
 builder.RootComponents.Add<HeadOutlet>("head::after");
 
-builder.Services.AddWebApplication();
+builder.Services.AddWebApplication(builder.Configuration);
+
 
 var host = builder.Build();
 
