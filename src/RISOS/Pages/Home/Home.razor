@@ -3,6 +3,9 @@
 @using RISOS.Models
 @using RISOS.Pages.Home.Components
 @using RISOS.Pages.Home.Models
+@using RISOS.Services
+
+@inject DummyUniversityService UniversityService
 
 <style>
     .side-bar .mud-expand-panel {
@@ -23,12 +26,17 @@
     .mud-drawer.mud-drawer-mini.mud-drawer-pos-left.mud-drawer--closed ~ div:not(.mud-main-content) {
         margin-left: 0 !important;
     }
+
+    .mud-expand-panel-header {
+        padding-left: 16px !important;
+        padding-right: 16px !important;
+    }
 </style>
 
 <SideBar Class="side-bar">
     <MudExpansionPanels MultiExpansion="true" Elevation="3">
-        <MudExpansionPanel Text="Study program">
-            Test
+        <MudExpansionPanel Text="Study program" Expanded="true" Gutters="false">
+            <StudyProgramSelector @bind-SelectedPrograms="_mySelections" Faculties="_faculties" />
         </MudExpansionPanel>
         <MudExpansionPanel Text="Compulsory subjects">
             Test
@@ -47,6 +55,8 @@
 
 @code {
     private List<SubjectEntry> _subjects = [];
+    private IEnumerable<StudyProgram> _mySelections = [];
+    private ICollection<Faculty> _faculties = [];
     
     protected override void OnInitialized()
     {
@@ -59,6 +69,12 @@
         };
 
         _subjects = dummySubjects.Select(s => new SubjectEntry(s)).ToList();
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        _faculties = await UniversityService.GetFacultiesWithProgramsAsync();
+        await base.OnInitializedAsync();
     }
 
 }

@@ -1,4 +1,5 @@
 using MudBlazor.Services;
+using MudExtensions.Services;
 using RISOS.Services;
 
 namespace RISOS;
@@ -12,7 +13,8 @@ public static class DependencyInjection
             return services
                 .AddBlazorServices()
                 .AddSingleton<ThemeStateService>()
-                .AddSingleton<LocalStorageService>();
+                .AddSingleton<LocalStorageService>()
+                .AddSingleton<DummyUniversityService>();
         }
 
         private IServiceCollection AddBlazorServices()
@@ -23,7 +25,8 @@ public static class DependencyInjection
                     config.SnackbarConfiguration.VisibleStateDuration = 3000;
                     config.SnackbarConfiguration.HideTransitionDuration = 500;
                     config.SnackbarConfiguration.ShowTransitionDuration = 500;
-                });
+                })
+                .AddMudExtensions();
         }
     }
 }

@@ -1,0 +1,89 @@
+@using MudExtensions
+@using RISOS.Pages.Home.Models
+
+<style>
+    .study-program-selector .mud-list-item-extended {
+        padding: 0;
+    }
+
+    .study-program-selector .mud-list-subheader-extended {
+        padding: 0;
+    }
+</style>
+
+<MudStack Spacing="0">
+    <div class="pa-3" style="border-bottom: 1px solid var(--mud-palette-lines-default); background-color: var(--mud-palette-surface); border-radius: 4px 4px 0 0;">
+        <MudTextField @bind-Value="_searchString"
+                      Placeholder="Search"
+                      Adornment="Adornment.Start"
+                      AdornmentIcon="@Icons.Material.Filled.Search"
+                      IconSize="Size.Medium"
+                      Class="mt-0"
+                      Clearable="true"
+                      Immediate="true"/>
+    </div>
+    <MudListExtended T="StudyProgram"
+                     Clickable="true"
+                     MultiSelection="true"
+                     SelectedValues="SelectedPrograms"
+                     SelectedValuesChanged="OnSelectionChanged"
+                     Style="padding: 0;"
+                     Class="study-program-selector">
+        @foreach (var faculty in FilteredFaculties)
+        {
+            <MudListSubheaderExtended T="StudyProgram" Sticky="true" Style="background-color: var(--mud-palette-surface); border-bottom: 1px solid var(--mud-palette-lines-default); z-index: 2;">
+                <MudTooltip Text="@faculty.Title" RootStyle="width: 100%; display: flex; padding: 8px">
+                    <MudText Typo="Typo.subtitle2" Color="Color.Primary">
+                        <b>@faculty.Abbreviation</b>
+                    </MudText>
+                </MudTooltip>
+            </MudListSubheaderExtended>
+
+            @foreach (var program in faculty.Programs)
+            {
+                <MudListItemExtended T="StudyProgram" Value="@program">
+                    <MudTooltip Text="@program.Title" RootStyle="width: 100%; display: flex; padding: 8px">
+                        <MudText Typo="Typo.body2">
+                            <b>@program.Abbreviation</b>
+                        </MudText>
+                    </MudTooltip>
+                </MudListItemExtended>
+            }
+        }
+    </MudListExtended>
+</MudStack>
+
+@code {
+    [Parameter]
+    public ICollection<Faculty> Faculties { get; set; } = new List<Faculty>();
+
+    [Parameter]
+    public IEnumerable<StudyProgram> SelectedPrograms { get; set; } = new HashSet<StudyProgram>();
+
+    [Parameter]
+    public EventCallback<IEnumerable<StudyProgram>> SelectedProgramsChanged { get; set; }
+
+    private string _searchString = string.Empty;
+
+    private async Task OnSelectionChanged(IEnumerable<StudyProgram?> newSelection)
+    {
+        SelectedPrograms = newSelection.Where(x => x is not null).Select(x => x!).ToList();
+        await SelectedProgramsChanged.InvokeAsync(SelectedPrograms);
+    }
+
+    private ICollection<Faculty> FilteredFaculties => string.IsNullOrWhiteSpace(_searchString)
+        ? Faculties
+        : Faculties
+            .Select(f => f with
+            {
+                Programs = f.Programs.Where(p =>
+                    p.Title.ToLowerInvariant().Contains(_searchString.ToLowerInvariant()) ||
+                    p.Abbreviation.ToLowerInvariant().Contains(_searchString.ToLowerInvariant()) ||
+                    f.Title.ToLowerInvariant().Contains(_searchString.ToLowerInvariant()) ||
+                    f.Abbreviation.ToLowerInvariant().Contains(_searchString.ToLowerInvariant())
+                ).ToList()
+            })
+            .Where(f => f.Programs.Any())
+            .ToList();
+
+}
