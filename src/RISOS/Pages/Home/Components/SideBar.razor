@@ -1,6 +1,36 @@
 @using RISOS.Services
 
 @inject ThemeStateService ThemeStateService
+@inject IJSRuntime Js
+
+<script>
+    window.setupHeightObserver = function (elementId, cssVariableName) {
+        if (window.__myHeightObserver) {
+            window.__myHeightObserver.disconnect();
+        }
+
+        const targetElement = document.getElementById(elementId);
+
+        if (!targetElement) {
+            console.warn(`Observer failed: Could not find element with ID '${elementId}'`);
+            return;
+        }
+
+        window.__myHeightObserver = new ResizeObserver(entries => {
+            for (let entry of entries) {
+                if (targetElement.offsetParent !== null) {
+                    const newHeight = entry.contentRect.height;
+                    document.documentElement.style.setProperty(cssVariableName, `${newHeight}px`);
+                }
+            }
+        });
+
+        window.__myHeightObserver.observe(targetElement);
+
+        const initialHeight = targetElement.getBoundingClientRect().height;
+        document.documentElement.style.setProperty(cssVariableName, `${initialHeight}px`);
+    };
+</script>
 
 <style>
     .app-title {
@@ -36,7 +66,7 @@
     }
 </style>
 
-<MudDrawer @bind-Open="_drawerOpen" Elevation="1" Breakpoint="Breakpoint.Sm" Variant="@DrawerVariant.Mini" Color="Color.Primary" Class="@($"mt-n5 {Class}")">
+<MudDrawer @bind-Open="_drawerOpen" Elevation="1" Breakpoint="Breakpoint.Sm" Variant="@DrawerVariant.Mini" Class="@($"mt-n5 {Class}")">
     <MudStack Row="@_drawerOpen"
               AlignItems="AlignItems.Center"
               Justify="@(_drawerOpen ? Justify.SpaceBetween : Justify.FlexStart)"
@@ -48,11 +78,9 @@
                              Toggled="ThemeStateService.IsDarkMode"
                              ToggledChanged="ThemeStateService.SetDarkMode"
                              Icon="@Icons.Material.Filled.NightsStay"
-                             Color="@Color.Dark"
-                             ToggledIcon="@Icons.Material.Filled.WbSunny"
-                             ToggledColor="@Color.Secondary"/>
+                             ToggledIcon="@Icons.Material.Filled.WbSunny"/>
 
-        <MudText Class="app-title" Color="Color.Surface">
+        <MudText Class="app-title">
             RISØS
         </MudText>
 
@@ -65,18 +93,34 @@
 
     @if (_drawerOpen && ChildContent is not null)
     {
-        <MudStack Class="pa-2" Style="overflow-y: auto; flex: 1; overflow-x: hidden; max-height: calc(100vh - 56px)">
+        <div id="side-bar-content" class="pa-2 d-flex flex-column" style="overflow-y: auto; flex: 1; overflow-x: hidden; max-height: calc(100vh - 56px)">
             @ChildContent
-        </MudStack>
+        </div>
     }
 </MudDrawer>
 
 @code {
+
     [Parameter]
     public RenderFragment? ChildContent { get; set; }
 
     [Parameter]
     public string Class { get; set; } = string.Empty;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            await Js.InvokeVoidAsync("setupHeightObserver", "side-bar-content", "--side-bar-content-height");
+        }
+
+        await base.OnAfterRenderAsync(firstRender);
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+    }
 
     private bool _drawerOpen = true;
 

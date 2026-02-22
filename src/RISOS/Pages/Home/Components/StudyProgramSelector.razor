@@ -1,98 +1,152 @@
 @using MudExtensions
 @using RISOS.Pages.Home.Models
+@using RISOS.Services
+
+@inject UniversityService UniversityService
 
 <style>
-    .study-program-selector .mud-list-item-extended {
+    .study-program-selector-list .mud-list-item-extended {
         padding: 0;
     }
 
-    .study-program-selector .mud-list-subheader-extended {
+    .study-program-selector-list .mud-list-subheader-extended {
         padding: 0;
+    }
+
+    .study-program-selector-list .mud-list-subheader-sticky-extended {
+        top: -1px !important;
+    }
+
+    .study-program-selector-list {
+        max-height: calc(var(--side-bar-content-height) - @(FixedPixels)px) !important;
+        overflow-y: scroll;
+    }
+    
+    .mud-input-clear-button {
+        color: var(--mud-palette-text-primary)
     }
 </style>
 
 <MudStack Spacing="0">
     <div class="pa-3" style="border-bottom: 1px solid var(--mud-palette-lines-default); background-color: var(--mud-palette-surface); border-radius: 4px 4px 0 0;">
-        <MudTextField @bind-Value="_searchString"
+        <MudTextField T="string"
+                      Value="_searchString"
+                      ValueChanged="OnSearchStringChanged"
                       Placeholder="Search"
                       Adornment="Adornment.Start"
+                      DebounceInterval="300"
                       AdornmentIcon="@Icons.Material.Filled.Search"
                       IconSize="Size.Medium"
                       Class="mt-0"
                       Clearable="true"
                       Immediate="true"/>
     </div>
+    @if (IsLoading)
+    {
+        <MudProgressLinear Color="Color.Secondary" Indeterminate="true" Size="Size.Small" Style="background: var(--mud-palette-surface)"/>
+    }
     <MudListExtended T="StudyProgram"
                      Clickable="true"
                      MultiSelection="true"
                      SelectedValues="SelectedPrograms"
                      SelectedValuesChanged="OnSelectionChanged"
                      Style="padding: 0;"
-                     Class="study-program-selector">
-    @foreach (var faculty in FilteredFaculties)
-    {
-        <MudListSubheaderExtended T="StudyProgram"
-                                  Sticky="true"
-                                  Style="background-color: var(--mud-palette-surface); border-bottom: 1px solid var(--mud-palette-lines-default); z-index: 2; cursor: pointer;"
-                                  @onclick="() => ToggleFacultyExpansion(faculty)">
-            <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="1" Style="width: 100%; padding: 8px">
-                <MudIcon Icon="@(faculty.IsExpanded ? Icons.Material.Filled.ExpandLess : Icons.Material.Filled.ExpandMore)" Size="Size.Small"/>
-                <MudTooltip Text="@faculty.Title" RootStyle="flex-grow: 1; display: flex;">
-                    <MudText Typo="Typo.subtitle2" Color="Color.Primary">
-                        <b>@faculty.Abbreviation</b>
-                    </MudText>
-                </MudTooltip>
-            </MudStack>
+                     Class="study-program-selector-list"
+                     Disabled="_isSearching">
+        @foreach (var faculty in Faculties)
+        {
+            <MudListSubheaderExtended T="StudyProgram"
+                                      Sticky="true"
+                                      Style="background-color: var(--mud-palette-background-gray); border-bottom: 1px solid var(--mud-palette-lines-default); z-index: 2; cursor: pointer;"
+                                      @onclick="() => ToggleFacultyExpansion(faculty)">
+                <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="1" Style="width: 100%; padding: 8px">
+                    <MudIcon Icon="@(faculty.IsExpanded ? Icons.Material.Filled.ExpandLess : Icons.Material.Filled.ExpandMore)" Size="Size.Small" Color="Color.Primary"/>
+                    <MudTooltip Text="@faculty.Title" RootStyle="flex-grow: 1; display: flex;">
+                        <MudText Typo="Typo.subtitle2" Color="Color.Primary">
+                            <b>@faculty.Abbreviation</b>
+                        </MudText>
+                    </MudTooltip>
+                </MudStack>
             </MudListSubheaderExtended>
 
-        @if (faculty.IsExpanded)
-        {
-            @foreach (var program in faculty.Programs)
+            @if (faculty.IsExpanded)
             {
-                <StudyProgramEntry Program="@program"/>
+                @foreach (var program in faculty.Programs)
+                {
+                    <StudyProgramEntry Program="@program"/>
+                }
             }
         }
-    }
     </MudListExtended>
 </MudStack>
 
 @code {
     [Parameter]
-    public ICollection<Faculty> Faculties { get; set; } = new List<Faculty>();
-
-    [Parameter]
     public IEnumerable<StudyProgram> SelectedPrograms { get; set; } = new HashSet<StudyProgram>();
 
     [Parameter]
     public EventCallback<IEnumerable<StudyProgram>> SelectedProgramsChanged { get; set; }
+    
+    private const int FixedPixels = 300;
 
+    private IEnumerable<Faculty> Faculties => _filteredFaculties ?? _faculties;
+    private bool IsLoading => _isSearching || _initialLoading;
+    
+    private IEnumerable<Faculty> _faculties = [];
+    private IEnumerable<Faculty>? _filteredFaculties;
+    private bool _isSearching;
     private string _searchString = string.Empty;
+    private bool _initialLoading = true;
+    
+    protected override async Task OnInitializedAsync()
+    {
+        _faculties = await UniversityService.GetFacultiesWithProgramsAsync();
+        _initialLoading = false;
+        await InvokeAsync(StateHasChanged);
+        await base.OnInitializedAsync();
+    }
 
     private async Task OnSelectionChanged(IEnumerable<StudyProgram?> newSelection)
     {
         SelectedPrograms = newSelection.Where(x => x is not null).Select(x => x!).ToList();
         await SelectedProgramsChanged.InvokeAsync(SelectedPrograms);
     }
-    
+
     private void ToggleFacultyExpansion(Faculty faculty)
     {
         faculty.IsExpanded = !faculty.IsExpanded;
     }
 
-    private ICollection<Faculty> FilteredFaculties => string.IsNullOrWhiteSpace(_searchString)
-        ? Faculties
-        : Faculties
-            .Select(f => f with
+    private async Task OnSearchStringChanged(string newValue)
+    {
+        _searchString = newValue;
+        _isSearching = true;
+
+        await InvokeAsync(StateHasChanged);
+
+        _filteredFaculties = await Task.Run(() =>
+        {
+            if (string.IsNullOrWhiteSpace(_searchString))
             {
-                Programs = f.Programs.Where(p =>
-                    p.Title.ToLowerInvariant().Contains(_searchString.ToLowerInvariant()) ||
-                    p.Abbreviation.ToLowerInvariant().Contains(_searchString.ToLowerInvariant()) ||
-                    f.Title.ToLowerInvariant().Contains(_searchString.ToLowerInvariant()) ||
-                    f.Abbreviation.ToLowerInvariant().Contains(_searchString.ToLowerInvariant()) ||
-                    (p.Specialization != null && p.Specialization.ToLowerInvariant().Contains(_searchString.ToLowerInvariant()))
-                ).ToList()
-            })
-            .Where(f => f.Programs.Any())
-            .ToList();
+                return _faculties.ToList();
+            }
+
+            return _faculties
+                .Select(f => f with
+                {
+                    Programs = f.Programs.Where(p =>
+                        p.Title.Contains(_searchString, StringComparison.OrdinalIgnoreCase) ||
+                        p.Abbreviation.Contains(_searchString, StringComparison.OrdinalIgnoreCase) ||
+                        f.Title.Contains(_searchString, StringComparison.OrdinalIgnoreCase) ||
+                        f.Abbreviation.Contains(_searchString, StringComparison.OrdinalIgnoreCase) ||
+                        (p.Specialization != null && p.Specialization.Contains(_searchString, StringComparison.OrdinalIgnoreCase))
+                    ).ToList()
+                })
+                .Where(f => f.Programs.Any())
+                .ToList();
+        });
+
+        _isSearching = false;
+    }
 
 }

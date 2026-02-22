@@ -9,21 +9,25 @@ public class ThemeStateService(LocalStorageService localStorageService)
 
     public static MudTheme Theme => new()
     {
-        PaletteLight = new PaletteLight // TODO vybrat paletu, tohle je nějaká default vygenerovaná od AI
+        PaletteLight = new PaletteLight
         {
-            Primary = "#2563EB", // Vibrant blue
-            Secondary = "#F97316", // Warm orange
-            Background = "#F9FAFB", // Almost white
-            Surface = "#FFFFFF", // Pure white cards
-            AppbarBackground = "#2563EB",
-            DrawerBackground = "#FFFFFF",
-            DrawerText = "#1F2937", // Neutral dark grey
-            TextPrimary = "#111827", // Almost black
-            TextSecondary = "#4B5563", // Medium grey
-            Success = "#16A34A", // Emerald green
-            Warning = "#D97706", // Amber
-            Error = "#DC2626", // Strong red
-            Info = "#0EA5E9" // Sky blue
+            Primary = "#FF204E",
+            Secondary = "#c81e4b",
+            Tertiary = "#5D0E41",
+            Background = "#F2F0F0",
+            BackgroundGray = "#fff0f4",
+            Surface = "#FFFFFF",
+            AppbarBackground = "#c81e4b",
+            DrawerBackground = "#c81e4b",
+            DrawerText = "#FFFFFF",
+            DrawerIcon = "#FFFFFF",
+            TextPrimary = "#00224D",
+            TextSecondary = "#505081",
+            Success = "#16A34A",
+            Warning = "#ff8d37",
+            Error = "#DC2626",
+            Info = "#0068d4",
+            ActionDefault = "#FFFFFF"
         },
         PaletteDark = new PaletteDark
         {

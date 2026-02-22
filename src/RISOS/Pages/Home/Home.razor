@@ -5,18 +5,10 @@
 @using RISOS.Pages.Home.Models
 @using RISOS.Services
 
-@inject UniversityService UniversityService
-
 <style>
     .side-bar .mud-expand-panel {
         background: var(--mud-palette-primary);
         color: white;
-    }
-
-    .card-text {
-        white-space: nowrap;
-        text-overflow: ellipsis;
-        overflow: hidden;
     }
 
     .mud-drawer.mud-drawer-mini.mud-drawer-pos-left.mud-drawer--open ~ div:not(.mud-main-content), .mud-drawer.mud-drawer-persistent.mud-drawer-pos-left.mud-drawer--open ~ div:not(.mud-main-content) {
@@ -31,12 +23,33 @@
         padding-left: 16px !important;
         padding-right: 16px !important;
     }
+
+    .mud-collapse-entering .mud-expand-panel-content[hidden],
+    .mud-collapse-exiting .mud-expand-panel-content[hidden],
+    .mud-collapse-entering .mud-expand-panel-content,
+    .mud-collapse-exiting .mud-expand-panel-content {
+        display: block !important;
+        visibility: visible !important;
+    }
+
+    .mud-collapse-wrapper {
+        overflow: hidden !important;
+    }
+
+    .mud-expand-panel-content {
+        padding: 0 8px 8px 8px !important;
+    }
+
+    .mud-list-item-multiselect-extended {
+        padding: 0 0 0 12px !important;
+    }
+
 </style>
 
 <SideBar Class="side-bar">
-    <MudExpansionPanels MultiExpansion="true" Elevation="3">
-        <MudExpansionPanel Text="Study program" Expanded="true" Gutters="false">
-            <StudyProgramSelector @bind-SelectedPrograms="_mySelections" Faculties="_faculties" />
+    <MudExpansionPanels Elevation="3" Style="height: calc(100vh - 108px); overflow: hidden">
+        <MudExpansionPanel Text="Study program" Gutters="false" Expanded="@_expanded">
+            <StudyProgramSelector @bind-SelectedPrograms="_mySelections"/>
         </MudExpansionPanel>
         <MudExpansionPanel Text="Compulsory subjects">
             Test
@@ -45,8 +58,7 @@
             Test
         </MudExpansionPanel>
     </MudExpansionPanels>
-    <MudSpacer/>
-    <MudButton StartIcon="@Icons.Material.Filled.Settings">
+    <MudButton StartIcon="@Icons.Material.Filled.Settings" Style="color: var(--mud-palette-action-default)">
         Settings
     </MudButton>
 </SideBar>
@@ -56,8 +68,9 @@
 @code {
     private List<SubjectEntry> _subjects = [];
     private IEnumerable<StudyProgram> _mySelections = [];
-    private ICollection<Faculty> _faculties = [];
-    
+
+    private bool _expanded = true;
+
     protected override void OnInitialized()
     {
         var dummySubjects = new List<Subject>
@@ -69,12 +82,6 @@
         };
 
         _subjects = dummySubjects.Select(s => new SubjectEntry(s)).ToList();
-    }
-
-    protected override async Task OnInitializedAsync()
-    {
-        _faculties = await UniversityService.GetFacultiesWithProgramsAsync();
-        await base.OnInitializedAsync();
     }
 
 }
