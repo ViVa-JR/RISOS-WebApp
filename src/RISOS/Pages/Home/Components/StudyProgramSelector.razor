@@ -29,16 +29,25 @@
                      SelectedValuesChanged="OnSelectionChanged"
                      Style="padding: 0;"
                      Class="study-program-selector">
-        @foreach (var faculty in FilteredFaculties)
-        {
-            <MudListSubheaderExtended T="StudyProgram" Sticky="true" Style="background-color: var(--mud-palette-surface); border-bottom: 1px solid var(--mud-palette-lines-default); z-index: 2;">
-                <MudTooltip Text="@faculty.Title" RootStyle="width: 100%; display: flex; padding: 8px">
+    @foreach (var faculty in FilteredFaculties)
+    {
+        var isExpanded = IsFacultyExpanded(faculty);
+
+        <MudListSubheaderExtended T="StudyProgram"
+                                  Sticky="true"
+                                  Style="background-color: var(--mud-palette-surface); border-bottom: 1px solid var(--mud-palette-lines-default); z-index: 2; cursor: pointer;"
+                                  @onclick="() => ToggleFacultyExpansion(faculty)">
+            <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="1" Style="width: 100%; padding: 8px">
+                <MudIcon Icon="@(isExpanded ? Icons.Material.Filled.ExpandLess : Icons.Material.Filled.ExpandMore)" Size="Size.Small"/>
+                <MudTooltip Text="@faculty.Title" RootStyle="flex-grow: 1; display: flex;">
                     <MudText Typo="Typo.subtitle2" Color="Color.Primary">
                         <b>@faculty.Abbreviation</b>
                     </MudText>
                 </MudTooltip>
-            </MudListSubheaderExtended>
+            </MudStack></MudListSubheaderExtended>
 
+        @if (isExpanded)
+        {
             @foreach (var program in faculty.Programs)
             {
                 <MudListItemExtended T="StudyProgram" Value="@program">
@@ -50,6 +59,7 @@
                 </MudListItemExtended>
             }
         }
+    }
     </MudListExtended>
 </MudStack>
 
@@ -64,11 +74,34 @@
     public EventCallback<IEnumerable<StudyProgram>> SelectedProgramsChanged { get; set; }
 
     private string _searchString = string.Empty;
+    private HashSet<string> _expandedFaculties = new();
 
     private async Task OnSelectionChanged(IEnumerable<StudyProgram?> newSelection)
     {
         SelectedPrograms = newSelection.Where(x => x is not null).Select(x => x!).ToList();
         await SelectedProgramsChanged.InvokeAsync(SelectedPrograms);
+    }
+    
+    private void ToggleFacultyExpansion(Faculty faculty)
+    {
+        if (_expandedFaculties.Contains(faculty.Abbreviation))
+        {
+            _expandedFaculties.Remove(faculty.Abbreviation);
+        }
+        else
+        {
+            _expandedFaculties.Add(faculty.Abbreviation);
+        }
+    }
+
+    private bool IsFacultyExpanded(Faculty faculty)
+    {
+        if (!string.IsNullOrWhiteSpace(_searchString))
+        {
+            return true;
+        }
+        
+        return _expandedFaculties.Contains(faculty.Abbreviation);
     }
 
     private ICollection<Faculty> FilteredFaculties => string.IsNullOrWhiteSpace(_searchString)
