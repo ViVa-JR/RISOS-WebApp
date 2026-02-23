@@ -53,7 +53,7 @@
 
         </div>
 
-        <ControlCenter @bind-RecognizedYear="_recognizedYear" Years="_years" YearsChanged="OnYearsChanged" TotalCredits="TotalCredits"/>
+        <ControlCenter @bind-RecognizedYear="_recognizedYear" Years="_years" YearsChanged="OnYearsChanged" TotalCredits="TotalCredits" RequiredCredits="@RequiredCredits"/>
 
         <MudStack Row Style="overflow-x: scroll">
             @foreach (var year in Enumerable.Range(StartYear, Years))
@@ -102,6 +102,9 @@
 
     [Parameter]
     public EventCallback<List<SubjectEntry>> SubjectsChanged { get; set; }
+    
+    [Parameter]
+    public int RequiredCredits { get; set; } = 180;
 
     private int _years = 3;
     private bool _recognizedYear;

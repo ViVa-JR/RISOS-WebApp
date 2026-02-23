@@ -5,6 +5,8 @@
 @using RISOS.Pages.Home.Models
 @using RISOS.Services
 
+@inject UniversityService UniversityService
+
 <style>
     .side-bar .mud-expand-panel {
         background: var(--mud-palette-primary);
@@ -50,13 +52,22 @@
     <OpenedDrawerContent>
         <MudExpansionPanels Elevation="3" Style="height: calc(100vh - 128px); overflow: hidden">
             <MudExpansionPanel Text="Study program" Gutters="false" Expanded="@_expanded" KeepContentAlive="true">
-                <StudyProgramSelector @bind-SelectedPrograms="_mySelections"/>
+                <StudyProgramSelector SelectedPrograms="_mySelections" SelectedProgramsChanged="OnSelectedProgramsChanged"/>
             </MudExpansionPanel>
             <MudExpansionPanel Text="Compulsory subjects">
-                Test
+                @foreach (var s in _subjects.Where(s => s.Subject.Type != SubjectType.Elective))
+                {
+                    @s.Subject.ShortName
+                    <br/>
+                }
             </MudExpansionPanel>
             <MudExpansionPanel Text="Elective subjects">
-                Test
+                @foreach (var s in _subjects.Where(s => s.Subject.Type == SubjectType.Elective))
+                {
+                    
+                    @s.Subject.ShortName
+                    <br/>
+                }
             </MudExpansionPanel>
         </MudExpansionPanels>
     </OpenedDrawerContent>
@@ -75,7 +86,7 @@
     </AlwaysVisible>
 </SideBar>
 
-<StudiumDropContainer @bind-Subjects="@_subjects"/>
+<StudiumDropContainer @bind-Subjects="@_subjects" RequiredCredits="@RequiredCredits"/>
 
 @code {
     private List<SubjectEntry> _subjects = [];
@@ -83,17 +94,37 @@
 
     private bool _expanded = true;
 
-    protected override void OnInitialized()
+    private int RequiredCredits => _mySelections.FirstOrDefault()?.Credits ?? 0;
+    
+    private async Task OnSelectedProgramsChanged(IEnumerable<StudyProgram> programs)
     {
-        var dummySubjects = new List<Subject>
+        var studyPrograms = programs.ToList();
+        _mySelections = studyPrograms;
+        
+        Console.WriteLine($"Selected {studyPrograms.Count} study program(s)");
+        
+        if (studyPrograms.Any())
         {
-            new("Algorithms and Data Structures", "ALG", 6, 2, SubjectType.Compulsory, SemesterSeason.Summer),
-            new("Operating Systems", "MPC-MNM", 5, 3, SubjectType.Compulsory),
-            new("Relational Databases", "RDB", 4, 1, SubjectType.Elective, SemesterSeason.Winter, CompletionType.CrEx, "DB_Track"),
-            new("Web Development", "WEB", 5, 4, SubjectType.CompulsoryElective, SemesterSeason.Any, CompletionType.Cr, "DEV_Track"),
-        };
+            try
+            {
+                var subjects = await UniversityService.GetSubjectsAsync(studyPrograms.First());
+                Console.WriteLine($"Loaded {subjects.Count} subjects");
 
-        _subjects = dummySubjects.Select(s => new SubjectEntry(s)).ToList();
+                _subjects = subjects.Select(s => new SubjectEntry(s)).ToList();
+                
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error loading subjects: {ex.Message}");
+            }
+        }
+        else
+        {
+            Console.WriteLine("No programs selected");
+            _subjects.Clear();
+        }
+        
+        StateHasChanged();
     }
 
 }

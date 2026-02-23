@@ -10,7 +10,8 @@ public class Subject(
     SubjectType type = SubjectType.Elective,
     SemesterSeason semesterSeason = SemesterSeason.Winter,
     CompletionType completionType = CompletionType.Cr,
-    string? groupId = null
+    string? groupId = null,
+    string? url = null
 )
 {
     public string Name { get; } = name;
@@ -23,5 +24,6 @@ public class Subject(
     public SubjectType Type { get; } = type;
     public string? GroupId { get; } = groupId;
 
+    public string? Url { get; } = url;
     public bool? Completed { get; set; }
 }

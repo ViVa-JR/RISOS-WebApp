@@ -131,7 +131,7 @@
                 return _faculties.ToList();
             }
 
-            var filtered = _faculties
+            return _faculties
                 .Select(f => f with
                 {
                     Programs = f.Programs.Where(p =>
@@ -140,18 +140,12 @@
                         f.Title.Contains(_searchString, StringComparison.OrdinalIgnoreCase) ||
                         f.Abbreviation.Contains(_searchString, StringComparison.OrdinalIgnoreCase) ||
                         (p.Specialization != null && p.Specialization.Contains(_searchString, StringComparison.OrdinalIgnoreCase))
-                    ).ToList()
+                    ).ToList(),
+                    IsExpanded = true
                 })
                 .Where(f => f.Programs.Any())
                 .ToList();
-            
-            foreach (var faculty in filtered)
-            {
-                faculty.IsExpanded = true;
-            }
-            
-            return filtered;
-        });
+            });
 
         _isSearching = false;
     }
