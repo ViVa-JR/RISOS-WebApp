@@ -50,24 +50,41 @@
 <SideBar Class="side-bar">
     <OpenedDrawerContent>
         <MudExpansionPanels Elevation="3" Style="height: calc(100vh - 128px); overflow: hidden">
-            <MudExpansionPanel Text="Study program" Gutters="false" Expanded="@_expanded" KeepContentAlive="true">
-                <StudyProgramSelector SelectedPrograms="_mySelections" SelectedProgramsChanged="OnSelectedProgramsChanged"/>
+            <MudExpansionPanel Text="Study program" Gutters="false">
+                <StudyProgramSelector SelectedPrograms="_selectedPrograms" SelectedProgramsChanged="OnSelectedProgramsChanged"/>
             </MudExpansionPanel>
-            <MudExpansionPanel Text="Compulsory subjects">
-                @foreach (var s in _subjects.Where(s => s.Subject.Type != SubjectType.Elective))
-                {
-                    @s.Subject.ShortName
-                    <br/>
-                }
-            </MudExpansionPanel>
-            <MudExpansionPanel Text="Elective subjects">
-                @foreach (var s in _subjects.Where(s => s.Subject.Type == SubjectType.Elective))
-                {
-                    
-                    @s.Subject.ShortName
-                    <br/>
-                }
-            </MudExpansionPanel>
+            <SubjectsPanel TGroupKey="int"
+                           HeaderTemplate="@(x => $"{x}. Semester")"
+                           GroupBy="@(x => x.Subject.MinSemester)"
+                           Title="Compulsory"
+                           Disabled="@(!_selectedPrograms.Any())"
+                           Subjects="CompulsorySubjects"
+                           IsLoading="_isLoading"
+                           LoadData="LoadData"
+                           FixedPixels="326"/>
+            <SubjectsPanel TGroupKey="int"
+                           HeaderTemplate="@(x => $"{x}. Semester")"
+                           GroupBy="@(x => x.Subject.MinSemester)"
+                           Title="Compulsory-Elective"
+                           Disabled="@(!_selectedPrograms.Any())"
+                           Subjects="CompulsoryElectiveSubjects"
+                           SelectionMode="SelectionMode.MultiSelection"
+                           IsLoading="_isLoading"
+                           LoadData="LoadData"
+                           SelectedCompulsoryElectiveSubjects="_selectedCompulsoryElective"
+                           SelectedCompulsoryElectiveSubjectsChanged="SelectedCompulsoryElectiveSubjectsChanged"
+                           FixedPixels="326"/>
+            <SubjectsPanel TGroupKey="SemesterSeason"
+                           GroupBy="@(x => x.Subject.SemesterSeason)"
+                           Title="Elective"
+                           Disabled="@(!_selectedPrograms.Any())"
+                           Subjects="ElectiveSubjects"
+                           SelectionMode="SelectionMode.MultiSelection"
+                           IsLoading="_isLoading"
+                           LoadData="LoadData"
+                           SelectedCompulsoryElectiveSubjects="_selectedElective"
+                           SelectedCompulsoryElectiveSubjectsChanged="SelectedElectiveSubjectsChanged"
+                           FixedPixels="310"/>
         </MudExpansionPanels>
     </OpenedDrawerContent>
     <AlwaysVisible>
@@ -85,47 +102,80 @@
     </AlwaysVisible>
 </SideBar>
 
-<StudiumDropContainer @bind-Subjects="@_subjects" RequiredCredits="@RequiredCredits"/>
+<StudiumDropContainer @ref="_dropContainer" Subjects="@SelectedSubjects" RequiredCredits="@RequiredCredits" OnRemove="OnRemove"/>
 
 @code {
     private List<SubjectEntry> _subjects = [];
-    private IEnumerable<StudyProgram> _mySelections = [];
+    private IEnumerable<StudyProgram> _selectedPrograms = [];
+    private ICollection<SubjectEntry> _selectedCompulsoryElective = [];
+    private ICollection<SubjectEntry> _selectedElective = [];
 
-    private bool _expanded = true;
+    private bool _subjectsLoaded;
+    private bool _isLoading;
+    private StudiumDropContainer _dropContainer = null!;
 
-    private int RequiredCredits => _mySelections.FirstOrDefault()?.Credits ?? 0;
-    
+    private int RequiredCredits => _selectedPrograms.FirstOrDefault()?.Credits ?? 0;
+    private ICollection<SubjectEntry> CompulsorySubjects => _subjects.Where(s => s.Subject.Type == SubjectType.Compulsory).ToList();
+    private ICollection<SubjectEntry> CompulsoryElectiveSubjects => _subjects.Where(s => s.Subject.Type == SubjectType.CompulsoryElective).ToList();
+    private ICollection<SubjectEntry> ElectiveSubjects => _subjects.Where(s => s.Subject.Type == SubjectType.Elective).ToList();
+    private List<SubjectEntry> SelectedSubjects => CompulsorySubjects.Concat(_selectedCompulsoryElective).Concat(_selectedElective).ToList();
+
+    private async Task<bool> LoadData(bool expand)
+    {
+        if (!_selectedPrograms.Any())
+        {
+            return false;
+        }
+
+        if (!expand || _subjectsLoaded)
+        {
+            return true;
+        }
+
+        _isLoading = true;
+        await InvokeAsync(StateHasChanged);
+
+        _subjects = (await UniversityService.GetSubjectsAsync(_selectedPrograms.First())).Select(s => new SubjectEntry(s)).ToList();
+        Console.WriteLine($"Loaded {_subjects.Count} subjects");
+        _subjectsLoaded = true;
+        _isLoading = false;
+        await InvokeAsync(StateHasChanged);
+        _dropContainer.Refresh();
+        return true;
+    }
+
     private void OnSelectedProgramsChanged(IEnumerable<StudyProgram> programs)
     {
         var studyPrograms = programs.ToList();
-        _mySelections = studyPrograms;
-        
-        Console.WriteLine($"Selected {studyPrograms.Count} study program(s)");
-        
-        if (studyPrograms.Any())
-        {
-            Task.Run(async () =>
-            {
-                try
-                {
-                    var subjects = await UniversityService.GetSubjectsAsync(studyPrograms.First());
-                    Console.WriteLine($"Loaded {subjects.Count} subjects");
+        _selectedPrograms = studyPrograms;
 
-                    _subjects = subjects.Select(s => new SubjectEntry(s)).ToList();
-                }
-                catch (Exception ex)
-                {
-                    Console.WriteLine($"Error loading subjects: {ex.Message}");
-                }
-            });
-        }
-        else
+        Console.WriteLine($"Selected {studyPrograms.Count} study program(s)");
+
+        if (!studyPrograms.Any())
         {
-            Console.WriteLine("No programs selected");
             _subjects.Clear();
         }
-        
+
+        _subjectsLoaded = false;
         StateHasChanged();
+    }
+
+    private void OnRemove(SubjectEntry entry)
+    {
+        _selectedElective.Remove(entry);
+        _selectedCompulsoryElective.Remove(entry);
+    }
+
+    private void SelectedCompulsoryElectiveSubjectsChanged(ICollection<SubjectEntry> arg)
+    {
+        _selectedElective = arg;
+        _dropContainer.Refresh();
+    }
+
+    private void SelectedElectiveSubjectsChanged(ICollection<SubjectEntry> arg)
+    {
+        _selectedCompulsoryElective = arg;
+        _dropContainer.Refresh();
     }
 
 }

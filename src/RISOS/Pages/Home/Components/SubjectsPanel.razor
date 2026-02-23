@@ -1,0 +1,79 @@
+@typeparam TGroupKey
+
+@using RISOS.Pages.Home.Models
+
+<MudExpansionPanel Disabled="@Disabled" Expanded="_expanded" ExpandedChanged="ExpandedChanged" HideIcon="true">
+    <TitleContent>
+        <MudStack StretchItems="StretchItems.Start" Row Spacing="0">
+            <MudText Class="mud-expand-panel-text" Style="font-size: 15px">
+                @Title
+            </MudText>
+            @if (IsLoading)
+            {
+                <MudProgressCircular Indeterminate Size="Size.Small"/>
+            }
+            else
+            {
+                <MudIcon Icon="@(_expanded ? Icons.Material.Filled.KeyboardArrowUp : Icons.Material.Filled.KeyboardArrowDown)"/>
+            }
+        </MudStack>
+    </TitleContent>
+    <ChildContent>
+        <SubjectsList TGroupKey="TGroupKey"
+                      GroupBy="GroupBy"
+                      HeaderTemplate="HeaderTemplate"
+                      Subjects="Subjects"
+                      FixedPixels="FixedPixels"
+                      SelectedCompulsoryElectiveSubjects="SelectedCompulsoryElectiveSubjects"
+                      SelectedCompulsoryElectiveSubjectsChanged="SelectedCompulsoryElectiveSubjectsChanged"
+        />
+    </ChildContent>
+</MudExpansionPanel>
+
+@code {
+
+    [Parameter, EditorRequired]
+    public required Func<SubjectEntry, TGroupKey> GroupBy { get; set; }
+
+    [Parameter]
+    public string Title { get; set; } = string.Empty;
+
+    [Parameter]
+    public bool Disabled { get; set; }
+
+    [Parameter]
+    public bool IsLoading { get; set; }
+
+    [Parameter]
+    public ICollection<SubjectEntry> Subjects { get; set; } = [];
+
+    [Parameter]
+    public SelectionMode? SelectionMode { get; set; }
+
+    [Parameter]
+    public Func<bool, Task<bool>> LoadData { get; set; } = _ => Task.FromResult(true);
+
+    [Parameter]
+    public ICollection<SubjectEntry> SelectedCompulsoryElectiveSubjects { get; set; } = [];
+
+    [Parameter]
+    public EventCallback<ICollection<SubjectEntry>> SelectedCompulsoryElectiveSubjectsChanged { get; set; }
+
+    [Parameter]
+    public int FixedPixels { get; set; }
+
+    [Parameter]
+    public Func<TGroupKey, string>? HeaderTemplate { get; set; }
+
+    private bool _expanded;
+
+    private async Task ExpandedChanged(bool expand)
+    {
+        var result = await LoadData.Invoke(expand);
+        if (result)
+        {
+            _expanded = expand;
+        }
+    }
+
+}

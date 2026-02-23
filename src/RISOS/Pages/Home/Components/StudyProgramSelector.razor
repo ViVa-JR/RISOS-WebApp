@@ -76,6 +76,13 @@
                     <StudyProgramEntry Program="@program"/>
                 }
             }
+            else
+            {
+                @foreach (var program in faculty.Programs.Where(x => SelectedPrograms.Contains(x)))
+                {
+                    <StudyProgramEntry Program="@program"/>
+                }
+            }
         }
     </MudListExtended>
 </MudStack>
@@ -87,7 +94,7 @@
     [Parameter]
     public EventCallback<IEnumerable<StudyProgram>> SelectedProgramsChanged { get; set; }
     
-    private const int FixedPixels = 256;
+    private const int FixedPixels = 310;
 
     private IEnumerable<Faculty> Faculties => _filteredFaculties ?? _faculties;
     private bool IsLoading => _isSearching || _initialLoading;

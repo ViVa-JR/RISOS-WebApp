@@ -69,7 +69,10 @@
                     }
                 }
             </MudMenu>
-            <MudMenuItem Icon="@Icons.Material.Filled.Delete" IconColor="Color.Error" Label="Delete" OnClick="@(() => RemoveEntry.InvokeAsync(Entry))"/>
+            @if (Entry.Subject.Type != SubjectType.Compulsory)
+            {
+                <MudMenuItem Icon="@Icons.Material.Filled.Delete" IconColor="Color.Error" Label="Delete" OnClick="@(() => RemoveEntry.InvokeAsync(Entry))"/>
+            } 
         </ChildContent>
     </MudMenu>
 </MudPaper>

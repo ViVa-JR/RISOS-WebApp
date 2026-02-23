@@ -1,0 +1,155 @@
+@typeparam TGroupKey
+
+@using MudExtensions
+@using RISOS.Pages.Home.Models
+
+<style>
+    .subjects-list .mud-list-item-extended:hover {
+        opacity: 0.9;
+    }
+</style>
+
+@if (Subjects.Any())
+{
+    <MudStack Spacing="0" Class="h-100">
+        <div class="pa-3" style="border-bottom: 1px solid var(--mud-palette-lines-default); background-color: var(--mud-palette-surface); border-radius: 4px 4px 0 0; flex-shrink: 0;">
+            <MudTextField T="string"
+                          @bind-Value="SearchValue"
+                          Placeholder="Search"
+                          Adornment="Adornment.Start"
+                          DebounceInterval="300"
+                          AdornmentIcon="@Icons.Material.Filled.Search"
+                          IconSize="Size.Medium"
+                          Class="mt-0"
+                          Clearable="true"
+                          Immediate="true"/>
+        </div>
+
+        <MudListExtended T="SubjectEntry" Class="subjects-list"
+                         Style="@($"flex-grow: 1; padding: 0;max-height: calc(var(--side-bar-content-height) - {FixedPixels}px) !important; overflow-y: scroll; background: var(--mud-palette-surface);")">
+            <Virtualize Items="@_flattenedList" Context="row" OverscanCount="10">
+                @if (row.IsHeader)
+                {
+                    <MudListSubheaderExtended T="SubjectEntry" @key="@($"header_{row.GroupKey}")" Style="background-color: var(--mud-palette-background-gray)" Class="pa-2">
+                        <MudText Typo="Typo.body2" Color="Color.Primary">
+                            @if (HeaderTemplate != null)
+                            {
+                                @HeaderTemplate(row.GroupKey!)
+                            }
+                            else
+                            {
+                                <b>@row.GroupKey</b>
+                            }
+                        </MudText>
+                    </MudListSubheaderExtended>
+                    <MudDivider/>
+                }
+                else
+                {
+                    <MudListItemExtended @key="@row.Subject!.Subject.ShortName" T="SubjectEntry" Value="row.Subject" Style="background-color: var(--mud-palette-surface) !important; padding: 0 !important; border-bottom: 1px solid var(--mud-palette-lines-default);">
+    
+                        <div class="d-flex align-center gap-3 px-2 w-100">
+                            <div class="d-flex align-center gap-2 w-100" style="min-width: 0;">
+                                <MudTooltip Text="@row.Subject!.Subject.Name" Delay="200" Placement="Placement.Right" RootClass="flex-1">
+                                    <MudText Typo="Typo.body2" Color="Color.Primary" Class="flex-1">
+                                        <b>@row.Subject.Subject.ShortName</b>
+                                    </MudText>
+                                </MudTooltip>
+            
+                                <MudChip T="string" Size="Size.Small" Color="Color.Primary" Variant="Variant.Outlined" Class="ma-0 flex-shrink-0">
+                                    @row.Subject.Subject.Credits cr
+                                </MudChip>
+                            </div>
+
+                            <MudTooltip Text="Show course info" Delay="200" Placement="Placement.Left">
+                                <MudIconButton Size="Size.Small" Icon="@Icons.Material.Outlined.Info" Color="Color.Info" Class="flex-shrink-0" />
+                            </MudTooltip>
+
+                        </div>
+
+                    </MudListItemExtended>
+                }
+            </Virtualize>
+
+        </MudListExtended>
+    </MudStack>
+}
+
+@code {
+    [Parameter, EditorRequired]
+    public required Func<SubjectEntry, TGroupKey> GroupBy { get; set; }
+
+    [Parameter]
+    public Func<TGroupKey, string>? HeaderTemplate { get; set; }
+
+    [Parameter]
+    public ICollection<SubjectEntry> Subjects { get; set; } = [];
+
+    [Parameter]
+    public ICollection<SubjectEntry> SelectedCompulsoryElectiveSubjects { get; set; } = [];
+
+    [Parameter]
+    public EventCallback<ICollection<SubjectEntry>> SelectedCompulsoryElectiveSubjectsChanged { get; set; }
+
+    [Parameter]
+    public int FixedPixels { get; set; }
+
+    private List<VirtualRow> _flattenedList = new();
+    private string _searchValue = string.Empty;
+
+    private string SearchValue
+    {
+        get => _searchValue;
+        set
+        {
+            if (_searchValue == value)
+            {
+                return;
+            }
+
+            _searchValue = value;
+            BuildFlattenedList();
+        }
+    }
+
+    private IEnumerable<IGrouping<TGroupKey, SubjectEntry>> FilteredGroups
+    {
+        get
+        {
+            var filtered = string.IsNullOrWhiteSpace(_searchValue)
+                ? Subjects
+                : Subjects.Where(x =>
+                    (x.Subject.Name?.Contains(_searchValue, StringComparison.OrdinalIgnoreCase) ?? false) ||
+                    (x.Subject.ShortName?.Contains(_searchValue, StringComparison.OrdinalIgnoreCase) ?? false));
+
+            return filtered.GroupBy(GroupBy).OrderBy(x => x.Key);
+        }
+    }
+
+    protected override void OnParametersSet()
+    {
+        BuildFlattenedList();
+        base.OnParametersSet();
+    }
+
+    private void BuildFlattenedList()
+    {
+        var result = new List<VirtualRow>();
+
+        foreach (var group in FilteredGroups)
+        {
+            result.Add(new VirtualRow { IsHeader = true, GroupKey = group.Key });
+            result.AddRange(group.Select(subject => new VirtualRow { IsHeader = false, Subject = subject }));
+        }
+
+        _flattenedList = result;
+    }
+
+    private class VirtualRow
+    {
+        public bool IsHeader { get; set; }
+        public TGroupKey? GroupKey { get; set; }
+        public SubjectEntry? Subject { get; set; }
+    }
+
+}
