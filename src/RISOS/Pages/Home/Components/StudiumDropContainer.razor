@@ -8,9 +8,17 @@
 @inject IDialogService DialogService
 @inject ISnackbar Snackbar
 
+<style>
+    .card-text {
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        overflow: hidden;
+    }
+</style>
+
 <MudDropContainer T="SubjectEntry" @ref="_dropContainer" Items="@Subjects" ItemsSelector="@Selector" ItemDropped="@ItemUpdated" Class="d-flex flex-column gap-3 mb-2"
                   ApplyDropClassesOnDragStarted
-                  CanDropClass="mud-alert-text-primary mud-border-primary"
+                  CanDropClass="mud-alert-text-success mud-border-success"
                   NoDropClass="mud-alert-text-error mud-border-error">
     <ChildContent>
         <div class="rounded-lg border-2 border-dashed mud-border-lines-default mud-background-gray w-100 d-flex flex-column">

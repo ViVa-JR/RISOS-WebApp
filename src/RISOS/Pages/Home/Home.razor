@@ -3,17 +3,12 @@
 @using RISOS.Models
 @using RISOS.Pages.Home.Components
 @using RISOS.Pages.Home.Models
+@using RISOS.Services
 
 <style>
     .side-bar .mud-expand-panel {
         background: var(--mud-palette-primary);
         color: white;
-    }
-
-    .card-text {
-        white-space: nowrap;
-        text-overflow: ellipsis;
-        overflow: hidden;
     }
 
     .mud-drawer.mud-drawer-mini.mud-drawer-pos-left.mud-drawer--open ~ div:not(.mud-main-content), .mud-drawer.mud-drawer-persistent.mud-drawer-pos-left.mud-drawer--open ~ div:not(.mud-main-content) {
@@ -23,38 +18,78 @@
     .mud-drawer.mud-drawer-mini.mud-drawer-pos-left.mud-drawer--closed ~ div:not(.mud-main-content) {
         margin-left: 0 !important;
     }
+
+    .mud-expand-panel-header {
+        padding-left: 16px !important;
+        padding-right: 16px !important;
+    }
+
+    .mud-collapse-entering .mud-expand-panel-content[hidden],
+    .mud-collapse-exiting .mud-expand-panel-content[hidden],
+    .mud-collapse-entering .mud-expand-panel-content,
+    .mud-collapse-exiting .mud-expand-panel-content {
+        display: block !important;
+        visibility: visible !important;
+    }
+
+    .mud-collapse-wrapper {
+        overflow: hidden !important;
+    }
+
+    .mud-expand-panel-content {
+        padding: 0 8px 8px 8px !important;
+    }
+
+    .mud-list-item-multiselect-extended {
+        padding: 0 0 0 12px !important;
+    }
+
 </style>
 
 <SideBar Class="side-bar">
-    <MudExpansionPanels MultiExpansion="true" Elevation="3">
-        <MudExpansionPanel Text="Study program">
-            Test
-        </MudExpansionPanel>
-        <MudExpansionPanel Text="Compulsory subjects">
-            Test
-        </MudExpansionPanel>
-        <MudExpansionPanel Text="Elective subjects">
-            Test
-        </MudExpansionPanel>
-    </MudExpansionPanels>
-    <MudSpacer/>
-    <MudButton StartIcon="@Icons.Material.Filled.Settings">
-        Settings
-    </MudButton>
+    <OpenedDrawerContent>
+        <MudExpansionPanels Elevation="3" Style="height: calc(100vh - 128px); overflow: hidden">
+            <MudExpansionPanel Text="Study program" Gutters="false" Expanded="@_expanded" KeepContentAlive="true">
+                <StudyProgramSelector @bind-SelectedPrograms="_mySelections"/>
+            </MudExpansionPanel>
+            <MudExpansionPanel Text="Compulsory subjects">
+                Test
+            </MudExpansionPanel>
+            <MudExpansionPanel Text="Elective subjects">
+                Test
+            </MudExpansionPanel>
+        </MudExpansionPanels>
+    </OpenedDrawerContent>
+    <AlwaysVisible>
+        <MudStack Row Justify="Justify.Center" Spacing="2" AlignItems="AlignItems.Center" Wrap="Wrap.Wrap" Class="px-2 pb-2" Style="width: 100%">
+            <MudTooltip Text="Settings">
+                <MudIconButton Icon="@Icons.Material.Filled.Settings" Style="color: var(--mud-palette-drawer-text)"/>
+            </MudTooltip>
+            <MudTooltip Text="Export">
+                <MudIconButton Icon="@Icons.Material.Filled.Download" Style="color: var(--mud-palette-drawer-text)"/>
+            </MudTooltip>
+            <MudTooltip Text="Import">
+                <MudIconButton Icon="@Icons.Material.Filled.Upload" Style="color: var(--mud-palette-drawer-text)"/>
+            </MudTooltip>
+        </MudStack>
+    </AlwaysVisible>
 </SideBar>
 
 <StudiumDropContainer @bind-Subjects="@_subjects"/>
 
 @code {
     private List<SubjectEntry> _subjects = [];
-    
+    private IEnumerable<StudyProgram> _mySelections = [];
+
+    private bool _expanded = true;
+
     protected override void OnInitialized()
     {
         var dummySubjects = new List<Subject>
         {
             new("Algorithms and Data Structures", "ALG", 6, 2, SubjectType.Compulsory, SemesterSeason.Summer),
             new("Operating Systems", "MPC-MNM", 5, 3, SubjectType.Compulsory),
-            new("Relational Databases", "RDB", 4, 1, SubjectType.CompulsoryElective, SemesterSeason.Winter, CompletionType.CrEx, "DB_Track"),
+            new("Relational Databases", "RDB", 4, 1, SubjectType.Elective, SemesterSeason.Winter, CompletionType.CrEx, "DB_Track"),
             new("Web Development", "WEB", 5, 4, SubjectType.CompulsoryElective, SemesterSeason.Any, CompletionType.Cr, "DEV_Track"),
         };
 
