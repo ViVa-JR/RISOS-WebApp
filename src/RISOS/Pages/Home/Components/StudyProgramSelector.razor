@@ -131,7 +131,7 @@
                 return _faculties.ToList();
             }
 
-            return _faculties
+            var filtered = _faculties
                 .Select(f => f with
                 {
                     Programs = f.Programs.Where(p =>
@@ -144,6 +144,13 @@
                 })
                 .Where(f => f.Programs.Any())
                 .ToList();
+            
+            foreach (var faculty in filtered)
+            {
+                faculty.IsExpanded = true;
+            }
+            
+            return filtered;
         });
 
         _isSearching = false;
