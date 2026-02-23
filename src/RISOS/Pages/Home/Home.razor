@@ -96,7 +96,7 @@
 
     private int RequiredCredits => _mySelections.FirstOrDefault()?.Credits ?? 0;
     
-    private async Task OnSelectedProgramsChanged(IEnumerable<StudyProgram> programs)
+    private void OnSelectedProgramsChanged(IEnumerable<StudyProgram> programs)
     {
         var studyPrograms = programs.ToList();
         _mySelections = studyPrograms;
@@ -105,18 +105,20 @@
         
         if (studyPrograms.Any())
         {
-            try
+            Task.Run(async () =>
             {
-                var subjects = await UniversityService.GetSubjectsAsync(studyPrograms.First());
-                Console.WriteLine($"Loaded {subjects.Count} subjects");
+                try
+                {
+                    var subjects = await UniversityService.GetSubjectsAsync(studyPrograms.First());
+                    Console.WriteLine($"Loaded {subjects.Count} subjects");
 
-                _subjects = subjects.Select(s => new SubjectEntry(s)).ToList();
-                
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Error loading subjects: {ex.Message}");
-            }
+                    _subjects = subjects.Select(s => new SubjectEntry(s)).ToList();
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Error loading subjects: {ex.Message}");
+                }
+            });
         }
         else
         {
