@@ -34,19 +34,24 @@
 
 <style>
     .app-title {
-        transition: transform 225ms ease-in-out;
+        transition: transform 300ms cubic-bezier(0.4, 0, 0.2, 1),
+        margin-top 300ms cubic-bezier(0.4, 0, 0.2, 1);
+
         font-size: 32px;
         font-weight: 500;
         letter-spacing: 3px;
         font-family: 'Poppins', sans-serif;
         margin: 0;
         order: 2;
+
+        white-space: nowrap;
+        display: inline-block;
+
+        transform-origin: center center;
     }
 
     .drawer-closed .app-title {
-        order: 3;
-        transform: rotate(-90deg);
-        margin-top: 35px !important;
+        transform: rotate(-90deg) translateX(-35px);
     }
 
     .theme-button {
@@ -78,7 +83,8 @@
                              Toggled="ThemeStateService.IsDarkMode"
                              ToggledChanged="ThemeStateService.SetDarkMode"
                              Icon="@Icons.Material.Filled.NightsStay"
-                             ToggledIcon="@Icons.Material.Filled.WbSunny"/>
+                             ToggledIcon="@Icons.Material.Filled.WbSunny"
+                             Style="color: var(--mud-palette-drawer-text)"/>
 
         <MudText Class="app-title">
             RISØS
@@ -87,22 +93,30 @@
         <MudIconButton Class="drawer-toggle-button"
                        OnClick="@DrawerToggle"
                        Icon="@(_drawerOpen ? Icons.Material.Filled.KeyboardArrowLeft : Icons.Material.Filled.KeyboardArrowRight)"
-                       Color="@Color.Default"/>
+                       Style="color: var(--mud-palette-drawer-text)"/>
 
     </MudStack>
 
-    @if (_drawerOpen && ChildContent is not null)
+    @if (_drawerOpen && OpenedDrawerContent is not null)
     {
-        <div id="side-bar-content" class="pa-2 d-flex flex-column" style="overflow-y: auto; flex: 1; overflow-x: hidden; max-height: calc(100vh - 56px)">
-            @ChildContent
+        <div id="side-bar-content" class="pa-2 d-flex flex-column" style="overflow-y: auto; overflow-x: hidden; max-height: calc(100vh - 56px)">
+            @OpenedDrawerContent
         </div>
+    }
+    @if (AlwaysVisible is not null)
+    {
+        <MudSpacer/>
+        @AlwaysVisible
     }
 </MudDrawer>
 
 @code {
 
     [Parameter]
-    public RenderFragment? ChildContent { get; set; }
+    public RenderFragment? OpenedDrawerContent { get; set; }
+
+    [Parameter]
+    public RenderFragment? AlwaysVisible { get; set; }
 
     [Parameter]
     public string Class { get; set; } = string.Empty;

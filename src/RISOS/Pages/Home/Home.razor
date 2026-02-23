@@ -47,20 +47,32 @@
 </style>
 
 <SideBar Class="side-bar">
-    <MudExpansionPanels Elevation="3" Style="height: calc(100vh - 108px); overflow: hidden">
-        <MudExpansionPanel Text="Study program" Gutters="false" Expanded="@_expanded">
-            <StudyProgramSelector @bind-SelectedPrograms="_mySelections"/>
-        </MudExpansionPanel>
-        <MudExpansionPanel Text="Compulsory subjects">
-            Test
-        </MudExpansionPanel>
-        <MudExpansionPanel Text="Elective subjects">
-            Test
-        </MudExpansionPanel>
-    </MudExpansionPanels>
-    <MudButton StartIcon="@Icons.Material.Filled.Settings" Style="color: var(--mud-palette-action-default)">
-        Settings
-    </MudButton>
+    <OpenedDrawerContent>
+        <MudExpansionPanels Elevation="3" Style="height: calc(100vh - 128px); overflow: hidden">
+            <MudExpansionPanel Text="Study program" Gutters="false" Expanded="@_expanded" KeepContentAlive="true">
+                <StudyProgramSelector @bind-SelectedPrograms="_mySelections"/>
+            </MudExpansionPanel>
+            <MudExpansionPanel Text="Compulsory subjects">
+                Test
+            </MudExpansionPanel>
+            <MudExpansionPanel Text="Elective subjects">
+                Test
+            </MudExpansionPanel>
+        </MudExpansionPanels>
+    </OpenedDrawerContent>
+    <AlwaysVisible>
+        <MudStack Row Justify="Justify.Center" Spacing="2" AlignItems="AlignItems.Center" Wrap="Wrap.Wrap" Class="px-2 pb-2" Style="width: 100%">
+            <MudTooltip Text="Settings">
+                <MudIconButton Icon="@Icons.Material.Filled.Settings" Style="color: var(--mud-palette-drawer-text)"/>
+            </MudTooltip>
+            <MudTooltip Text="Export">
+                <MudIconButton Icon="@Icons.Material.Filled.Download" Style="color: var(--mud-palette-drawer-text)"/>
+            </MudTooltip>
+            <MudTooltip Text="Import">
+                <MudIconButton Icon="@Icons.Material.Filled.Upload" Style="color: var(--mud-palette-drawer-text)"/>
+            </MudTooltip>
+        </MudStack>
+    </AlwaysVisible>
 </SideBar>
 
 <StudiumDropContainer @bind-Subjects="@_subjects"/>
@@ -77,7 +89,7 @@
         {
             new("Algorithms and Data Structures", "ALG", 6, 2, SubjectType.Compulsory, SemesterSeason.Summer),
             new("Operating Systems", "MPC-MNM", 5, 3, SubjectType.Compulsory),
-            new("Relational Databases", "RDB", 4, 1, SubjectType.CompulsoryElective, SemesterSeason.Winter, CompletionType.CrEx, "DB_Track"),
+            new("Relational Databases", "RDB", 4, 1, SubjectType.Elective, SemesterSeason.Winter, CompletionType.CrEx, "DB_Track"),
             new("Web Development", "WEB", 5, 4, SubjectType.CompulsoryElective, SemesterSeason.Any, CompletionType.Cr, "DEV_Track"),
         };
 
