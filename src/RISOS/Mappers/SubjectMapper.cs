@@ -14,10 +14,16 @@ public static class SubjectMapper
     private static Subject ToSubject(SubjectDto dto)
     {
         var credits = int.TryParse(dto.Credits, out var creditsValue) ? creditsValue : 0;
-        var minSemester = int.TryParse(dto.MinSemester, out var minSemesterValue) ? minSemesterValue : 1;
+        var year = int.TryParse(dto.Year, out var minSemesterValue) ? minSemesterValue : 1;
         var subjectType = MapSubjectType(dto.Obligation);
         var semesterSeason = MapSemesterSeason(dto.Semesters);
         var completionType = MapCompletionType(dto.CompletionType);
+
+        int minSemester = 0;
+        if (year > 0)
+        {
+            minSemester = (year - 1) * 2 + (semesterSeason == SemesterSeason.Winter ? 1 : 2);
+        }
         
         return new Subject(
             name: dto.Name,

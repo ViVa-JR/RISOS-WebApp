@@ -29,5 +29,5 @@ public class SubjectDto
     public List<string> Semesters { get; set; } = [];
     
     [JsonPropertyName("rocnik")]
-    public string MinSemester { get; set; } = string.Empty;
+    public string Year { get; set; } = string.Empty;
 }
