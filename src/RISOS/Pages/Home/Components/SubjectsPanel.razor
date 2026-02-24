@@ -4,10 +4,16 @@
 
 <MudExpansionPanel Disabled="@Disabled" @bind-Expanded="_expanded" HideIcon="true">
     <TitleContent>
-        <MudStack StretchItems="StretchItems.Start" Row Spacing="0">
+        <MudStack StretchItems="StretchItems.Start" Row Spacing="2" AlignItems="AlignItems.Center">
             <MudText Class="mud-expand-panel-text" Style="font-size: 15px">
                 @Title
             </MudText>
+            @if (Count > 0)
+            {
+                <MudChip T="int" Variant="Variant.Outlined" Size="Size.Small" Color="Color.Default" Style="margin: 0 !important;">
+                    @Count
+                </MudChip>
+            }
             @if (IsLoading)
             {
                 <MudProgressCircular Indeterminate Size="Size.Small" Color="Color.Secondary"/>
@@ -44,7 +50,7 @@
     public bool IsLoading { get; set; }
 
     [Parameter]
-    public Dictionary<Guid, SubjectEntry> Subjects { get; set; } = [];
+    public Dictionary<string, SubjectEntry> Subjects { get; set; } = [];
     
     [Parameter]
     public EventCallback<SubjectEntry> SubjectChanged { get; set; }
@@ -59,5 +65,7 @@
     public Func<TGroupKey, string>? HeaderTemplate { get; set; }
 
     private bool _expanded;
+
+    private int Count => Subjects.Count;
 
 }

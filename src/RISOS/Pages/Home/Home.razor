@@ -100,16 +100,16 @@
 <StudiumDropContainer @ref="_dropContainer" Subjects="@_selectedSubjects" RequiredCredits="@RequiredCredits" OnRemove="OnRemove"/>
 
 @code {
-    private Dictionary<Guid, SubjectEntry> _subjects = [];
+    private Dictionary<string, SubjectEntry> _subjects = [];
     private StudyProgram? _selectedProgram;
 
     private bool _isLoading;
     private StudiumDropContainer _dropContainer = null!;
 
     private int RequiredCredits => _selectedProgram?.Credits ?? 0;
-    private Dictionary<Guid, SubjectEntry> CompulsorySubjects => _subjects.Where(s => s.Value.Subject.Type == SubjectType.Compulsory).ToDictionary();
-    private Dictionary<Guid, SubjectEntry> CompulsoryElectiveSubjects => _subjects.Where(s => s.Value.Subject.Type == SubjectType.CompulsoryElective).ToDictionary();
-    private Dictionary<Guid, SubjectEntry> ElectiveSubjects => _subjects.Where(s => s.Value.Subject.Type == SubjectType.Elective).ToDictionary();
+    private Dictionary<string, SubjectEntry> CompulsorySubjects => _subjects.Where(s => s.Value.Subject.Type == SubjectType.Compulsory).ToDictionary();
+    private Dictionary<string, SubjectEntry> CompulsoryElectiveSubjects => _subjects.Where(s => s.Value.Subject.Type == SubjectType.CompulsoryElective).ToDictionary();
+    private Dictionary<string, SubjectEntry> ElectiveSubjects => _subjects.Where(s => s.Value.Subject.Type == SubjectType.Elective).ToDictionary();
     private List<SubjectEntry> _selectedSubjects = [];
     private bool Disabled => _selectedProgram is null;
 
@@ -118,7 +118,7 @@
         _isLoading = true;
         await InvokeAsync(StateHasChanged);
 
-        _subjects = (await UniversityService.GetSubjectsAsync(studyProgram)).Select(s => new SubjectEntry(s)).ToDictionary(x => x.Subject.Guid);
+        _subjects = (await UniversityService.GetSubjectsAsync(studyProgram)).Select(s => new SubjectEntry(s)).ToDictionary(x => x.Subject.Id);
         _selectedSubjects = _subjects.Values.Where(x => x.Selected).ToList();
         Console.WriteLine($"Loaded {_subjects.Count} subjects");
 
@@ -154,7 +154,7 @@
 
     private void SubjectChanged(SubjectEntry subject)
     {
-        _subjects[subject.Subject.Guid] = subject;
+        _subjects[subject.Subject.Id] = subject;
         if (subject.Selected)
         {
             _selectedSubjects.Add(subject);

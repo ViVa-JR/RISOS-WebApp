@@ -15,7 +15,6 @@ public class Subject(
     string? url = null
 )
 {
-    public Guid Guid { get; } = Guid.NewGuid();
     public string Id { get; } = id;
     public string Name { get; } = name;
     public string ShortName { get; } = shortName;

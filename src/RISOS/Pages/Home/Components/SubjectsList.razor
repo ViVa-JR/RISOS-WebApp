@@ -6,6 +6,10 @@
     .subjects-list .mud-list-item-extended:hover {
         opacity: 0.9;
     }
+
+    .subjects-list .mud-icon-button {
+        padding: 6px !important;
+    }
 </style>
 
 @if (Subjects.Any())
@@ -60,7 +64,7 @@
     public Func<TGroupKey, string>? HeaderTemplate { get; set; }
 
     [Parameter]
-    public Dictionary<Guid, SubjectEntry> Subjects { get; set; } = [];
+    public Dictionary<string, SubjectEntry> Subjects { get; set; } = [];
 
     [Parameter]
     public EventCallback<SubjectEntry> SubjectChanged { get; set; }
