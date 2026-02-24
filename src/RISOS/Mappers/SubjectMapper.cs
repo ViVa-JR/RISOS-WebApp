@@ -14,7 +14,7 @@ public static class SubjectMapper
     private static Subject ToSubject(SubjectDto dto)
     {
         var credits = int.TryParse(dto.Credits, out var creditsValue) ? creditsValue : 0;
-        var year = int.TryParse(dto.Year, out var minSemesterValue) ? minSemesterValue : 1;
+        var year = int.TryParse(dto.Year, out var minSemesterValue) ? minSemesterValue : 0;
         var subjectType = MapSubjectType(dto.Obligation);
         var semesterSeason = MapSemesterSeason(dto.Semesters);
         var completionType = MapCompletionType(dto.CompletionType);
@@ -25,7 +25,7 @@ public static class SubjectMapper
             minSemester = (year - 1) * 2 + (semesterSeason == SemesterSeason.Winter ? 1 : 2);
         }
 
-        string id = dto.Url.Split("/").LastOrDefault() ?? "" + dto.Name + dto.Code;
+        var id = dto.Url.Split("/").LastOrDefault() ?? "" + dto.Name + dto.Code;
         
         return new Subject(
             id: id,
@@ -54,19 +54,20 @@ public static class SubjectMapper
     private static SemesterSeason MapSemesterSeason(List<string> semesters)
     {
         if (semesters.Count == 0)
+        {
             return SemesterSeason.Any;
+        }
 
         var hasWinter = semesters.Any(s => s.Contains('Z') || s.Contains("zim") || s.Contains("winter", StringComparison.InvariantCultureIgnoreCase));
         var hasSummer = semesters.Any(s => s.Contains('L') || s.Contains("let") || s.Contains("summer", StringComparison.InvariantCultureIgnoreCase));
 
-        if (hasWinter && hasSummer)
-            return SemesterSeason.Any;
-        if (hasWinter)
-            return SemesterSeason.Winter;
-        if (hasSummer)
-            return SemesterSeason.Summer;
-
-        return SemesterSeason.Any;
+        return (hasWinter, hasSummer) switch
+        {
+            (true, true) => SemesterSeason.Any,
+            (true, false) => SemesterSeason.Winter,
+            (false, true) => SemesterSeason.Summer,
+            _ => SemesterSeason.Any
+        };
     }
 
     private static CompletionType MapCompletionType(string completionType)
@@ -100,6 +101,3 @@ public static class SubjectMapper
         };
     }
 }
-
-
-

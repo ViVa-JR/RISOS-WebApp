@@ -28,18 +28,15 @@ public static class FacultyMapper
         if (studyDuration <= 0)
         {
             studyDuration = 3.0;
-            credits = credits == 0 ? credits : 180;
+            credits = credits != 0 ? credits : 180;
+        }
+        else if (credits > 0)
+        {
+            creditsWarn = false;
         }
         else
         {
-            if (credits > 0)
-            {
-                creditsWarn = false;
-            }
-            else
-            {
-                credits = (int)studyDuration * 60;
-            }
+            credits = (int)studyDuration * 60;
         }
         
         return new StudyProgram(
