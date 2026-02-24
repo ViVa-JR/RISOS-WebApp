@@ -11,10 +11,12 @@ public class Subject(
     SemesterSeason semesterSeason = SemesterSeason.Winter,
     CompletionType completionType = CompletionType.Cr,
     string? groupId = null,
-    string? url = null
+    string? url = null,
+    int? id = 0
 )
 {
     public Guid Guid { get; } = Guid.NewGuid();
+    public int? Id { set; get; } = id;
     public string Name { get; } = name;
     public string ShortName { get; } = shortName;
     public int Credits { get; } = credits;
