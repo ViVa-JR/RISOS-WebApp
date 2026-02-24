@@ -14,6 +14,7 @@ public class Subject(
     string? url = null
 )
 {
+    public Guid Guid { get; } = Guid.NewGuid();
     public string Name { get; } = name;
     public string ShortName { get; } = shortName;
     public int Credits { get; } = credits;
@@ -25,5 +26,4 @@ public class Subject(
     public string? GroupId { get; } = groupId;
 
     public string? Url { get; } = url;
-    public bool? Completed { get; set; }
 }

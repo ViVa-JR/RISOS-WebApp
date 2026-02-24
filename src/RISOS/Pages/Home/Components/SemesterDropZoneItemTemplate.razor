@@ -42,13 +42,13 @@
                 @if (Entry.IsAssigned)
                 {
                     <MudCheckBox T="bool?"
-                                 Value="Entry.Subject.Completed"
-                                 ValueChanged="CompletedChanged"
+                                 Value="@Entry.Completed"
+                                 ValueChanged="@CompletedChanged"
                                  TriState="true"
                                  CheckedIcon="@Icons.Material.Filled.CheckCircle"
                                  UncheckedIcon="@Icons.Material.Filled.Cancel"
                                  IndeterminateIcon="@Icons.Material.Outlined.RadioButtonUnchecked"
-                                 Color="Color.Success"
+                                 Color="@Color.Success"
                                  UnCheckedColor="@Color.Error"
                                  Class="ma-0 pa-1"/>
                 }
@@ -78,7 +78,6 @@
 </MudPaper>
 
 @code {
-
     [Parameter, EditorRequired]
     public required SubjectEntry Entry { get; set; }
 
@@ -103,7 +102,7 @@
 
     private async Task CompletedChanged(bool? arg)
     {
-        Entry.Subject.Completed = arg;
+        Entry.Completed = arg;
         await EntryChanged.InvokeAsync(Entry);
     }
 

@@ -6,7 +6,7 @@
 
 <style>
     .study-program-selector-list .mud-list-item-extended {
-        padding: 0;
+        padding: 0 12px;
     }
 
     .study-program-selector-list .mud-list-subheader-extended {
@@ -24,6 +24,11 @@
     
     .mud-input-clear-button {
         color: var(--mud-palette-text-primary)
+    }
+
+    .study-program-selector-list .mud-selected-item {
+        color: var(--mud-palette-primary) !important;
+        opacity: 0.9;
     }
 </style>
 
@@ -47,12 +52,11 @@
     }
     <MudListExtended T="StudyProgram"
                      Clickable="true"
-                     MultiSelection="true"
-                     SelectedValues="SelectedPrograms"
-                     SelectedValuesChanged="OnSelectionChanged"
+                     SelectedValue="SelectedProgram"
+                     SelectedValueChanged="OnSelectionChanged"
                      Style="padding: 0;"
                      Class="study-program-selector-list"
-                     Disabled="_isSearching">
+                     Disabled="@IsLoading">
         @foreach (var faculty in Faculties)
         {
             <MudListSubheaderExtended T="StudyProgram"
@@ -78,7 +82,7 @@
             }
             else
             {
-                @foreach (var program in faculty.Programs.Where(x => SelectedPrograms.Contains(x)))
+                @foreach (var program in faculty.Programs.Where(x => x == SelectedProgram))
                 {
                     <StudyProgramEntry Program="@program"/>
                 }
@@ -89,15 +93,18 @@
 
 @code {
     [Parameter]
-    public IEnumerable<StudyProgram> SelectedPrograms { get; set; } = new HashSet<StudyProgram>();
+    public StudyProgram? SelectedProgram { get; set; }
 
     [Parameter]
-    public EventCallback<IEnumerable<StudyProgram>> SelectedProgramsChanged { get; set; }
+    public EventCallback<StudyProgram?> SelectedProgramChanged { get; set; }
+    
+    [Parameter]
+    public bool Loading { get; set; }
     
     private const int FixedPixels = 310;
 
     private IEnumerable<Faculty> Faculties => _filteredFaculties ?? _faculties;
-    private bool IsLoading => _isSearching || _initialLoading;
+    private bool IsLoading => _isSearching || _initialLoading || Loading;
     
     private IEnumerable<Faculty> _faculties = [];
     private IEnumerable<Faculty>? _filteredFaculties;
@@ -113,10 +120,10 @@
         await base.OnInitializedAsync();
     }
 
-    private async Task OnSelectionChanged(IEnumerable<StudyProgram?> newSelection)
+    private async Task OnSelectionChanged(StudyProgram? newSelection)
     {
-        SelectedPrograms = newSelection.Where(x => x is not null).Select(x => x!).ToList();
-        await SelectedProgramsChanged.InvokeAsync(SelectedPrograms);
+        SelectedProgram = newSelection;
+        await SelectedProgramChanged.InvokeAsync(SelectedProgram);
     }
 
     private void ToggleFacultyExpansion(Faculty faculty)

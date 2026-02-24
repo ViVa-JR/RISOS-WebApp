@@ -14,6 +14,10 @@
         text-overflow: ellipsis;
         overflow: hidden;
     }
+    
+    .mud-icon-button:focus-within {
+        background: unset !important;
+    }
 </style>
 
 <MudDropContainer T="SubjectEntry" @ref="_dropContainer" Items="@Subjects" ItemsSelector="@Selector" ItemDropped="@ItemUpdated" Class="d-flex flex-column gap-3 mb-2"
@@ -136,7 +140,7 @@
 
         return new Credits(
             Registered: semesterSubjects.Sum(s => s.Subject.Credits),
-            Completed: semesterSubjects.Where(s => s.Subject.Completed == true).Sum(s => s.Subject.Credits)
+            Completed: semesterSubjects.Where(s => s.Completed == true).Sum(s => s.Subject.Credits)
         );
     }
 
@@ -153,8 +157,8 @@
         var allSubjects = Subjects.Where(x => x.Semester != SubjectEntry.Unassigned).ToArray();
 
         return new Credits(
-            Registered: allSubjects.Where(x => x.Subject.Completed != false).Sum(s => s.Subject.Credits),
-            Completed: allSubjects.Where(s => s.Subject.Completed == true).Sum(s => s.Subject.Credits)
+            Registered: allSubjects.Where(x => x.Completed != false).Sum(s => s.Subject.Credits),
+            Completed: allSubjects.Where(s => s.Completed == true).Sum(s => s.Subject.Credits)
         );
     }
 
@@ -170,7 +174,7 @@
             }
 
             x.Semester = SubjectEntry.Unassigned;
-            x.Subject.Completed = null;
+            x.Completed = null;
         });
 
         _dropContainer.Refresh();
