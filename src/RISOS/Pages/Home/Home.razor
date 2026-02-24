@@ -56,7 +56,7 @@
             <SubjectsPanel TGroupKey="int"
                            HeaderTemplate="@(x => $"{x}. Semester")"
                            GroupBy="@(x => x.Subject.MinSemester)"
-                           SubjectsChanged="SubjectsChanged"
+                           SubjectChanged="SubjectChanged"
                            Title="Compulsory"
                            Disabled="@Disabled"
                            Subjects="@CompulsorySubjects"
@@ -66,7 +66,7 @@
             <SubjectsPanel TGroupKey="int"
                            HeaderTemplate="@(x => $"{x}. Semester")"
                            GroupBy="@(x => x.Subject.MinSemester)"
-                           SubjectsChanged="SubjectsChanged"
+                           SubjectChanged="SubjectChanged"
                            Title="Compulsory-Elective"
                            Disabled="@Disabled"
                            Subjects="@CompulsoryElectiveSubjects"
@@ -74,7 +74,7 @@
                            FixedPixels="326"/>
             <SubjectsPanel TGroupKey="SemesterSeason"
                            GroupBy="@(x => x.Subject.SemesterSeason)"
-                           SubjectsChanged="SubjectsChanged"
+                           SubjectChanged="SubjectChanged"
                            Title="Elective"
                            Disabled="@Disabled"
                            Subjects="@ElectiveSubjects"
@@ -112,7 +112,7 @@
     private Dictionary<Guid, SubjectEntry> ElectiveSubjects => _subjects.Where(s => s.Value.Subject.Type == SubjectType.Elective).ToDictionary();
     private List<SubjectEntry> _selectedSubjects = [];
     private bool Disabled => _selectedProgram is null;
-    
+
     private async Task LoadData(StudyProgram studyProgram)
     {
         _isLoading = true;
@@ -121,7 +121,7 @@
         _subjects = (await UniversityService.GetSubjectsAsync(studyProgram)).Select(s => new SubjectEntry(s)).ToDictionary(x => x.Subject.Guid);
         _selectedSubjects = _subjects.Values.Where(x => x.Selected).ToList();
         Console.WriteLine($"Loaded {_subjects.Count} subjects");
-        
+
         _isLoading = false;
         await InvokeAsync(StateHasChanged);
         _dropContainer.Refresh();
@@ -149,16 +149,21 @@
     {
         entry.Selected = false;
         _selectedSubjects.Remove(entry);
+        _dropContainer.Refresh();
     }
-    
-    private void SubjectsChanged(Dictionary<Guid, SubjectEntry> items)
-    {
-        foreach (var pair in items)
-        {
-            _subjects[pair.Key] = pair.Value;
-        }
 
-        _selectedSubjects = _subjects.Values.Where(x => x.Selected).ToList();
+    private void SubjectChanged(SubjectEntry subject)
+    {
+        _subjects[subject.Subject.Guid] = subject;
+        if (subject.Selected)
+        {
+            _selectedSubjects.Add(subject);
+        }
+        else
+        {
+            _selectedSubjects.Remove(subject);
+        }
+        
         _dropContainer.Refresh();
     }
 

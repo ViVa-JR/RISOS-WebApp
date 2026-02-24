@@ -63,7 +63,7 @@
     public Dictionary<Guid, SubjectEntry> Subjects { get; set; } = [];
 
     [Parameter]
-    public EventCallback<Dictionary<Guid, SubjectEntry>> SubjectsChanged { get; set; }
+    public EventCallback<SubjectEntry> SubjectChanged { get; set; }
 
     [Parameter]
     public int FixedPixels { get; set; }
@@ -127,12 +127,6 @@
         public bool IsHeader => Subject is null;
         public TGroupKey? GroupKey { get; init; }
         public SubjectEntry? Subject { get; init; }
-    }
-
-    private Task SubjectChanged(SubjectEntry subjectEntry)
-    {
-        Subjects[subjectEntry.Subject.Guid] = subjectEntry;
-        return SubjectsChanged.InvokeAsync(Subjects);
     }
 
 }

@@ -25,7 +25,7 @@
                       Subjects="Subjects"
                       ReadOnly="@ReadOnly"
                       FixedPixels="FixedPixels"
-                      SubjectsChanged="SubjectsChanged"
+                      SubjectChanged="SubjectChanged"
         />
     </ChildContent>
 </MudExpansionPanel>
@@ -47,7 +47,7 @@
     public Dictionary<Guid, SubjectEntry> Subjects { get; set; } = [];
     
     [Parameter]
-    public EventCallback<Dictionary<Guid, SubjectEntry>> SubjectsChanged { get; set; }
+    public EventCallback<SubjectEntry> SubjectChanged { get; set; }
 
     [Parameter]
     public bool ReadOnly { get; set; }
