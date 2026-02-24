@@ -101,7 +101,8 @@
                 ? Subjects.Values.ToList()
                 : Subjects.Values.Where(x =>
                     x.Subject.Name.Contains(_searchValue, StringComparison.OrdinalIgnoreCase) ||
-                    x.Subject.ShortName.Contains(_searchValue, StringComparison.OrdinalIgnoreCase)).ToList();
+                    x.Subject.ShortName.Contains(_searchValue, StringComparison.OrdinalIgnoreCase) ||
+                    (x.Subject.GroupId is not null && x.Subject.GroupId.Contains(_searchValue, StringComparison.OrdinalIgnoreCase))).ToList();
 
             return filtered.GroupBy(GroupBy).OrderBy(x => x.Key);
         }
