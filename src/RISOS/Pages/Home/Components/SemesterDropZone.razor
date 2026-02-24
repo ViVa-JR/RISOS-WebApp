@@ -42,7 +42,7 @@
     public Credits Credits { get; set; } = new();
 
     public bool CanDrop(SubjectEntry entry)
-        => (entry.Subject.SemesterSeason == SemesterSeason || entry.Subject.SemesterSeason == SemesterSeason.Any)
-           && entry.Subject.MinSemester <= Semester;
+        => Semester < 1 || ((entry.Subject.SemesterSeason == SemesterSeason || entry.Subject.SemesterSeason == SemesterSeason.Any)
+           && entry.Subject.MinSemester <= Semester);
 
 }

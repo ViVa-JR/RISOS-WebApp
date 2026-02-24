@@ -3,6 +3,7 @@ using RISOS.Enums;
 namespace RISOS.Models;
 
 public class Subject(
+    string id,
     string name,
     string shortName,
     int credits,
@@ -10,9 +11,11 @@ public class Subject(
     SubjectType type = SubjectType.Elective,
     SemesterSeason semesterSeason = SemesterSeason.Winter,
     CompletionType completionType = CompletionType.Cr,
-    string? groupId = null
+    string? groupId = null,
+    string? url = null
 )
 {
+    public string Id { get; } = id;
     public string Name { get; } = name;
     public string ShortName { get; } = shortName;
     public int Credits { get; } = credits;
@@ -23,5 +26,5 @@ public class Subject(
     public SubjectType Type { get; } = type;
     public string? GroupId { get; } = groupId;
 
-    public bool? Completed { get; set; }
+    public string? Url { get; } = url;
 }

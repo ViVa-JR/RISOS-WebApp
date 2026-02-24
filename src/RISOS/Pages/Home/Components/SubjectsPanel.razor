@@ -1,0 +1,71 @@
+@typeparam TGroupKey
+
+@using RISOS.Pages.Home.Models
+
+<MudExpansionPanel Disabled="@Disabled" @bind-Expanded="_expanded" HideIcon="true">
+    <TitleContent>
+        <MudStack StretchItems="StretchItems.Start" Row Spacing="2" AlignItems="AlignItems.Center">
+            <MudText Class="mud-expand-panel-text" Style="font-size: 15px">
+                @Title
+            </MudText>
+            @if (Count > 0)
+            {
+                <MudChip T="int" Variant="Variant.Outlined" Size="Size.Small" Color="Color.Default" Style="margin: 0 !important;">
+                    @Count
+                </MudChip>
+            }
+            @if (IsLoading)
+            {
+                <MudProgressCircular Indeterminate Size="Size.Small" Color="Color.Secondary"/>
+            }
+            else
+            {
+                <MudIcon Icon="@(_expanded ? Icons.Material.Filled.KeyboardArrowUp : Icons.Material.Filled.KeyboardArrowDown)"/>
+            }
+        </MudStack>
+    </TitleContent>
+    <ChildContent>
+        <SubjectsList TGroupKey="TGroupKey"
+                      GroupBy="GroupBy"
+                      HeaderTemplate="HeaderTemplate"
+                      Subjects="Subjects"
+                      ReadOnly="@ReadOnly"
+                      FixedPixels="FixedPixels"
+                      SubjectChanged="SubjectChanged"
+        />
+    </ChildContent>
+</MudExpansionPanel>
+
+@code {
+    [Parameter, EditorRequired]
+    public required Func<SubjectEntry, TGroupKey> GroupBy { get; set; }
+
+    [Parameter]
+    public string Title { get; set; } = string.Empty;
+
+    [Parameter]
+    public bool Disabled { get; set; }
+
+    [Parameter]
+    public bool IsLoading { get; set; }
+
+    [Parameter]
+    public Dictionary<string, SubjectEntry> Subjects { get; set; } = [];
+    
+    [Parameter]
+    public EventCallback<SubjectEntry> SubjectChanged { get; set; }
+
+    [Parameter]
+    public bool ReadOnly { get; set; }
+
+    [Parameter]
+    public int FixedPixels { get; set; }
+
+    [Parameter]
+    public Func<TGroupKey, string>? HeaderTemplate { get; set; }
+
+    private bool _expanded;
+
+    private int Count => Subjects.Count;
+
+}

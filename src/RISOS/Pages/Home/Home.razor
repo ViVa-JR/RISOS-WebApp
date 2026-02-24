@@ -1,9 +1,10 @@
 ﻿@page "/"
 @using RISOS.Enums
-@using RISOS.Models
 @using RISOS.Pages.Home.Components
 @using RISOS.Pages.Home.Models
 @using RISOS.Services
+
+@inject UniversityService UniversityService
 
 <style>
     .side-bar .mud-expand-panel {
@@ -49,15 +50,35 @@
 <SideBar Class="side-bar">
     <OpenedDrawerContent>
         <MudExpansionPanels Elevation="3" Style="height: calc(100vh - 128px); overflow: hidden">
-            <MudExpansionPanel Text="Study program" Gutters="false" Expanded="@_expanded" KeepContentAlive="true">
-                <StudyProgramSelector @bind-SelectedPrograms="_mySelections"/>
+            <MudExpansionPanel Text="Study program" Gutters="false">
+                <StudyProgramSelector SelectedProgram="@_selectedProgram" SelectedProgramChanged="@OnSelectedProgramsChanged" Loading="@_isLoading"/>
             </MudExpansionPanel>
-            <MudExpansionPanel Text="Compulsory subjects">
-                Test
-            </MudExpansionPanel>
-            <MudExpansionPanel Text="Elective subjects">
-                Test
-            </MudExpansionPanel>
+            <SubjectsPanel TGroupKey="int"
+                           HeaderTemplate="@(x => $"{x}. Semester")"
+                           GroupBy="@(x => x.Subject.MinSemester)"
+                           SubjectChanged="SubjectChanged"
+                           Title="Compulsory"
+                           Disabled="@Disabled"
+                           Subjects="@CompulsorySubjects"
+                           IsLoading="@_isLoading"
+                           FixedPixels="326"
+                           ReadOnly/>
+            <SubjectsPanel TGroupKey="string"
+                           GroupBy="@(x => x.Subject.GroupId ?? "Group")"
+                           SubjectChanged="SubjectChanged"
+                           Title="Compulsory-Elective"
+                           Disabled="@Disabled"
+                           Subjects="@CompulsoryElectiveSubjects"
+                           IsLoading="@_isLoading"
+                           FixedPixels="326"/>
+            <SubjectsPanel TGroupKey="SemesterSeason"
+                           GroupBy="@(x => x.Subject.SemesterSeason)"
+                           SubjectChanged="SubjectChanged"
+                           Title="Elective"
+                           Disabled="@Disabled"
+                           Subjects="@ElectiveSubjects"
+                           IsLoading="@_isLoading"
+                           FixedPixels="310"/>
         </MudExpansionPanels>
     </OpenedDrawerContent>
     <AlwaysVisible>
@@ -75,25 +96,74 @@
     </AlwaysVisible>
 </SideBar>
 
-<StudiumDropContainer @bind-Subjects="@_subjects"/>
+<StudiumDropContainer @ref="_dropContainer" Subjects="@_selectedSubjects" RequiredCredits="@RequiredCredits" OnRemove="OnRemove"/>
 
 @code {
-    private List<SubjectEntry> _subjects = [];
-    private IEnumerable<StudyProgram> _mySelections = [];
+    private Dictionary<string, SubjectEntry> _subjects = [];
+    private StudyProgram? _selectedProgram;
 
-    private bool _expanded = true;
+    private bool _isLoading;
+    private StudiumDropContainer _dropContainer = null!;
 
-    protected override void OnInitialized()
+    private int RequiredCredits => _selectedProgram?.Credits ?? 0;
+    private Dictionary<string, SubjectEntry> CompulsorySubjects => _subjects.Where(s => s.Value.Subject.Type == SubjectType.Compulsory).ToDictionary();
+    private Dictionary<string, SubjectEntry> CompulsoryElectiveSubjects => _subjects.Where(s => s.Value.Subject.Type == SubjectType.CompulsoryElective).ToDictionary();
+    private Dictionary<string, SubjectEntry> ElectiveSubjects => _subjects.Where(s => s.Value.Subject.Type == SubjectType.Elective).ToDictionary();
+    private List<SubjectEntry> _selectedSubjects = [];
+    private bool Disabled => _selectedProgram is null;
+
+    private async Task LoadData(StudyProgram studyProgram)
     {
-        var dummySubjects = new List<Subject>
-        {
-            new("Algorithms and Data Structures", "ALG", 6, 2, SubjectType.Compulsory, SemesterSeason.Summer),
-            new("Operating Systems", "MPC-MNM", 5, 3, SubjectType.Compulsory),
-            new("Relational Databases", "RDB", 4, 1, SubjectType.Elective, SemesterSeason.Winter, CompletionType.CrEx, "DB_Track"),
-            new("Web Development", "WEB", 5, 4, SubjectType.CompulsoryElective, SemesterSeason.Any, CompletionType.Cr, "DEV_Track"),
-        };
+        _isLoading = true;
+        await InvokeAsync(StateHasChanged);
 
-        _subjects = dummySubjects.Select(s => new SubjectEntry(s)).ToList();
+        _subjects = (await UniversityService.GetSubjectsAsync(studyProgram)).Select(s => new SubjectEntry(s)).ToDictionary(x => x.Subject.Id);
+        _selectedSubjects = _subjects.Values.Where(x => x.Selected).ToList();
+        Console.WriteLine($"Loaded {_subjects.Count} subjects");
+
+        _isLoading = false;
+        await InvokeAsync(StateHasChanged);
+        _dropContainer.Refresh();
+    }
+
+    private async Task OnSelectedProgramsChanged(StudyProgram? program)
+    {
+        _selectedProgram = program;
+
+        Console.WriteLine($"Selected {_selectedProgram?.Abbreviation ?? "no"} study program");
+
+        if (_selectedProgram is null)
+        {
+            _subjects.Clear();
+        }
+        else
+        {
+            await LoadData(_selectedProgram);
+        }
+
+        StateHasChanged();
+    }
+
+    private void OnRemove(SubjectEntry entry)
+    {
+        entry.Selected = false;
+        _selectedSubjects.Remove(entry);
+        _dropContainer.Refresh();
+    }
+
+    private void SubjectChanged(SubjectEntry subject)
+    {
+        _subjects[subject.Subject.Id] = subject;
+        if (subject.Selected)
+        {
+            _selectedSubjects.Add(subject);
+        }
+        else
+        {
+            _selectedSubjects.Remove(subject);
+        }
+        
+        _dropContainer.Refresh();
     }
 
 }

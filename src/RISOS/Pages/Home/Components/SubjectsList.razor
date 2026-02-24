@@ -1,0 +1,137 @@
+@typeparam TGroupKey
+
+@using RISOS.Pages.Home.Models
+
+<style>
+    .subjects-list .mud-list-item-extended:hover {
+        opacity: 0.9;
+    }
+
+    .subjects-list .mud-icon-button {
+        padding: 6px !important;
+    }
+</style>
+
+@if (Subjects.Any())
+{
+    <MudStack Spacing="0" Class="h-100">
+        <div class="pa-3" style="border-bottom: 1px solid var(--mud-palette-lines-default); background-color: var(--mud-palette-surface); border-radius: 4px 4px 0 0; flex-shrink: 0;">
+            <MudTextField T="string"
+                          @bind-Value="SearchValue"
+                          Placeholder="Search"
+                          Adornment="Adornment.Start"
+                          DebounceInterval="300"
+                          AdornmentIcon="@Icons.Material.Filled.Search"
+                          IconSize="Size.Medium"
+                          Class="mt-0"
+                          Clearable="true"
+                          Immediate="true"/>
+        </div>
+
+        <MudList T="SubjectEntry" Class="subjects-list" Style="@($"flex-grow: 1; padding: 0;max-height: calc(var(--side-bar-content-height) - {FixedPixels}px) !important; overflow-y: scroll; background: var(--mud-palette-surface);")">
+            <Virtualize Items="@_flattenedList" Context="row" OverscanCount="10">
+                @if (row.IsHeader)
+                {
+                    <MudListSubheader @key="@($"header_{row.GroupKey}")" Style="background-color: var(--mud-palette-background-gray)" Class="pa-2">
+                        <MudText Typo="Typo.body2" Color="Color.Primary">
+                            @if (HeaderTemplate != null)
+                            {
+                                <b>@HeaderTemplate(row.GroupKey!)</b>
+                            }
+                            else
+                            {
+                                <b>@row.GroupKey</b>
+                            }
+                        </MudText>
+                    </MudListSubheader>
+                    <MudDivider/>
+                }
+                else
+                {
+                    <SubjectsListEntryTemplate T="TGroupKey" Row="row" ReadOnly="@ReadOnly" SubjectChanged="SubjectChanged"/>
+                }
+            </Virtualize>
+
+        </MudList>
+    </MudStack>
+}
+
+@code {
+    [Parameter, EditorRequired]
+    public required Func<SubjectEntry, TGroupKey> GroupBy { get; set; }
+
+    [Parameter]
+    public Func<TGroupKey, string>? HeaderTemplate { get; set; }
+
+    [Parameter]
+    public Dictionary<string, SubjectEntry> Subjects { get; set; } = [];
+
+    [Parameter]
+    public EventCallback<SubjectEntry> SubjectChanged { get; set; }
+
+    [Parameter]
+    public int FixedPixels { get; set; }
+    
+    [Parameter]
+    public bool ReadOnly { get; set; }
+
+    private List<VirtualRow> _flattenedList = [];
+    private string _searchValue = string.Empty;
+
+    private string SearchValue
+    {
+        get => _searchValue;
+        set
+        {
+            if (_searchValue == value)
+            {
+                return;
+            }
+
+            _searchValue = value;
+            BuildFlattenedList();
+        }
+    }
+
+    private IEnumerable<IGrouping<TGroupKey, SubjectEntry>> FilteredGroups
+    {
+        get
+        {
+            var filtered = string.IsNullOrWhiteSpace(_searchValue)
+                ? Subjects.Values.ToList()
+                : Subjects.Values.Where(x =>
+                    x.Subject.Name.Contains(_searchValue, StringComparison.OrdinalIgnoreCase) ||
+                    x.Subject.ShortName.Contains(_searchValue, StringComparison.OrdinalIgnoreCase) ||
+                    (x.Subject.GroupId is not null && x.Subject.GroupId.Contains(_searchValue, StringComparison.OrdinalIgnoreCase))).ToList();
+
+            return filtered.GroupBy(GroupBy).OrderBy(x => x.Key);
+        }
+    }
+
+    protected override void OnParametersSet()
+    {
+        BuildFlattenedList();
+        base.OnParametersSet();
+    }
+
+    private void BuildFlattenedList()
+    {
+        var result = new List<VirtualRow>();
+
+        foreach (var group in FilteredGroups)
+        {
+            result.Add(new VirtualRow { GroupKey = group.Key });
+            result.AddRange(group.Select(subject => new VirtualRow { Subject = subject }));
+        }
+
+        _flattenedList = result;
+    }
+
+    public class VirtualRow
+    {
+        public bool IsHeader => Subject is null;
+        public TGroupKey? GroupKey { get; init; }
+        public SubjectEntry? Subject { get; init; }
+    }
+
+}

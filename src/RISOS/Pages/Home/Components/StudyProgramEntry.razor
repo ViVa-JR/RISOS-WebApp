@@ -2,12 +2,12 @@
 @using RISOS.Pages.Home.Models
 
 <style>
-    .mud-list-item-extended:hover {
+    .study-program-selector-list .mud-list-item-extended:hover {
         opacity: 0.9;
     }
 </style>
 
-<MudListItemExtended T="StudyProgram" Value="@Program" Style="background-color: var(--mud-palette-surface);">
+<MudListItemExtended T="StudyProgram" Value="@Program" Style="background-color: var(--mud-palette-surface) !important;">
     <MudTooltip Text="@Program.Title" RootStyle="width: 100%;" RootClass="d-flex pt-2 pb-2">
         @if (Program.Specialization != null)
         {
@@ -23,7 +23,7 @@
         }
         else
         {
-            <MudText Typo="Typo.body2" Color="Color.Primary">
+            <MudText Typo="Typo.body2">
                 <b>@Program.Abbreviation</b>
             </MudText>
         }

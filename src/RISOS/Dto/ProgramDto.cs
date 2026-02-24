@@ -15,4 +15,11 @@ public class ProgramDto
     
     [JsonPropertyName("url")]
     public string Url { get; set; } = string.Empty;
+    
+    [JsonPropertyName("doba_studia")]
+    public string StudyDuration { get; set; } = string.Empty;
+    
+    [JsonPropertyName("kredity")]
+    public string Credits { get; set; } = string.Empty;
+    
 }

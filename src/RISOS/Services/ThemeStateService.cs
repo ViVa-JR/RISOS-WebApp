@@ -11,14 +11,14 @@ public class ThemeStateService(LocalStorageService localStorageService)
     {
         PaletteLight = new PaletteLight
         {
-            Primary = "#FF204E",
-            Secondary = "#c81e4b",
-            Tertiary = "#5D0E41",
+            Primary = "#0fb537",
+            Secondary = "#117f33",
+            Tertiary = "#FF204E",
             Background = "#F2F0F0",
-            BackgroundGray = "#fff0f4",
+            BackgroundGray = "#e4f5e8",
             Surface = "#FFFFFF",
-            AppbarBackground = "#c81e4b",
-            DrawerBackground = "#c81e4b",
+            AppbarBackground = "#117f33",
+            DrawerBackground = "#117f33",
             DrawerText = "#FFFFFF",
             DrawerIcon = "#FFFFFF",
             TextPrimary = "#00224D",
@@ -30,7 +30,7 @@ public class ThemeStateService(LocalStorageService localStorageService)
         },
         PaletteDark = new PaletteDark
         {
-            Primary = "#509e7a",
+            Primary = "#137045",
             DrawerText = "#FFFFFFEF",
             DrawerIcon = "#FFFFFFEF",
             TextPrimary = "#FFFFFFEF",

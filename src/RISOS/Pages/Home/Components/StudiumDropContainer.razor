@@ -14,6 +14,10 @@
         text-overflow: ellipsis;
         overflow: hidden;
     }
+    
+    .mud-icon-button:focus-within {
+        background: unset !important;
+    }
 </style>
 
 <MudDropContainer T="SubjectEntry" @ref="_dropContainer" Items="@Subjects" ItemsSelector="@Selector" ItemDropped="@ItemUpdated" Class="d-flex flex-column gap-3 mb-2"
@@ -53,7 +57,7 @@
 
         </div>
 
-        <ControlCenter @bind-RecognizedYear="_recognizedYear" Years="_years" YearsChanged="OnYearsChanged" TotalCredits="TotalCredits"/>
+        <ControlCenter @bind-RecognizedYear="_recognizedYear" Years="_years" YearsChanged="OnYearsChanged" TotalCredits="TotalCredits" RequiredCredits="@RequiredCredits"/>
 
         <MudStack Row Style="overflow-x: scroll">
             @foreach (var year in Enumerable.Range(StartYear, Years))
@@ -91,28 +95,33 @@
         </MudStack>
     </ChildContent>
     <ItemRenderer>
-        <SemesterDropZoneItemTemplate Entry="context" EntryChanged="@_dropContainer.Refresh" SemesterCount="@(Years * 2)" RemoveEntry="@RemoveEntry"/>
+        <SemesterDropZoneItemTemplate Entry="context" EntryChanged="@_dropContainer.Refresh" SemesterCount="@(Years * 2)" RemoveEntry="@OnRemove"/>
     </ItemRenderer>
 </MudDropContainer>
 
 @code {
-
     [Parameter]
     public List<SubjectEntry> Subjects { get; set; } = [];
 
     [Parameter]
     public EventCallback<List<SubjectEntry>> SubjectsChanged { get; set; }
+    
+    [Parameter]
+    public int RequiredCredits { get; set; } = 180;
+    
+    [Parameter]
+    public EventCallback<SubjectEntry> OnRemove { get; set; }
 
     private int _years = 3;
     private bool _recognizedYear;
 
     private int StartYear => _recognizedYear ? 0 : 1;
     private int Years => _years + (_recognizedYear ? 1 : 0);
-
-    private Credits TotalCredits => GetTotalCredits();
-
+    
     private MudDropContainer<SubjectEntry> _dropContainer = null!;
-
+    
+    private Credits TotalCredits => GetTotalCredits();
+    
     private static bool Selector(SubjectEntry item, string dropzone)
     {
         return item.Semester == dropzone;
@@ -131,7 +140,7 @@
 
         return new Credits(
             Registered: semesterSubjects.Sum(s => s.Subject.Credits),
-            Completed: semesterSubjects.Where(s => s.Subject.Completed == true).Sum(s => s.Subject.Credits)
+            Completed: semesterSubjects.Where(s => s.Completed == true).Sum(s => s.Subject.Credits)
         );
     }
 
@@ -148,16 +157,9 @@
         var allSubjects = Subjects.Where(x => x.Semester != SubjectEntry.Unassigned).ToArray();
 
         return new Credits(
-            Registered: allSubjects.Sum(s => s.Subject.Credits),
-            Completed: allSubjects.Where(s => s.Subject.Completed == true).Sum(s => s.Subject.Credits)
+            Registered: allSubjects.Where(x => x.Completed != false).Sum(s => s.Subject.Credits),
+            Completed: allSubjects.Where(s => s.Completed == true).Sum(s => s.Subject.Credits)
         );
-    }
-
-    private async Task RemoveEntry(SubjectEntry entry)
-    {
-        Subjects.Remove(entry);
-        await SubjectsChanged.InvokeAsync(Subjects);
-        _dropContainer.Refresh();
     }
 
     private void OnYearsChanged(int years)
@@ -172,7 +174,7 @@
             }
 
             x.Semester = SubjectEntry.Unassigned;
-            x.Subject.Completed = null;
+            x.Completed = null;
         });
 
         _dropContainer.Refresh();
@@ -190,4 +192,5 @@
         }
     }
 
+    public void Refresh() => _dropContainer.Refresh();
 }
