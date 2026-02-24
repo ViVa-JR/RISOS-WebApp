@@ -1,4 +1,5 @@
 @using RISOS.Models
+@using RISOS.Pages.Home.Models
 <MudPaper Elevation="0" Class="pa-3 border-2 mud-border-lines-default rounded-lg">
     <MudStack Row AlignItems="AlignItems.Center" Justify="Justify.SpaceBetween">
 
@@ -34,7 +35,7 @@
                     }
 
                     <MudTooltip Text="Required">
-                        <MudText Typo="Typo.h6" Color="Color.Default">@RequiredCredits cr</MudText>
+                        <MudText Typo="Typo.h6" Color="Color.Default">@StudyContext.RequiredCredits cr</MudText>
                     </MudTooltip>
                 </MudStack>
             </MudStack>
@@ -83,9 +84,9 @@
     public EventCallback<int> YearsChanged { get; set; }
 
     [Parameter]
-    public int RequiredCredits { get; set; } = 180;
+    public required StudyContext StudyContext { get; set; }
 
-    private int SafeNeededCredits => RequiredCredits > 0 ? RequiredCredits : 180;
+    private int SafeNeededCredits => StudyContext.RequiredCredits > 0 ? StudyContext.RequiredCredits : 180;
 
     private int CompletedProgress => TotalCredits.Completed > 0
         ? (int)Math.Min(100, Math.Round((double)TotalCredits.Completed / SafeNeededCredits * 100))

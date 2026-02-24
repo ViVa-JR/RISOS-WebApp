@@ -57,7 +57,7 @@
 
         </div>
 
-        <ControlCenter @bind-RecognizedYear="_recognizedYear" Years="_years" YearsChanged="OnYearsChanged" TotalCredits="TotalCredits" RequiredCredits="@RequiredCredits"/>
+        <ControlCenter @bind-RecognizedYear="_recognizedYear" Years="_years" YearsChanged="OnYearsChanged" TotalCredits="TotalCredits" StudyContext="@StudyContext"/>
 
         <MudStack Row Style="overflow-x: scroll">
             @foreach (var year in Enumerable.Range(StartYear, Years))
@@ -107,19 +107,32 @@
     public EventCallback<List<SubjectEntry>> SubjectsChanged { get; set; }
     
     [Parameter]
-    public int RequiredCredits { get; set; } = 180;
-    
+    public StudyContext StudyContext { get; set; } = null!;
+
     [Parameter]
     public EventCallback<SubjectEntry> OnRemove { get; set; }
 
-    private int _years = 3;
+    private int _years;
     private bool _recognizedYear;
 
     private int StartYear => _recognizedYear ? 0 : 1;
     private int Years => _years + (_recognizedYear ? 1 : 0);
     
     private MudDropContainer<SubjectEntry> _dropContainer = null!;
-    
+
+    protected override void OnInitialized()
+    {
+        _years = StudyContext.Years;
+    }
+
+    protected override void OnParametersSet()
+    {
+        if (_years != StudyContext.Years)
+        {
+            OnYearsChanged(StudyContext.Years);
+        }
+    }
+
     private Credits TotalCredits => GetTotalCredits();
     
     private static bool Selector(SubjectEntry item, string dropzone)
