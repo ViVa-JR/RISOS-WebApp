@@ -63,9 +63,8 @@
                            IsLoading="@_isLoading"
                            FixedPixels="326"
                            ReadOnly/>
-            <SubjectsPanel TGroupKey="int"
-                           HeaderTemplate="@(x => $"{x}. Semester")"
-                           GroupBy="@(x => x.Subject.MinSemester)"
+            <SubjectsPanel TGroupKey="string"
+                           GroupBy="@(x => x.Subject.GroupId ?? "Group")" @* Should never be null, but safer to use fallback value *@
                            SubjectChanged="SubjectChanged"
                            Title="Compulsory-Elective"
                            Disabled="@Disabled"
