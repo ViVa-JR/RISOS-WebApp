@@ -24,7 +24,8 @@ public static class SubjectMapper
         {
             minSemester = (year - 1) * 2 + (semesterSeason == SemesterSeason.Winter ? 1 : 2);
         }
-        int id = int.TryParse(dto.Url.Split("/").LastOrDefault(), out  var idValue) ? idValue : 0;
+
+        string id = dto.Url.Split("/").LastOrDefault() ?? "" + dto.Name + dto.Code;
         
         return new Subject(
             id: id,

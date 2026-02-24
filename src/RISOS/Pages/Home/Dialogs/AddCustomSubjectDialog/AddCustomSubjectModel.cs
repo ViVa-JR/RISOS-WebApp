@@ -17,5 +17,5 @@ public class AddCustomSubjectModel
     
     public string? GroupId { get; set; } = null;
 
-    public SubjectEntry ToSubjectEntry() => new (new Subject(Name, ShortName,  Credits, MinSemester, Type, SemesterSeason, CompletionType, GroupId));
+    public SubjectEntry ToSubjectEntry() => new (new Subject("custom-" + Name + ShortName, Name, ShortName,  Credits, MinSemester, Type, SemesterSeason, CompletionType, GroupId));
 }
