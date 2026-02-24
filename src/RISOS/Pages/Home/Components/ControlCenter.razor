@@ -37,6 +37,13 @@
                     <MudTooltip Text="Required">
                         <MudText Typo="Typo.h6" Color="Color.Default">@StudyContext.RequiredCredits cr</MudText>
                     </MudTooltip>
+                    
+                    @if (StudyContext.CreditsWarn)
+                    {
+                        <MudTooltip Text="Credits not recognized yet, go to settings">
+                            <MudIcon Icon="@Icons.Material.Filled.Warning" Color="Color.Warning" Size="Size.Small"/>
+                        </MudTooltip>
+                    }
                 </MudStack>
             </MudStack>
 

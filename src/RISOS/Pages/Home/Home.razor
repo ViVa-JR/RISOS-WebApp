@@ -137,7 +137,7 @@
         {
             Years = (int) Math.Ceiling(_selectedProgram?.StudyDuration ?? 3.0),
             RequiredCredits = _selectedProgram?.Credits ?? 0,
-            CreditsWarn = _selectedProgram?.CreditsWarn
+            CreditsWarn = _selectedProgram?.CreditsWarn ?? true
         };
 
         if (_selectedProgram is null)
