@@ -5,6 +5,7 @@
 @using RISOS.Services
 
 @inject UniversityService UniversityService
+@inject DataUpdateService DataUpdateService
 
 <style>
     .side-bar .mud-expand-panel {
@@ -84,7 +85,7 @@
     <AlwaysVisible>
         <MudStack Row Justify="Justify.Center" Spacing="2" AlignItems="AlignItems.Center" Wrap="Wrap.Wrap" Class="px-2 pb-2" Style="width: 100%">
             <MudTooltip Text="Settings">
-                <MudIconButton Icon="@Icons.Material.Filled.Settings" Style="color: var(--mud-palette-drawer-text)"/>
+                <MudIconButton Icon="@Icons.Material.Filled.Settings" Style="color: var(--mud-palette-drawer-text)" OnClick=" () => { PrintLastDataUpdate(); }"/>
             </MudTooltip>
             <MudTooltip Text="Export">
                 <MudIconButton Icon="@Icons.Material.Filled.Download" Style="color: var(--mud-palette-drawer-text)"/>
@@ -164,6 +165,12 @@
         }
         
         _dropContainer.Refresh();
+    }
+    
+    private async void PrintLastDataUpdate()
+    {
+        var lastUpdate = await DataUpdateService.GetLastUpdateDate();
+        Console.WriteLine($"Last data update: {lastUpdate}");
     }
 
 }
