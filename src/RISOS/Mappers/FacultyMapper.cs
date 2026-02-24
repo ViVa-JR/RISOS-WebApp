@@ -24,6 +24,23 @@ public static class FacultyMapper
         var studyDuration = double.TryParse(dto.StudyDuration, out var duration) ? duration : 0.0;
         var credits = int.TryParse(dto.Credits, out var creditsValue) ? creditsValue : 0;
         var creditsWarn = true;
+
+        if (studyDuration <= 0)
+        {
+            studyDuration = 3.0;
+            credits = credits == 0 ? credits : 180;
+        }
+        else
+        {
+            if (credits > 0)
+            {
+                creditsWarn = false;
+            }
+            else
+            {
+                credits = (int)studyDuration * 60;
+            }
+        }
         
         return new StudyProgram(
             Title: dto.Name,
