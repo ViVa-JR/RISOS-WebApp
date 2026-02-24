@@ -64,7 +64,7 @@
                            FixedPixels="326"
                            ReadOnly/>
             <SubjectsPanel TGroupKey="string"
-                           GroupBy="@(x => x.Subject.GroupId ?? "Group")" @* Should never be null, but safer to use fallback value *@
+                           GroupBy="@(x => x.Subject.GroupId ?? "Group")"
                            SubjectChanged="SubjectChanged"
                            Title="Compulsory-Elective"
                            Disabled="@Disabled"
