@@ -46,7 +46,7 @@ public static class SubjectMapper
         return obligation.ToLowerInvariant() switch
         {
             "p" or "povinný" or "compulsory" => SubjectType.Compulsory,
-            "pv" or "povinně volitelný" or "compulsory-elective" => SubjectType.CompulsoryElective,
+            "pv" or "povinně volitelný" or "compulsory-optional" => SubjectType.CompulsoryElective,
             _ => SubjectType.Elective
         };
     }
