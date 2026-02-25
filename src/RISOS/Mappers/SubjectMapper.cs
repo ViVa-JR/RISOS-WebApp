@@ -14,7 +14,7 @@ public static class SubjectMapper
     private static Subject ToSubject(SubjectDto dto)
     {
         var credits = int.TryParse(dto.Credits, out var creditsValue) ? creditsValue : 0;
-        var year = int.TryParse(dto.Year, out var minSemesterValue) ? minSemesterValue : 0;
+        var year = int.TryParse(dto.Year, out var minSemesterValue) ? minSemesterValue : 1;
         var subjectType = MapSubjectType(dto.Obligation);
         var semesterSeason = MapSemesterSeason(dto.Semesters);
         var completionType = MapCompletionType(dto.CompletionType);
