@@ -5,6 +5,11 @@
     .study-program-selector-list .mud-list-item-extended:hover {
         opacity: 0.9;
     }
+    
+    .study-program-selector-list .mud-selected-item .mud-chip {
+        color: var(--mud-palette-primary) !important;
+        border-color: var(--mud-palette-primary) !important;
+    }
 </style>
 
 <MudListItemExtended T="StudyProgram" Value="@Program" Style="background-color: var(--mud-palette-surface) !important;">
@@ -12,11 +17,11 @@
         @if (Program.Specialization != null)
         {
             <MudStack Row Spacing="2" Wrap="Wrap.Wrap" AlignItems="AlignItems.Center">
-                <MudChip T="string" Size="Size.Small" Variant="Variant.Outlined" Color="Color.Primary" Class="ma-0">
+                <MudChip T="string" Size="Size.Small" Variant="Variant.Outlined" Class="ma-0">
                     @Program.Abbreviation
                 </MudChip>
     
-                <MudText Typo="Typo.body2" Color="Color.Primary" Class="text-nowrap">
+                <MudText Typo="Typo.body2" Class="text-nowrap">
                     <b>@Program.Specialization</b>
                 </MudText>
             </MudStack>
