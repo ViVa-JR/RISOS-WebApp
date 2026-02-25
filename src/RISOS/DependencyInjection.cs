@@ -1,5 +1,8 @@
+using System.Globalization;
+using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using MudBlazor.Services;
 using MudExtensions.Services;
+using RISOS.Extensions;
 using RISOS.Options;
 using RISOS.Services;
 
@@ -15,10 +18,12 @@ public static class DependencyInjection
                 .AddBlazorServices()
                 .AddSingleton<ThemeStateService>()
                 .AddSingleton<LocalStorageService>()
+                .AddSingleton<LanguageService>()
                 .AddScoped<GitRepositoryInfoService>()
                 .AddScoped<UniversityService>()
                 .AddScoped(_ => new HttpClient())
-                .AddOptions(configuration);
+                .AddOptions(configuration)
+                .AddLocalization();
         }
 
         private IServiceCollection AddBlazorServices()
@@ -37,6 +42,23 @@ public static class DependencyInjection
         {
             return services.Configure<ApiOptions>(options =>
                 configuration.GetSection(ApiOptions.Section).Bind(options));
+        }
+    }
+
+    extension(WebAssemblyHost host)
+    {
+        public async Task InitializeAppState()
+        {
+            var themeService = host.Services.GetRequiredService<ThemeStateService>();
+            await themeService.InitializeAsync();
+            
+            var languageService = host.Services.GetRequiredService<LanguageService>();
+            var appLanguage = await languageService.GetAppLanguageAsync();
+            var culture = new CultureInfo(appLanguage.ToCultureString());
+            CultureInfo.CurrentCulture = culture;
+            CultureInfo.CurrentUICulture = culture;
+            CultureInfo.DefaultThreadCurrentCulture = culture;
+            CultureInfo.DefaultThreadCurrentUICulture = culture;
         }
     }
 }

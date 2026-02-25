@@ -17,7 +17,7 @@ public class UniversityService(IOptions<ApiOptions> options, LocalStorageService
     {
         var lang = await localStorageService.LoadLanguage();
         
-        var response = await httpClient.GetAsync(options.Value.BaseUrl.Replace("{lang}", lang) + ProgramsUrl);
+        var response = await httpClient.GetAsync(options.Value.BaseUrl.Replace("{lang}", "en") + ProgramsUrl);
     
         if (!response.IsSuccessStatusCode)
         {
