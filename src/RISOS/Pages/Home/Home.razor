@@ -95,8 +95,10 @@
         </MudStack>
     </AlwaysVisible>
 </SideBar>
-<StudiumDropContainer @ref="_dropContainer" Subjects="@_selectedSubjects" StudyContext="@_studyContext" OnRemove="OnRemove"/>
 
+<CascadingValue Value="_studyContext">
+    <StudiumDropContainer @ref="_dropContainer" Subjects="@_selectedSubjects" OnRemove="OnRemove"/>
+</CascadingValue>
 
 @code {
     private Dictionary<string, SubjectEntry> _subjects = [];
@@ -105,7 +107,7 @@
     private bool _isLoading;
     private StudiumDropContainer _dropContainer = null!;
 
-    private StudyContext _studyContext = new();
+    private readonly StudyContext _studyContext = new();
     
     private Dictionary<string, SubjectEntry> CompulsorySubjects => _subjects.Where(s => s.Value.Subject.Type == SubjectType.Compulsory).ToDictionary();
     private Dictionary<string, SubjectEntry> CompulsoryElectiveSubjects => _subjects.Where(s => s.Value.Subject.Type == SubjectType.CompulsoryElective).ToDictionary();
@@ -132,14 +134,11 @@
         _selectedProgram = program;
 
         Console.WriteLine($"Selected {_selectedProgram?.Abbreviation ?? "no"} study program");
-        
-        _studyContext = new StudyContext
-        {
-            Years = (int) Math.Ceiling(_selectedProgram?.StudyDuration ?? 3.0),
-            RequiredCredits = _selectedProgram?.Credits ?? 0,
-            CreditsWarn = _selectedProgram?.CreditsWarn ?? true
-        };
 
+        _studyContext.Years = (int)Math.Ceiling(_selectedProgram?.StudyDuration ?? 3.0);
+        _studyContext.RequiredCredits = _selectedProgram?.Credits ?? 0;
+        _studyContext.CreditsWarn = _selectedProgram?.CreditsWarn ?? true;
+        
         if (_selectedProgram is null)
         {
             _subjects.Clear();
