@@ -1,4 +1,6 @@
 @using RISOS.Models
+@using RISOS.Pages.Home.Models
+
 <MudPaper Elevation="0" Class="pa-3 border-2 mud-border-lines-default rounded-lg">
     <MudStack Row AlignItems="AlignItems.Center" Justify="Justify.SpaceBetween">
 
@@ -34,8 +36,15 @@
                     }
 
                     <MudTooltip Text="Required">
-                        <MudText Typo="Typo.h6" Color="Color.Default">@RequiredCredits cr</MudText>
+                        <MudText Typo="Typo.h6" Color="Color.Default">@StudyContext.RequiredCredits cr</MudText>
                     </MudTooltip>
+                    
+                    @if (StudyContext.CreditsWarn)
+                    {
+                        <MudTooltip Text="Unable to verify required credits, go to settings to adjust">
+                            <MudIcon Icon="@Icons.Material.Filled.WarningAmber" Color="Color.Warning" Size="Size.Small"/>
+                        </MudTooltip>
+                    }
                 </MudStack>
             </MudStack>
 
@@ -50,12 +59,12 @@
 
             <div class="text-center">
                 <MudText Typo="Typo.caption" Color="Color.Secondary" Style="display: block; margin-bottom: -4px;">Duration</MudText>
-                <MudText Typo="Typo.subtitle2" Class="font-weight-bold">@Years Years</MudText>
+                <MudText Typo="Typo.subtitle2" Class="font-weight-bold">@StudyContext.Years Years</MudText>
             </div>
 
             <MudTooltip Text="Adjust amount of years">
                 <MudButtonGroup Variant="Variant.Outlined" Color="Color.Primary" Size="Size.Small">
-                    <MudIconButton Icon="@Icons.Material.Filled.Remove" Color="Color.Error" OnClick="@DecreaseYears" Disabled="@(Years <= 1)"/>
+                    <MudIconButton Icon="@Icons.Material.Filled.Remove" Color="Color.Error" OnClick="@DecreaseYears" Disabled="@(StudyContext.Years <= 1)"/>
                     <MudIconButton Icon="@Icons.Material.Filled.Add" Color="Color.Success" OnClick="@IncreaseYears"/>
                 </MudButtonGroup>
             </MudTooltip>
@@ -66,7 +75,9 @@
 </MudPaper>
 
 @code {
-
+    [CascadingParameter]
+    public required StudyContext StudyContext { get; set; }
+    
     [Parameter, EditorRequired]
     public required Credits TotalCredits { get; set; }
 
@@ -77,15 +88,9 @@
     public EventCallback<bool> RecognizedYearChanged { get; set; }
 
     [Parameter]
-    public int Years { get; set; }
-
-    [Parameter]
     public EventCallback<int> YearsChanged { get; set; }
 
-    [Parameter]
-    public int RequiredCredits { get; set; } = 180;
-
-    private int SafeNeededCredits => RequiredCredits > 0 ? RequiredCredits : 180;
+    private int SafeNeededCredits => StudyContext.RequiredCredits > 0 ? StudyContext.RequiredCredits : 180;
 
     private int CompletedProgress => TotalCredits.Completed > 0
         ? (int)Math.Min(100, Math.Round((double)TotalCredits.Completed / SafeNeededCredits * 100))
@@ -112,13 +117,12 @@
 
     private async Task DecreaseYears()
     {
-        Years = Math.Max(0, Years - 1);
-        await YearsChanged.InvokeAsync(Years);
+        await YearsChanged.InvokeAsync(Math.Max(0, StudyContext.Years - 1));
     }
 
     private async Task IncreaseYears()
     {
-        await YearsChanged.InvokeAsync(++Years);
+        await YearsChanged.InvokeAsync(++StudyContext.Years);
     }
 
 }
