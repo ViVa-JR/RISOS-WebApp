@@ -4,7 +4,7 @@ using RISOS.Options;
 
 namespace RISOS.Services;
 
-public class DataUpdateService(IOptions<ApiOptions> options, HttpClient httpClient)
+public class GitRepositoryInfoService(IOptions<ApiOptions> options, HttpClient httpClient)
 {
     public async Task<string> GetLastUpdateDate()
     {

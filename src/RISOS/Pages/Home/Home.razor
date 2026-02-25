@@ -5,7 +5,7 @@
 @using RISOS.Services
 
 @inject UniversityService UniversityService
-@inject DataUpdateService DataUpdateService
+@inject GitRepositoryInfoService GitRepositoryInfoService
 
 <style>
     .side-bar .mud-expand-panel {
@@ -169,7 +169,7 @@
     
     private async void PrintLastDataUpdate()
     {
-        var lastUpdate = await DataUpdateService.GetLastUpdateDate();
+        var lastUpdate = await GitRepositoryInfoService.GetLastUpdateDate();
         Console.WriteLine($"Last data update: {lastUpdate}");
     }
 
