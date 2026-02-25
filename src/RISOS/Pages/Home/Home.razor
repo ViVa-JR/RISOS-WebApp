@@ -85,7 +85,7 @@
     <AlwaysVisible>
         <MudStack Row Justify="Justify.Center" Spacing="2" AlignItems="AlignItems.Center" Wrap="Wrap.Wrap" Class="px-2 pb-2" Style="width: 100%">
             <MudTooltip Text="Settings">
-                <MudIconButton Icon="@Icons.Material.Filled.Settings" Style="color: var(--mud-palette-drawer-text)" OnClick=" () => { PrintLastDataUpdate(); }"/>
+                <MudIconButton Icon="@Icons.Material.Filled.Settings" Style="color: var(--mud-palette-drawer-text)" OnClick="@PrintLastDataUpdate"/>
             </MudTooltip>
             <MudTooltip Text="Export">
                 <MudIconButton Icon="@Icons.Material.Filled.Download" Style="color: var(--mud-palette-drawer-text)"/>
@@ -121,9 +121,13 @@
         _isLoading = true;
         await InvokeAsync(StateHasChanged);
 
-        _subjects = (await UniversityService.GetSubjectsAsync(studyProgram)).Select(s => new SubjectEntry(s)).ToDictionary(x => x.Subject.Id);
-        _selectedSubjects = _subjects.Values.Where(x => x.Selected).ToList();
-        Console.WriteLine($"Loaded {_subjects.Count} subjects");
+        var result = await UniversityService.GetSubjectsAsync(studyProgram);
+        if (result.IsSuccess)
+        {
+            _subjects = result.Value.Select(s => new SubjectEntry(s)).ToDictionary(x => x.Subject.Id);
+            _selectedSubjects = _subjects.Values.Where(x => x.Selected).ToList();
+            Console.WriteLine($"Loaded {_subjects.Count} subjects");
+        }
 
         _isLoading = false;
         await InvokeAsync(StateHasChanged);
@@ -175,7 +179,7 @@
         _dropContainer.Refresh();
     }
     
-    private async void PrintLastDataUpdate()
+    private async Task PrintLastDataUpdate()
     {
         var lastUpdate = await GitRepositoryInfoService.GetLastUpdateDate();
         Console.WriteLine($"Last data update: {lastUpdate}");
