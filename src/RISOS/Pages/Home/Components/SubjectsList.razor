@@ -28,7 +28,7 @@
                           Immediate="true"/>
         </div>
 
-        <MudList T="SubjectEntry" Class="subjects-list" Style="@($"flex-grow: 1; padding: 0;max-height: calc(var(--side-bar-content-height) - {FixedPixels}px) !important; overflow-y: scroll; background: var(--mud-palette-surface);")">
+        <MudList T="SubjectEntry" Class="subjects-list" ReadOnly="ReadOnly" Style="@($"flex-grow: 1; padding: 0;max-height: calc(var(--side-bar-content-height) - {FixedPixels}px) !important; overflow-y: scroll; background: var(--mud-palette-surface);")">
             <Virtualize Items="@_flattenedList" Context="row" OverscanCount="10">
                 @if (row.IsHeader)
                 {

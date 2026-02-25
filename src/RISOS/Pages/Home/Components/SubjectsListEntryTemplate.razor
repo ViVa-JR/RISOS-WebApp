@@ -40,6 +40,10 @@
     
     private async Task SelectedChanged(SubjectEntry subject)
     {
+        if (ReadOnly)
+        {
+            return;
+        }
         subject.Selected = !subject.Selected;
         await SubjectChanged.InvokeAsync(subject);
         await InvokeAsync(StateHasChanged);
