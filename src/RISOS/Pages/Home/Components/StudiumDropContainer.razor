@@ -1,6 +1,6 @@
-@using Humanizer
 @using RISOS.Enums
 @using RISOS.Extensions
+@using RISOS.Localization
 @using RISOS.Models
 @using RISOS.Pages.Home.Dialogs.AddCustomSubjectDialog
 @using RISOS.Pages.Home.Models
@@ -28,25 +28,25 @@
         <div class="rounded-lg border-2 border-dashed mud-border-lines-default mud-background-gray w-100 d-flex flex-column">
             <MudStack Row Spacing="3" StretchItems="StretchItems.Start" Class="px-4 pt-4 pb-2" AlignItems="AlignItems.Center">
                 <MudStack Spacing="1">
-                    <MudText Typo="Typo.h6">Unassigned Subjects</MudText>
+                    <MudText Typo="Typo.h6">@LanguageHelper.UnassignedSubjects</MudText>
                 </MudStack>
                 <MudStack Spacing="2" Row AlignItems="AlignItems.Center">
                     @foreach (var type in Enum.GetValues<SubjectType>())
                     {
                         <MudStack Row Spacing="1" Wrap="Wrap.NoWrap">
                             <MudIcon Size="Size.Small" Color="@type.ToColor()" Icon="@Icons.Material.Filled.Circle"/>
-                            <MudText Typo="Typo.caption">@type.Humanize()</MudText>
+                            <MudText Typo="Typo.caption">@type.ToLabel()</MudText>
                         </MudStack>
                     }
                 </MudStack>
-                <MudTooltip Text="Add custom subject">
+                <MudTooltip Text="@LanguageHelper.AddCustomSubject">
                     <MudButton 
                         Variant="Variant.Text" 
                         StartIcon="@Icons.Material.Filled.AddCircleOutline"
                         IconColor="Color.Primary"
                         Color="Color.Primary"
                         OnClick="@OpenAddDialog">
-                        Add
+                        @LanguageHelper.Add
                     </MudButton>
                 </MudTooltip>
             </MudStack>
@@ -67,7 +67,7 @@
 
                 <div class="rounded-lg pa-4 d-flex flex-column mt-4" style="position: relative; border: 2px dotted var(--mud-palette-lines-default); height: 100%; min-width: 336px; flex: 1;">
                     <div style="position: absolute; top: -16px; left: 15%; transform: translateX(-50%); background-color: var(--mud-palette-background); padding: 0 16px;">
-                        <MudText Typo="Typo.h6" Color="Color.Primary" Class="font-weight-bold">@year. Year</MudText>
+                        <MudText Typo="Typo.h6" Color="Color.Primary" Class="font-weight-bold">@year. @LanguageHelper.Years_One</MudText>
                     </div>
 
                     <MudStack Class="flex-grow-1">
@@ -75,7 +75,7 @@
                         <SemesterDropZone Semester="@summerSem" Credits="@GetSemesterCredits(summerSem)" SemesterSeason="SemesterSeason.Summer"/>
                     </MudStack>
                     <MudStack AlignItems="AlignItems.Center" Row StretchItems="StretchItems.Start" Spacing="1" Class="pt-2" Style="border-top: solid 1px var(--mud-palette-background-gray)">
-                        <MudText Typo="Typo.subtitle2" Color="Color.Default">Year Total</MudText>
+                        <MudText Typo="Typo.subtitle2" Color="Color.Default">@LanguageHelper.YearTotal</MudText>
 
                         @{
                             var yearCredits = GetYearCredits(year);
@@ -87,7 +87,7 @@
                             <MudText Typo="Typo.body1" Color="Color.Secondary">/</MudText>
                         }
                         <MudText Typo="Typo.body1" Color="Color.Primary">
-                            <b>@yearCredits.Registered</b> credits
+                            <b>@yearCredits.Registered</b> @LanguageHelper.Credits
                         </MudText>
                     </MudStack>
                 </div>

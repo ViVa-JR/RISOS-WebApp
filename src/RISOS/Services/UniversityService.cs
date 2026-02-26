@@ -8,7 +8,7 @@ using RISOS.Pages.Home.Models;
 
 namespace RISOS.Services;
 
-public class UniversityService(IOptions<ApiOptions> options, LocalStorageService localStorageService, HttpClient httpClient)
+public class UniversityService(IOptions<ApiOptions> options, LanguageService languageService, HttpClient httpClient)
 {
     private const string ProgramsUrl = "/study_programmes/programmes.json";
     private const string SubjectsUrl = "/subjects/{programme_code}.json";
@@ -16,10 +16,10 @@ public class UniversityService(IOptions<ApiOptions> options, LocalStorageService
 
     public async Task<List<Faculty>> GetFacultiesWithProgramsAsync()
     {
-        var lang = await localStorageService.LoadLanguage();
-
-        var response = await httpClient.GetAsync(options.Value.BaseUrl.Replace("{lang}", lang) + ProgramsUrl);
-
+        var lang = await languageService.GetAppLanguageAsync();
+        
+        var response = await httpClient.GetAsync(options.Value.BaseUrl.Replace("{lang}", lang.ToCultureString()) + ProgramsUrl);
+    
         if (!response.IsSuccessStatusCode)
         {
             throw new Exception("Failed to load faculties and programs");
@@ -35,7 +35,7 @@ public class UniversityService(IOptions<ApiOptions> options, LocalStorageService
     {
         try
         {
-            var lang = await localStorageService.LoadLanguage();
+            var lang = await languageService.GetAppLanguageAsync();
 
             HttpResponseMessage response;
             if (program.Specialization != null)
