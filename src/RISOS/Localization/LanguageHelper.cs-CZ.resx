@@ -269,4 +269,7 @@
     <data name="UnassignedSubjects" xml:space="preserve">
         <value>Nezařezené předměty</value>
     </data>
+    <data name="ShowCourseInfo" xml:space="preserve">
+        <value>Zobrazit informace o předmětu</value>
+    </data>
 </root>

@@ -279,4 +279,7 @@
     <data name="UnassignedSubjects" xml:space="preserve">
         <value>UnassignedSubjects</value>
     </data>
+    <data name="ShowCourseInfo" xml:space="preserve">
+        <value>Show course info</value>
+    </data>
 </root>

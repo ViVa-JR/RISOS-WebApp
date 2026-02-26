@@ -61,7 +61,7 @@
 
             <div class="text-center">
                 <MudText Typo="Typo.caption" Color="Color.Secondary" Style="display: block; margin-bottom: -4px;">@LanguageHelper.Duration</MudText>
-                <MudText Typo="Typo.subtitle2" Class="font-weight-bold">@LanguageHelperExtensions.Years(StudyContext.Years)</MudText>
+                <MudText Typo="Typo.subtitle2" Class="font-weight-bold">@StudyContext.Years @LanguageHelperExtensions.Years(StudyContext.Years)</MudText>
             </div>
 
             <MudTooltip Text="@LanguageHelper.AdjustYears">

@@ -566,5 +566,11 @@ namespace RISOS.Localization {
                 return ResourceManager.GetString("UnassignedSubjects", resourceCulture);
             }
         }
+        
+        internal static string ShowCourseInfo {
+            get {
+                return ResourceManager.GetString("ShowCourseInfo", resourceCulture);
+            }
+        }
     }
 }
