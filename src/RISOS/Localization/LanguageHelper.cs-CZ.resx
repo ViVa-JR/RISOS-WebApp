@@ -60,7 +60,7 @@
         <value>Registrované</value>
     </data>
     <data name="Required" xml:space="preserve">
-        <value>Potřebné</value>
+        <value>Požadované</value>
     </data>
     <data name="RequiredWarning" xml:space="preserve">
         <value>Nepodařilo se ověřit požadované kredity. Pro úpravu přejděte do nastavení.</value>
