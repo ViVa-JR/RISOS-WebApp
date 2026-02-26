@@ -1,6 +1,7 @@
 using Microsoft.Extensions.Options;
 using RISOS.Common.Models;
 using RISOS.Dto;
+using RISOS.Extensions;
 using RISOS.Mappers;
 using RISOS.Models;
 using RISOS.Options;
@@ -40,13 +41,13 @@ public class UniversityService(IOptions<ApiOptions> options, LanguageService lan
             HttpResponseMessage response;
             if (program.Specialization != null)
             {
-                response = await httpClient.GetAsync(options.Value.BaseUrl.Replace("{lang}", lang) + SpecificSubjectsUrl
+                response = await httpClient.GetAsync(options.Value.BaseUrl.Replace("{lang}", lang.ToCultureString()) + SpecificSubjectsUrl
                     .Replace("{programme_code}", program.Abbreviation)
                     .Replace("{specialization_code}", program.Specialization));
             }
             else
             {
-                response = await httpClient.GetAsync(options.Value.BaseUrl.Replace("{lang}", lang) + SubjectsUrl
+                response = await httpClient.GetAsync(options.Value.BaseUrl.Replace("{lang}", lang.ToCultureString()) + SubjectsUrl
                     .Replace("{programme_code}", program.Abbreviation));
             }
 
