@@ -1,0 +1,27 @@
+@using RISOS.Enums
+@using RISOS.Localization
+@using RISOS.Services
+@inject LanguageService LanguageService
+@inject NavigationManager Navigation
+
+<MudTooltip Text="@LanguageHelper.LanguageToggleTooltip">
+    <MudIconButton OnClick="@ChangeLanguageAsync" Icon="@Icons.Material.Filled.Public"/>
+</MudTooltip>
+
+@code {
+    private bool IsEnglish { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        var currentLang = await LanguageService.GetAppLanguageAsync();
+        IsEnglish = currentLang == AppLanguage.English;
+    }
+
+    private async Task ChangeLanguageAsync()
+    {
+        var newLanguage = IsEnglish ? AppLanguage.Czech : AppLanguage.English;
+        await LanguageService.SetAppLanguageAsync(newLanguage);
+        Navigation.NavigateTo(Navigation.Uri, forceLoad: true);
+    }
+
+}
