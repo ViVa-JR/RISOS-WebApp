@@ -53,11 +53,11 @@
 <SideBar Class="side-bar">
     <OpenedDrawerContent>
         <MudExpansionPanels Elevation="3" Style="height: calc(100vh - 128px); overflow: hidden">
-            <MudExpansionPanel Text="Study program" Gutters="false">
+            <MudExpansionPanel Text="@LanguageHelper.StudyProgram" Gutters="false">
                 <StudyProgramSelector SelectedProgram="@_selectedProgram" SelectedProgramChanged="@OnSelectedProgramsChanged" Loading="@_isLoading"/>
             </MudExpansionPanel>
             <SubjectsPanel TGroupKey="int"
-                           HeaderTemplate="@(x => $"{x}. Semester")"
+                           HeaderTemplate="@(x => $"{x}. {LanguageHelper.Semester}")"
                            GroupBy="@(x => x.Subject.MinSemester)"
                            SubjectChanged="SubjectChanged"
                            Title="@LanguageHelper.Compulsory"
@@ -67,9 +67,9 @@
                            FixedPixels="326"
                            ReadOnly/>
             <SubjectsPanel TGroupKey="string"
-                           GroupBy="@(x => x.Subject.GroupId ?? "Group")"
+                           GroupBy="@(x => x.Subject.GroupId ?? @LanguageHelper.Group)"
                            SubjectChanged="SubjectChanged"
-                           Title="Compulsory-Elective"
+                           Title="@LanguageHelper.CompulsoryElective"
                            Disabled="@Disabled"
                            Subjects="@CompulsoryElectiveSubjects"
                            IsLoading="@_isLoading"
@@ -77,7 +77,7 @@
             <SubjectsPanel TGroupKey="SemesterSeason"
                            GroupBy="@(x => x.Subject.SemesterSeason)"
                            SubjectChanged="SubjectChanged"
-                           Title="Elective"
+                           Title="@LanguageHelper.Elective"
                            Disabled="@Disabled"
                            Subjects="@ElectiveSubjects"
                            IsLoading="@_isLoading"
@@ -86,13 +86,13 @@
     </OpenedDrawerContent>
     <AlwaysVisible>
         <MudStack Row Justify="Justify.Center" Spacing="2" AlignItems="AlignItems.Center" Wrap="Wrap.Wrap" Class="px-2 pb-2" Style="width: 100%">
-            <MudTooltip Text="Settings">
-                <MudIconButton Icon="@Icons.Material.Filled.Settings" Style="color: var(--mud-palette-drawer-text)" OnClick=" () => { PrintLastDataUpdate(); }"/>
+            <MudTooltip Text="@LanguageHelper.Settings">
+                <MudIconButton Icon="@Icons.Material.Filled.Settings" Style="color: var(--mud-palette-drawer-text)" OnClick="() => { PrintLastDataUpdate(); }"/>
             </MudTooltip>
-            <MudTooltip Text="Export">
+            <MudTooltip Text="@LanguageHelper.Export">
                 <MudIconButton Icon="@Icons.Material.Filled.Download" Style="color: var(--mud-palette-drawer-text)"/>
             </MudTooltip>
-            <MudTooltip Text="Import">
+            <MudTooltip Text="@LanguageHelper.Import">
                 <MudIconButton Icon="@Icons.Material.Filled.Upload" Style="color: var(--mud-palette-drawer-text)"/>
             </MudTooltip>
             <LanguageToggle/>

@@ -1,6 +1,6 @@
-@using Humanizer
 @using RISOS.Enums
 @using RISOS.Extensions
+@using RISOS.Localization
 @using RISOS.Models
 @using RISOS.Pages.Home.Models
 
@@ -11,8 +11,8 @@
                  CanDrop="CanDrop">
         <ChildContent>
             <MudStack Row Spacing="1" AlignItems="AlignItems.Center" Class="pa-2 border-b mud-border-lines-default mud-background-gray rounded-t-lg">
-                <MudText Typo="Typo.subtitle1" Class="font-weight-bold">@Semester. Semester •</MudText>
-                <MudChip T="SemesterSeason" Value="@SemesterSeason" Text="@SemesterSeason.Humanize()" Size="Size.Small" Variant="Variant.Text"
+                <MudText Typo="Typo.subtitle1" Class="font-weight-bold">@Semester. @LanguageHelper.Semester •</MudText>
+                <MudChip T="SemesterSeason" Value="@SemesterSeason" Text="@SemesterSeason.ToLabel()" Size="Size.Small" Variant="Variant.Text"
                          Color="@SemesterSeason.ToColor()"/>
             </MudStack>
         </ChildContent>
@@ -25,7 +25,7 @@
             <MudText Typo="Typo.body1" Color="Color.Secondary">/</MudText>
         }
         <MudText Typo="Typo.body1" Color="Color.Secondary">
-            @Credits.Registered credits
+            @Credits.Registered @LanguageHelper.Credits
         </MudText>
     </MudStack>
 

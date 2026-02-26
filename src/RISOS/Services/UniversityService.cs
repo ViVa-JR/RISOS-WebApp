@@ -1,5 +1,6 @@
 using Microsoft.Extensions.Options;
 using RISOS.Dto;
+using RISOS.Extensions;
 using RISOS.Mappers;
 using RISOS.Models;
 using RISOS.Options;
@@ -7,7 +8,7 @@ using RISOS.Pages.Home.Models;
 
 namespace RISOS.Services;
 
-public class UniversityService(IOptions<ApiOptions> options, LocalStorageService localStorageService, HttpClient httpClient)
+public class UniversityService(IOptions<ApiOptions> options, LanguageService languageService, HttpClient httpClient)
 {
     private const string ProgramsUrl = "/study_programmes/programmes.json";
     private const string SubjectsUrl = "/subjects/{programme_code}.json";
@@ -15,9 +16,9 @@ public class UniversityService(IOptions<ApiOptions> options, LocalStorageService
     
     public async Task<List<Faculty>> GetFacultiesWithProgramsAsync()
     {
-        var lang = await localStorageService.LoadLanguage();
+        var lang = await languageService.GetAppLanguageAsync();
         
-        var response = await httpClient.GetAsync(options.Value.BaseUrl.Replace("{lang}", "en") + ProgramsUrl);
+        var response = await httpClient.GetAsync(options.Value.BaseUrl.Replace("{lang}", lang.ToCultureString()) + ProgramsUrl);
     
         if (!response.IsSuccessStatusCode)
         {
@@ -32,18 +33,18 @@ public class UniversityService(IOptions<ApiOptions> options, LocalStorageService
     
     public async Task<List<Subject>> GetSubjectsAsync(StudyProgram program)
     {
-        var lang = await localStorageService.LoadLanguage();
+        var lang = await languageService.GetAppLanguageAsync();
 
         HttpResponseMessage response;
         if (program.Specialization != null)
         {
-            response = await httpClient.GetAsync(options.Value.BaseUrl.Replace("{lang}", lang) + SpecificSubjectsUrl
+            response = await httpClient.GetAsync(options.Value.BaseUrl.Replace("{lang}", lang.ToCultureString()) + SpecificSubjectsUrl
                 .Replace("{programme_code}", program.Abbreviation)
                 .Replace("{specialization_code}", program.Specialization));
         }
         else
         {
-            response = await httpClient.GetAsync(options.Value.BaseUrl.Replace("{lang}", lang) + SubjectsUrl
+            response = await httpClient.GetAsync(options.Value.BaseUrl.Replace("{lang}", lang.ToCultureString()) + SubjectsUrl
                 .Replace("{programme_code}", program.Abbreviation));
         }
         
