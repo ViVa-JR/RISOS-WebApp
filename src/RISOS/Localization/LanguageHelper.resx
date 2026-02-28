@@ -277,7 +277,7 @@
         <value>Year total</value>
     </data>
     <data name="UnassignedSubjects" xml:space="preserve">
-        <value>UnassignedSubjects</value>
+        <value>Unassigned Subjects</value>
     </data>
     <data name="ShowCourseInfo" xml:space="preserve">
         <value>Show course info</value>

@@ -206,7 +206,7 @@
         var language = await LanguageService.GetAppLanguageAsync();
         if (result.Value.Language != language)
         {
-            await LanguageService.SetAppLanguageAsync(language);
+            await LanguageService.SetAppLanguageAsync(result.Value.Language);
             NavigationManager.NavigateTo(NavigationManager.Uri, forceLoad: true);
         }
     }
