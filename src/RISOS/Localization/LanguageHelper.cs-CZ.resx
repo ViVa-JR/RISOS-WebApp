@@ -272,4 +272,91 @@
     <data name="ShowCourseInfo" xml:space="preserve">
         <value>Zobrazit informace o předmětu</value>
     </data>
+    <data name="Name" xml:space="preserve">
+        <value>Název</value>
+    </data>
+    <data name="IsRequired_y" xml:space="preserve">
+        <value>je povinný</value>
+    </data>
+    <data name="IsRequired_a" xml:space="preserve">
+        <value>je povinná</value>
+    </data>
+    <data name="Abbreviation" xml:space="preserve">
+        <value>Zkratka</value>
+    </data>
+    <data name="BasicInformation" xml:space="preserve">
+        <value>Základní informace</value>
+    </data>
+    <data name="Credits_y" xml:space="preserve">
+        <value>Kredity</value>
+    </data>
+    <data name="AcademicDetails" xml:space="preserve">
+        <value>Studijní parametry</value>
+    </data>
+    <data name="SubjectType" xml:space="preserve">
+        <value>Typ předmětu</value>
+    </data>
+    <data name="Classification" xml:space="preserve">
+        <value>Klasifikace předmětu</value>
+    </data>
+    <data name="NotApplicable" xml:space="preserve">
+        <value>Nepotřebné</value>
+    </data>
+    <data name="SemesterSeason" xml:space="preserve">
+        <value>Období</value>
+    </data>
+    <data name="CompletionType" xml:space="preserve">
+        <value>Forma ukončení</value>
+    </data>
+    <data name="MinimumSemester" xml:space="preserve">
+        <value>Minimální semestr</value>
+    </data>
+    <data name="IMA" xml:space="preserve">
+        <value>např.: Matematická Analýza</value>
+    </data>
+    <data name="MinSemesterHelperText" xml:space="preserve">
+        <value>Nejnižší povolený semestr pro zapsání</value>
+    </data>
+    <data name="Cancel" xml:space="preserve">
+        <value>Zrušit</value>
+    </data>
+    <data name="Submit" xml:space="preserve">
+        <value>Potvrdit</value>
+    </data>
+    <data name="Any" xml:space="preserve">
+        <value>Libovolné</value>
+    </data>
+    <data name="IMAAbbreviation" xml:space="preserve">
+        <value>nepř.: IMA1, IMA2</value>
+    </data>
+    <data name="Save" xml:space="preserve">
+        <value>Uložit</value>
+    </data>
+    <data name="SettingsDialog_Title" xml:space="preserve">
+    <value>Nastavení</value>
+  </data>
+    <data name="SettingsDialog_Save" xml:space="preserve">
+    <value>Uložit</value>
+  </data>
+    <data name="SettingsDialog_Language" xml:space="preserve">
+    <value>Jazyk</value>
+  </data>
+    <data name="SettingsDialog_AcademicSettings" xml:space="preserve">
+    <value>Studijní parametry</value>
+  </data>
+    <data name="SettingsDialog_OverrideCredits" xml:space="preserve">
+    <value>Přepsat požadované kredity</value>
+  </data>
+    <data name="SettingsDialog_RequiredCredits" xml:space="preserve">
+    <value>Požadované kredity</value>
+  </data>
+    <data name="Language_Czech" xml:space="preserve">
+    <value>Čeština</value>
+  </data>
+    <data name="Language_English" xml:space="preserve">
+    <value>Angličtina</value>
+  </data>
+    <data name="LanguageAlert" xml:space="preserve">
+        <value>Změna jazyka vynutí obnovení aplikace po uložení</value>
+    </data>
 </root>

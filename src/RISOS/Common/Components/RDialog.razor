@@ -1,0 +1,72 @@
+@using RISOS.Localization
+@typeparam TReturn
+
+<MudDialog Class="pa-2">
+    <TitleContent>
+        <MudStack Row Spacing="3" AlignItems="AlignItems.Center">
+            <MudIcon Icon="@Icons.Material.Filled.School" Color="Color.Primary"/>
+            <MudText Typo="Typo.h6" Class="font-weight-bold">
+                @Title
+            </MudText>
+        </MudStack>
+        <MudDivider/>
+    </TitleContent>
+    <DialogContent>
+        <MudForm @ref="_form" Class="mt-2 pb-4">
+            @ChildContent
+        </MudForm>
+    </DialogContent>
+    <DialogActions>
+        <MudButton OnClick="@Cancel" Color="Color.Default" StartIcon="@Icons.Material.Filled.Close">
+            @LanguageHelper.Cancel
+        </MudButton>
+        <MudButton Color="Color.Primary" Variant="Variant.Outlined" StartIcon="@SubmitIcon" OnClick="@OnSubmitInternal">
+            @SubmitText
+        </MudButton>
+    </DialogActions>
+</MudDialog>
+
+@code {
+    [CascadingParameter]
+    IMudDialogInstance MudDialog { get; set; } = null!;
+
+    [Parameter]
+    public string Title { get; set; } = "Dialog";
+    
+    [Parameter]
+    public Func<Task<TReturn>>? OnSubmit { get; set; }
+
+    [Parameter]
+    public string SubmitText { get; set; } = LanguageHelper.Submit;
+    
+    [Parameter]
+    public string? SubmitIcon { get; set; }
+    
+    [Parameter, EditorRequired]
+    public required RenderFragment ChildContent { get; set; }
+    
+    private MudForm _form = null!;
+
+    private async Task OnSubmitInternal()
+    {
+        await _form.Validate();
+        if (!_form.IsValid)
+        {
+            return;
+        }
+
+        if (OnSubmit is null)
+        {
+            MudDialog.Close();
+            return;
+        }
+        
+        var value = await OnSubmit.Invoke();
+        MudDialog.Close(DialogResult.Ok(value));
+    }
+    
+    private void Cancel()
+    {
+        MudDialog.Cancel();
+    }
+}
