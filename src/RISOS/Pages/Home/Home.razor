@@ -98,10 +98,10 @@
                 <MudIconButton Icon="@Icons.Material.Filled.Settings" Style="color: var(--mud-palette-drawer-text)" OnClick="@OnSettingsClick"/>
             </MudTooltip>
             <MudTooltip Text="@LanguageHelper.Export">
-                <MudIconButton Icon="@Icons.Material.Filled.Download" Style="color: var(--mud-palette-drawer-text)"/>
+                <MudIconButton Icon="@Icons.Material.Filled.Download" Style="color: var(--mud-palette-drawer-text)" OnClick="@OnExportClick"/>
             </MudTooltip>
             <MudTooltip Text="@LanguageHelper.Import">
-                <MudIconButton Icon="@Icons.Material.Filled.Upload" Style="color: var(--mud-palette-drawer-text)"/>
+                <MudIconButton Icon="@Icons.Material.Filled.Upload" Style="color: var(--mud-palette-drawer-text)" OnClick="@OnImportClick"/>
             </MudTooltip>
         </MudStack>
     </AlwaysVisible>
@@ -209,6 +209,16 @@
             await LanguageService.SetAppLanguageAsync(result.Value.Language);
             NavigationManager.NavigateTo(NavigationManager.Uri, forceLoad: true);
         }
+    }
+
+    private Task OnExportClick()
+    {
+        throw new NotImplementedException();
+    }
+
+    private Task OnImportClick()
+    {
+        throw new NotImplementedException();
     }
 
 }
