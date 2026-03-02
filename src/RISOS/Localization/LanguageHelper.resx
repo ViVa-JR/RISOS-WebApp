@@ -369,4 +369,7 @@
     <data name="LanguageAlert" xml:space="preserve">
         <value>Language change forces refresh of the app after saving</value>
     </data>
+    <data name="CompulsoryElectiveErrorMessage" xml:space="preserve">
+        <value>You have to select subject from every group</value>
+    </data>
 </root>

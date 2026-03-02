@@ -5,10 +5,21 @@
     .study-program-selector-list .mud-list-item-extended:hover {
         opacity: 0.9;
     }
-    
-    .study-program-selector-list .mud-selected-item .mud-chip {
-        color: var(--mud-palette-primary) !important;
-        border-color: var(--mud-palette-primary) !important;
+
+    .study-program-selector-list .mud-selected-item {
+
+        .mud-chip {
+            color: var(--mud-palette-primary) !important;
+            border-color: var(--mud-palette-primary) !important;
+        }
+        
+        .label {
+            color: var(--mud-palette-primary) !important;
+        }
+    }
+
+    .label {
+        color: var(--mud-palette-text-primary);
     }
 </style>
 
@@ -20,15 +31,15 @@
                 <MudChip T="string" Size="Size.Small" Variant="Variant.Outlined" Class="ma-0">
                     @Program.Abbreviation
                 </MudChip>
-    
-                <MudText Typo="Typo.body2" Class="text-nowrap">
+
+                <MudText Typo="Typo.body2" Class="text-nowrap label">
                     <b>@Program.Specialization</b>
                 </MudText>
             </MudStack>
         }
         else
         {
-            <MudText Typo="Typo.body2">
+            <MudText Typo="Typo.body2" Class="label">
                 <b>@Program.Abbreviation</b>
             </MudText>
         }
@@ -36,5 +47,5 @@
 </MudListItemExtended>
 
 @code {
-    [Parameter,EditorRequired] public required StudyProgram Program { get; set; }
+    [Parameter, EditorRequired] public required StudyProgram Program { get; set; }
 }

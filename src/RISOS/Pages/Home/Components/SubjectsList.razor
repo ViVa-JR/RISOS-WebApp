@@ -12,7 +12,7 @@
     }
 </style>
 
-@if (Subjects.Any())
+@if (Groups.Any())
 {
     <MudStack Spacing="0" Class="h-100">
         <div class="pa-3" style="border-bottom: 1px solid var(--mud-palette-lines-default); background-color: var(--mud-palette-surface); border-radius: 4px 4px 0 0; flex-shrink: 0;">
@@ -28,7 +28,8 @@
                           Immediate="true"/>
         </div>
 
-        <MudList T="SubjectEntry" Class="subjects-list" ReadOnly="ReadOnly" Style="@($"flex-grow: 1; padding: 0;max-height: calc(var(--side-bar-content-height) - {FixedPixels}px) !important; overflow-y: scroll; background: var(--mud-palette-surface);")">
+        <MudList T="SubjectEntry" Class="subjects-list" ReadOnly="ReadOnly"
+                 Style="@($"flex-grow: 1; padding: 0;max-height: calc(var(--side-bar-content-height) - {FixedPixels}px) !important; overflow-y: scroll; background: var(--mud-palette-surface);")">
             <Virtualize Items="@_flattenedList" Context="row" OverscanCount="10">
                 @if (row.IsHeader)
                 {
@@ -51,62 +52,42 @@
                     <SubjectsListEntryTemplate T="TGroupKey" Row="row" ReadOnly="@ReadOnly" SubjectChanged="SubjectChanged"/>
                 }
             </Virtualize>
-
         </MudList>
     </MudStack>
 }
 
 @code {
     [Parameter, EditorRequired]
-    public required Func<SubjectEntry, TGroupKey> GroupBy { get; set; }
+    public required IEnumerable<IGrouping<TGroupKey, SubjectEntry>> Groups { get; set; }
 
     [Parameter]
     public Func<TGroupKey, string>? HeaderTemplate { get; set; }
-
-    [Parameter]
-    public Dictionary<string, SubjectEntry> Subjects { get; set; } = [];
 
     [Parameter]
     public EventCallback<SubjectEntry> SubjectChanged { get; set; }
 
     [Parameter]
     public int FixedPixels { get; set; }
-    
+
     [Parameter]
     public bool ReadOnly { get; set; }
 
     private List<VirtualRow> _flattenedList = [];
-    private string _searchValue = string.Empty;
 
     private string SearchValue
     {
-        get => _searchValue;
+        get;
         set
         {
-            if (_searchValue == value)
+            if (field == value)
             {
                 return;
             }
 
-            _searchValue = value;
+            field = value;
             BuildFlattenedList();
         }
-    }
-
-    private IEnumerable<IGrouping<TGroupKey, SubjectEntry>> FilteredGroups
-    {
-        get
-        {
-            var filtered = string.IsNullOrWhiteSpace(_searchValue)
-                ? Subjects.Values.ToList()
-                : Subjects.Values.Where(x =>
-                    x.Subject.Name.Contains(_searchValue, StringComparison.OrdinalIgnoreCase) ||
-                    x.Subject.ShortName.Contains(_searchValue, StringComparison.OrdinalIgnoreCase) ||
-                    (x.Subject.GroupId is not null && x.Subject.GroupId.Contains(_searchValue, StringComparison.OrdinalIgnoreCase))).ToList();
-
-            return filtered.GroupBy(GroupBy).OrderBy(x => x.Key);
-        }
-    }
+    } = string.Empty;
 
     protected override void OnParametersSet()
     {
@@ -118,10 +99,22 @@
     {
         var result = new List<VirtualRow>();
 
-        foreach (var group in FilteredGroups)
+        // 2. Filter within the existing Groups using Tuples, ignoring groups that become empty
+        var filteredGroups = string.IsNullOrWhiteSpace(SearchValue)
+            ? Groups.Select(g => (g.Key, Items: g.AsEnumerable()))
+            : Groups.Select(g => (
+                    g.Key,
+                    Items: g.Where(x =>
+                        x.Subject.Name.Contains(SearchValue, StringComparison.OrdinalIgnoreCase) ||
+                        x.Subject.ShortName.Contains(SearchValue, StringComparison.OrdinalIgnoreCase) ||
+                        (x.Subject.GroupId is not null && x.Subject.GroupId.Contains(SearchValue, StringComparison.OrdinalIgnoreCase)))
+                ))
+                .Where(g => g.Items.Any());
+
+        foreach (var group in filteredGroups.OrderBy(g => g.Key))
         {
             result.Add(new VirtualRow { GroupKey = group.Key });
-            result.AddRange(group.Select(subject => new VirtualRow { Subject = subject }));
+            result.AddRange(group.Items.Select(subject => new VirtualRow { Subject = subject }));
         }
 
         _flattenedList = result;
