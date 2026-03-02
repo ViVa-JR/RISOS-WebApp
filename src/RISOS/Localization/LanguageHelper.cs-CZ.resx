@@ -359,4 +359,7 @@
     <data name="LanguageAlert" xml:space="preserve">
         <value>Změna jazyka vynutí obnovení aplikace po uložení</value>
     </data>
+    <data name="CompulsoryElectiveErrorMessage" xml:space="preserve">
+        <value>Musíte mít zvolený předmět z každé skupiny</value>
+    </data>
 </root>

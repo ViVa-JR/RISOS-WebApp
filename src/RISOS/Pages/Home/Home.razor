@@ -75,13 +75,14 @@
                            FixedPixels="326"
                            ReadOnly/>
             <SubjectsPanel TGroupKey="string"
-                           GroupBy="@(x => x.Subject.GroupId ?? @LanguageHelper.Group)"
+                           GroupBy="@(x => x.Subject.GroupId!)"
                            SubjectChanged="SubjectChanged"
                            Title="@LanguageHelper.CompulsoryElective"
                            Disabled="@Disabled"
                            Subjects="@CompulsoryElectiveSubjects"
                            IsLoading="@_isLoading"
-                           FixedPixels="326"/>
+                           FixedPixels="326"
+                           CompulsoryGroups/>
             <SubjectsPanel TGroupKey="SemesterSeason"
                            GroupBy="@(x => x.Subject.SemesterSeason)"
                            SubjectChanged="SubjectChanged"

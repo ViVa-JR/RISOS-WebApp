@@ -1,6 +1,19 @@
 @typeparam TGroupKey
 
+@using RISOS.Localization
 @using RISOS.Pages.Home.Models
+
+<style>
+    .count-chip {
+        color: white;
+        border-color: white;
+    }
+    
+    .error-chip {
+        color: var(--mud-palette-error);
+        border-color: var(--mud-palette-error);
+    }
+</style>
 
 <MudExpansionPanel Disabled="@Disabled" @bind-Expanded="_expanded" HideIcon="true">
     <TitleContent>
@@ -10,9 +23,11 @@
             </MudText>
             @if (Count > 0)
             {
-                <MudChip T="int" Variant="Variant.Outlined" Size="Size.Small" Color="Color.Default" Style="margin: 0 !important;">
-                    @Count
-                </MudChip>
+                <MudTooltip Text="@(EveryGroupSelected ? string.Empty : LanguageHelper.CompulsoryElectiveErrorMessage)">
+                    <MudChip T="int" Variant="Variant.Outlined" Size="Size.Small" Style="margin: 0 !important;" Class="@(EveryGroupSelected ? "count-chip" : "error-chip")">
+                        @Count
+                    </MudChip>
+                </MudTooltip>
             }
             @if (IsLoading)
             {
@@ -26,17 +41,16 @@
     </TitleContent>
     <ChildContent>
         <SubjectsList TGroupKey="TGroupKey"
-                      GroupBy="GroupBy"
+                      Groups="Groups"
                       HeaderTemplate="HeaderTemplate"
-                      Subjects="Subjects"
                       ReadOnly="@ReadOnly"
                       FixedPixels="FixedPixels"
-                      SubjectChanged="SubjectChanged"
-        />
+                      SubjectChanged="SubjectChanged" />
     </ChildContent>
 </MudExpansionPanel>
 
 @code {
+
     [Parameter, EditorRequired]
     public required Func<SubjectEntry, TGroupKey> GroupBy { get; set; }
 
@@ -51,7 +65,7 @@
 
     [Parameter]
     public Dictionary<string, SubjectEntry> Subjects { get; set; } = [];
-    
+
     [Parameter]
     public EventCallback<SubjectEntry> SubjectChanged { get; set; }
 
@@ -64,8 +78,14 @@
     [Parameter]
     public Func<TGroupKey, string>? HeaderTemplate { get; set; }
 
+    [Parameter]
+    public bool CompulsoryGroups { get; set; }
+
     private bool _expanded;
 
     private int Count => Subjects.Count;
+
+    private IEnumerable<IGrouping<TGroupKey, SubjectEntry>> Groups => Subjects.Values.GroupBy(GroupBy);
+    private bool EveryGroupSelected => !CompulsoryGroups || (Groups.Any() && Groups.All(group => group.Any(entry => entry.Selected)));
 
 }
