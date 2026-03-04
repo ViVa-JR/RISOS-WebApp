@@ -15,6 +15,8 @@ public static class DependencyInjection
                 .AddBlazorServices()
                 .AddSingleton<ThemeStateService>()
                 .AddSingleton<LocalStorageService>()
+                .AddSingleton<ExportService>()
+                .AddSingleton<ImportService>()
                 .AddScoped<GitRepositoryInfoService>()
                 .AddScoped<UniversityService>()
                 .AddScoped(_ => new HttpClient())

@@ -3,9 +3,13 @@
 @using RISOS.Pages.Home.Components
 @using RISOS.Pages.Home.Models
 @using RISOS.Services
+@using System.Text.Json
 
 @inject UniversityService UniversityService
 @inject GitRepositoryInfoService GitRepositoryInfoService
+@inject LocalStorageService LocalStorageService
+@inject ExportService ExportService
+@inject ImportService ImportService
 
 <style>
     .side-bar .mud-expand-panel {
@@ -88,10 +92,19 @@
                 <MudIconButton Icon="@Icons.Material.Filled.Settings" Style="color: var(--mud-palette-drawer-text)" OnClick=" () => { PrintLastDataUpdate(); }"/>
             </MudTooltip>
             <MudTooltip Text="Export">
-                <MudIconButton Icon="@Icons.Material.Filled.Download" Style="color: var(--mud-palette-drawer-text)"/>
+                <MudIconButton 
+                    Icon="@Icons.Material.Filled.Download" 
+                    Style="color: var(--mud-palette-drawer-text)"
+                    OnClick="HandleExport"/>
             </MudTooltip>
             <MudTooltip Text="Import">
-                <MudIconButton Icon="@Icons.Material.Filled.Upload" Style="color: var(--mud-palette-drawer-text)"/>
+                <MudFileUpload T="IBrowserFile" FilesChanged="HandleImport" Accept=".json">
+                    <ActivatorContent>
+                        <MudIconButton 
+                            Icon="@Icons.Material.Filled.Upload" 
+                            Style="color: var(--mud-palette-drawer-text)" />
+                    </ActivatorContent>
+                </MudFileUpload>
             </MudTooltip>
         </MudStack>
     </AlwaysVisible>
@@ -163,14 +176,59 @@
         {
             _selectedSubjects.Remove(subject);
         }
-        
+
         _dropContainer.Refresh();
     }
-    
+
     private async void PrintLastDataUpdate()
     {
         var lastUpdate = await GitRepositoryInfoService.GetLastUpdateDate();
         Console.WriteLine($"Last data update: {lastUpdate}");
     }
+
+    private async Task HandleExport()
+    {
+        // if (_selectedProgram is null)
+        // {
+        //     Console.WriteLine("No study program selected for export.");
+        //     return;
+        // }
+        var exportState = await LocalStorageService.GetExportStateAsync();
+
+
+        if (exportState != null)
+        {
+            await ExportService.DownloadJsonAsync(exportState, "risos_backup.json");
+        }
+        else
+        {
+            var defaultState = new AppState();
+            await ExportService.DownloadJsonAsync(defaultState, "risos_default.json");
+        }
+    }
+
+    private async Task HandleImport(IBrowserFile file)
+    {
+        if (file == null) return;
+
+        try
+        {
+            using var stream = file.OpenReadStream(maxAllowedSize: 2048000);
+            using var reader = new StreamReader(stream);
+            var jsonContent = await reader.ReadToEndAsync();
+
+            var validatedData = JsonSerializer.Deserialize<AppState>(jsonContent);
+
+            if (validatedData != null)
+            {
+                await ImportService.SaveFullStateAsync(validatedData);
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex.Message);
+        }
+    }
+}
 
 }

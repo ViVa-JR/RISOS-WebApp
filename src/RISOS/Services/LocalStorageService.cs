@@ -1,8 +1,10 @@
 using Microsoft.JSInterop;
+using System.Net.NetworkInformation;
+using System.Text.Json;
 
 namespace RISOS.Services;
 
-public class LocalStorageService(IJSRuntime js)
+public class LocalStorageService(IJSRuntime  js)
 {
     private const string UserTheme = "user-theme";
     private const string UserLanguage = "user-language";
@@ -42,5 +44,12 @@ public class LocalStorageService(IJSRuntime js)
             await js.InvokeVoidAsync("localStorage.removeItem", UserLanguage);
             return "en";
         }
+    }
+
+    public async Task<AppState> GetExportStateAsync()
+    {
+        var state = new AppState();
+        state.IsDarkMode = await LoadTheme();
+        return state;
     }
 }
