@@ -6,16 +6,16 @@ public class Result
 {
     public bool IsSuccess { get; }
     public bool IsFailure => !IsSuccess;
-    public string Error { get; }
+    public Error Error { get; }
 
-    protected Result(bool isSuccess, string error)
+    protected Result(bool isSuccess, Error error)
     {
         switch (isSuccess)
         {
-            case true when !string.IsNullOrWhiteSpace(error):
-                throw new ArgumentException("A successful result cannot have an error message.", nameof(error));
-            case false when string.IsNullOrWhiteSpace(error):
-                throw new ArgumentException("A failure result must have an error message.", nameof(error));
+            case true when error != Error.None:
+                throw new ArgumentException(@"A successful result cannot have an error", nameof(error));
+            case false when error == Error.None:
+                throw new ArgumentException(@"A failure result must have an error", nameof(error));
             default:
                 IsSuccess = isSuccess;
                 Error = error;
@@ -23,11 +23,11 @@ public class Result
         }
     }
 
-    public static Result Success() => new Result(true, string.Empty);
-    public static Result Failure(string error) => new Result(false, error);
+    public static Result Success() => new (true, Error.None);
+    public static Result Failure(Error error) => new (false, error);
 
-    public static Result<T> Success<T>(T value) => new Result<T>(true, string.Empty, value);
-    public static Result<T> Failure<T>(string error) => new Result<T>(false, error, default);
+    public static Result<T> Success<T>(T value) => new(true, Error.None, value);
+    public static Result<T> Failure<T>(Error error) => new(false, error, default);
 }
 
 public class Result<T> : Result
@@ -36,7 +36,7 @@ public class Result<T> : Result
         ? field!
         : throw new InvalidOperationException($"Cannot access the value of a failure result. Error: {Error}");
 
-    protected internal Result(bool isSuccess, string error, T? value)
+    protected internal Result(bool isSuccess, Error error, T? value)
         : base(isSuccess, error)
     {
         Value = value;

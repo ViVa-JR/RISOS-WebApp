@@ -16,6 +16,7 @@ public static class DependencyInjection
         {
             return services
                 .AddBlazorServices()
+                .AddScoped<ApiService>()
                 .AddSingleton<ThemeStateService>()
                 .AddSingleton<LocalStorageService>()
                 .AddSingleton<LanguageService>()

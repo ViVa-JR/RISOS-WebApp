@@ -129,7 +129,7 @@
         {
             _subjects = result.Value.Select(s => new SubjectEntry(s)).ToDictionary(x => x.Subject.Id);
             _selectedSubjects = _subjects.Values.Where(x => x.Selected).ToList();
-            Console.WriteLine($"Loaded {_subjects.Count} subjects");
+            Console.WriteLine($@"Loaded {_subjects.Count} subjects");
         }
 
         _isLoading = false;
@@ -141,7 +141,7 @@
     {
         _selectedProgram = program;
 
-        Console.WriteLine($"Selected {_selectedProgram?.Abbreviation ?? "no"} study program");
+        Console.WriteLine($@"Selected {_selectedProgram?.Abbreviation ?? "no"} study program");
 
         _studyContext.Years = (int)Math.Ceiling(_selectedProgram?.StudyDuration ?? 3.0);
         _studyContext.RequiredCredits = _selectedProgram?.Credits ?? 0;
@@ -184,8 +184,11 @@
     
     private async Task PrintLastDataUpdate()
     {
-        var lastUpdate = await GitRepositoryInfoService.GetLastUpdateDate();
-        Console.WriteLine($"Last data update: {lastUpdate}");
+        var result = await GitRepositoryInfoService.GetLastUpdateDateAsync();
+        if (result.IsSuccess)
+        {
+            Console.WriteLine($@"Last data update: {result.Value}");
+        }
     }
 
 }
