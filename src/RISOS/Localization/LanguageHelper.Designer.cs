@@ -572,5 +572,179 @@ namespace RISOS.Localization {
                 return ResourceManager.GetString("ShowCourseInfo", resourceCulture);
             }
         }
+        
+        internal static string Name {
+            get {
+                return ResourceManager.GetString("Name", resourceCulture);
+            }
+        }
+        
+        internal static string IsRequired_y {
+            get {
+                return ResourceManager.GetString("IsRequired_y", resourceCulture);
+            }
+        }
+        
+        internal static string IsRequired_a {
+            get {
+                return ResourceManager.GetString("IsRequired_a", resourceCulture);
+            }
+        }
+        
+        internal static string Abbreviation {
+            get {
+                return ResourceManager.GetString("Abbreviation", resourceCulture);
+            }
+        }
+        
+        internal static string BasicInformation {
+            get {
+                return ResourceManager.GetString("BasicInformation", resourceCulture);
+            }
+        }
+        
+        internal static string AcademicDetails {
+            get {
+                return ResourceManager.GetString("AcademicDetails", resourceCulture);
+            }
+        }
+        
+        internal static string Credits_y {
+            get {
+                return ResourceManager.GetString("Credits_y", resourceCulture);
+            }
+        }
+        
+        internal static string SubjectType {
+            get {
+                return ResourceManager.GetString("SubjectType", resourceCulture);
+            }
+        }
+        
+        internal static string Classification {
+            get {
+                return ResourceManager.GetString("Classification", resourceCulture);
+            }
+        }
+        
+        internal static string NotApplicable {
+            get {
+                return ResourceManager.GetString("NotApplicable", resourceCulture);
+            }
+        }
+        
+        internal static string SemesterSeason {
+            get {
+                return ResourceManager.GetString("SemesterSeason", resourceCulture);
+            }
+        }
+        
+        internal static string CompletionType {
+            get {
+                return ResourceManager.GetString("CompletionType", resourceCulture);
+            }
+        }
+        
+        internal static string MinimumSemester {
+            get {
+                return ResourceManager.GetString("MinimumSemester", resourceCulture);
+            }
+        }
+        
+        internal static string IMA {
+            get {
+                return ResourceManager.GetString("IMA", resourceCulture);
+            }
+        }
+        
+        internal static string MinSemesterHelperText {
+            get {
+                return ResourceManager.GetString("MinSemesterHelperText", resourceCulture);
+            }
+        }
+        
+        internal static string Cancel {
+            get {
+                return ResourceManager.GetString("Cancel", resourceCulture);
+            }
+        }
+        
+        internal static string Submit {
+            get {
+                return ResourceManager.GetString("Submit", resourceCulture);
+            }
+        }
+        
+        internal static string Any {
+            get {
+                return ResourceManager.GetString("Any", resourceCulture);
+            }
+        }
+        
+        internal static string IMAAbbreviation {
+            get {
+                return ResourceManager.GetString("IMAAbbreviation", resourceCulture);
+            }
+        }
+        
+        internal static string Save {
+            get {
+                return ResourceManager.GetString("Save", resourceCulture);
+            }
+        }
+        
+        internal static string SettingsDialog_Title {
+            get {
+                return ResourceManager.GetString("SettingsDialog_Title", resourceCulture);
+            }
+        }
+        
+        internal static string SettingsDialog_Save {
+            get {
+                return ResourceManager.GetString("SettingsDialog_Save", resourceCulture);
+            }
+        }
+        
+        internal static string SettingsDialog_Language {
+            get {
+                return ResourceManager.GetString("SettingsDialog_Language", resourceCulture);
+            }
+        }
+        
+        internal static string SettingsDialog_AcademicSettings {
+            get {
+                return ResourceManager.GetString("SettingsDialog_AcademicSettings", resourceCulture);
+            }
+        }
+        
+        internal static string SettingsDialog_OverrideCredits {
+            get {
+                return ResourceManager.GetString("SettingsDialog_OverrideCredits", resourceCulture);
+            }
+        }
+        
+        internal static string SettingsDialog_RequiredCredits {
+            get {
+                return ResourceManager.GetString("SettingsDialog_RequiredCredits", resourceCulture);
+            }
+        }
+        
+        internal static string Language_Czech {
+            get {
+                return ResourceManager.GetString("Language_Czech", resourceCulture);
+            }
+        }
+        
+        internal static string Language_English {
+            get {
+                return ResourceManager.GetString("Language_English", resourceCulture);
+            }
+        }
+        
+        internal static string LanguageAlert {
+            get {
+                return ResourceManager.GetString("LanguageAlert", resourceCulture);
+            }
+        }
     }
 }

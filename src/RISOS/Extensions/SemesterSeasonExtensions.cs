@@ -31,6 +31,7 @@ public static class SemesterSeasonExtensions
         {
             SemesterSeason.Winter => LanguageHelper.Winter,
             SemesterSeason.Summer => LanguageHelper.Summer,
+            SemesterSeason.Any => LanguageHelper.Any,
             _ => season.ToString()
         };
     }

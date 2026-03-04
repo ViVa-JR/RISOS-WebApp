@@ -1,0 +1,125 @@
+@using RISOS.Common.Components
+@using RISOS.Common.Flags
+@using RISOS.Enums
+@using RISOS.Extensions
+@using RISOS.Localization
+@using RISOS.Models
+@using RISOS.Pages.Home.Models
+@using RISOS.Services
+
+@inject LanguageService LanguageService
+
+<RDialog TReturn="SettingsDialogModel"
+         Title="@LanguageHelper.SettingsDialog_Title"
+         SubmitIcon="@Icons.Material.Filled.Save"
+         SubmitText="@LanguageHelper.SettingsDialog_Save"
+         OnSubmit="@OnSubmit">
+    <ContentOrCircularLoading IsLoading="_loading">
+        <MudStack Spacing="4" Class="pb-1">
+            <MudStack Spacing="2">
+                <MudText Typo="Typo.subtitle2" Color="Color.Primary">
+                    <b>@LanguageHelper.SettingsDialog_Language</b>
+                </MudText>
+
+                <MudToggleGroup T="AppLanguage" @bind-Value="_model.Language" Color="Color.Primary" SelectionMode="SelectionMode.SingleSelection" Class="w-100">
+                    <MudToggleItem Value="AppLanguage.Czech">
+                        <div class="d-flex align-center gap-2 pa-1">
+                            <CzechFlag Style="width: 40px; border-radius: 2px;"/>
+                            <MudText Typo="Typo.body2">@LanguageHelper.Language_Czech</MudText>
+                        </div>
+                    </MudToggleItem>
+                    <MudToggleItem Value="AppLanguage.English">
+                        <div class="d-flex align-center gap-2 pa-1">
+                            <EnglishFlag Style="width: 40px; border-radius: 2px;"/>
+                            <MudText Typo="Typo.body2">@LanguageHelper.Language_English</MudText>
+                        </div>
+                    </MudToggleItem>
+                </MudToggleGroup>
+                
+                @if (LanguageChanged)
+                {
+                    <MudAlert Variant="Variant.Outlined" Severity="Severity.Info" Dense>
+                        @LanguageHelper.LanguageAlert
+                    </MudAlert>
+                }
+            </MudStack>
+
+            <MudStack Spacing="2">
+                <MudText Typo="Typo.subtitle2" Color="Color.Primary">
+                    <b>@LanguageHelper.SettingsDialog_AcademicSettings</b>
+                </MudText>
+
+                <MudStack Spacing="2">
+                    <MudSwitch T="bool"
+                               Value="_overrideCredits"
+                               ValueChanged="OnOverrideToggled"
+                               Color="Color.Primary"
+                               Label="@LanguageHelper.SettingsDialog_OverrideCredits"/>
+                    <MudNumericField T="int?"
+                                     @bind-Value="_model.Credits"
+                                     Disabled="@(!_overrideCredits)"
+                                     Label="@LanguageHelper.SettingsDialog_RequiredCredits"
+                                     Variant="Variant.Outlined"
+                                     Min="0"
+                                     Adornment="Adornment.End"
+                                     AdornmentText="@LanguageHelper.Cr"/>
+                </MudStack>
+            </MudStack>
+        </MudStack>
+    </ContentOrCircularLoading>
+</RDialog>
+
+@code {
+
+    [Parameter]
+    public required StudyContext StudyContext { get; set; }
+
+    private bool _loading = true;
+    private SettingsDialogModel _model = new();
+    private bool _overrideCredits;
+    private bool LanguageChanged => _model.Language != _originalLanguage;
+    private AppLanguage _originalLanguage;
+
+    protected override async Task OnInitializedAsync()
+    {
+        _model.Language = await LanguageService.GetAppLanguageAsync();
+        _originalLanguage = _model.Language;
+        _overrideCredits = StudyContext.CreditOverride.HasValue;
+
+        _loading = false;
+        await InvokeAsync(StateHasChanged);
+        await base.OnInitializedAsync();
+    }
+
+    private void OnOverrideToggled(bool isToggled)
+    {
+        _overrideCredits = isToggled;
+        if (!isToggled)
+        {
+            _model.Credits = null;
+        }
+    }
+
+    private Task<SettingsDialogModel> OnSubmit()
+    {
+        if (!_overrideCredits)
+        {
+            _model.Credits = null;
+        }
+
+        return Task.FromResult(_model);
+    }
+
+    public static async Task<DialogResult<SettingsDialogModel>> ShowAsync(IDialogService dialogService, StudyContext studyContext)
+    {
+        var dialog = await dialogService.ShowAsync<SettingsDialog>(string.Empty, new DialogParameters<SettingsDialog>
+        {
+            { x => x.StudyContext, studyContext }
+        }, new DialogOptions
+        {
+            FullWidth = true
+        });
+        return await dialog.GetResultAsync<SettingsDialogModel>();
+    }
+
+}

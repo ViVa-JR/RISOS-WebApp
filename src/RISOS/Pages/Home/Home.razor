@@ -3,13 +3,21 @@
 @using RISOS.Enums
 @using RISOS.Localization
 @using RISOS.Pages.Home.Components
+@using RISOS.Pages.Home.Dialogs.SettingsDialog
 @using RISOS.Pages.Home.Models
 @using RISOS.Services
 
 @inject UniversityService UniversityService
 @inject GitRepositoryInfoService GitRepositoryInfoService
+@inject IDialogService DialogService
+@inject LanguageService LanguageService
+@inject NavigationManager NavigationManager
 
 <style>
+    :root {
+        --dropzone-height: 250px;
+    }
+    
     .side-bar .mud-expand-panel {
         background: var(--mud-palette-primary);
         color: white;
@@ -87,15 +95,14 @@
     <AlwaysVisible>
         <MudStack Row Justify="Justify.Center" Spacing="2" AlignItems="AlignItems.Center" Wrap="Wrap.Wrap" Class="px-2 pb-2" Style="width: 100%">
             <MudTooltip Text="@LanguageHelper.Settings">
-                <MudIconButton Icon="@Icons.Material.Filled.Settings" Style="color: var(--mud-palette-drawer-text)" OnClick="@PrintLastDataUpdate"/>
+                <MudIconButton Icon="@Icons.Material.Filled.Settings" Style="color: var(--mud-palette-drawer-text)" OnClick="@OnSettingsClick"/>
             </MudTooltip>
             <MudTooltip Text="@LanguageHelper.Export">
-                <MudIconButton Icon="@Icons.Material.Filled.Download" Style="color: var(--mud-palette-drawer-text)"/>
+                <MudIconButton Icon="@Icons.Material.Filled.Download" Style="color: var(--mud-palette-drawer-text)" OnClick="@OnExportClick"/>
             </MudTooltip>
             <MudTooltip Text="@LanguageHelper.Import">
-                <MudIconButton Icon="@Icons.Material.Filled.Upload" Style="color: var(--mud-palette-drawer-text)"/>
+                <MudIconButton Icon="@Icons.Material.Filled.Upload" Style="color: var(--mud-palette-drawer-text)" OnClick="@OnImportClick"/>
             </MudTooltip>
-            <LanguageToggle/>
         </MudStack>
     </AlwaysVisible>
 </SideBar>
@@ -189,6 +196,36 @@
         {
             Console.WriteLine($@"Last data update: {result.Value}");
         }
+    }
+
+    private async Task OnSettingsClick()
+    {
+        PrintLastDataUpdate();
+        var result = await SettingsDialog.ShowAsync(DialogService, _studyContext);
+        if (result.IsCancelled || result.IsFailure)
+        {
+            return;
+        }
+
+        _studyContext.CreditOverride = result.Value.Credits;
+        //TODO save to localstorage so the refresh doesn't remove the override
+        
+        var language = await LanguageService.GetAppLanguageAsync();
+        if (result.Value.Language != language)
+        {
+            await LanguageService.SetAppLanguageAsync(result.Value.Language);
+            NavigationManager.NavigateTo(NavigationManager.Uri, forceLoad: true);
+        }
+    }
+
+    private Task OnExportClick()
+    {
+        throw new NotImplementedException();
+    }
+
+    private Task OnImportClick()
+    {
+        throw new NotImplementedException();
     }
 
 }

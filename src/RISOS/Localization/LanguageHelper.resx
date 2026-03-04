@@ -277,9 +277,96 @@
         <value>Year total</value>
     </data>
     <data name="UnassignedSubjects" xml:space="preserve">
-        <value>UnassignedSubjects</value>
+        <value>Unassigned Subjects</value>
     </data>
     <data name="ShowCourseInfo" xml:space="preserve">
         <value>Show course info</value>
+    </data>
+    <data name="Name" xml:space="preserve">
+        <value>Name</value>
+    </data>
+    <data name="IsRequired_y" xml:space="preserve">
+        <value>is required</value>
+    </data>
+    <data name="IsRequired_a" xml:space="preserve">
+        <value>is required</value>
+    </data>
+    <data name="Abbreviation" xml:space="preserve">
+        <value>Abbreviation</value>
+    </data>
+    <data name="BasicInformation" xml:space="preserve">
+        <value>Basic Information</value>
+    </data>
+    <data name="AcademicDetails" xml:space="preserve">
+        <value>Academic Details</value>
+    </data>
+    <data name="Credits_y" xml:space="preserve">
+        <value>Credits</value>
+    </data>
+    <data name="SubjectType" xml:space="preserve">
+        <value>Subject type</value>
+    </data>
+    <data name="Classification" xml:space="preserve">
+        <value>Classification</value>
+    </data>
+    <data name="NotApplicable" xml:space="preserve">
+        <value>Not applicable</value>
+    </data>
+    <data name="SemesterSeason" xml:space="preserve">
+        <value>Semester Season</value>
+    </data>
+    <data name="CompletionType" xml:space="preserve">
+        <value>Completion Type</value>
+    </data>
+    <data name="MinimumSemester" xml:space="preserve">
+        <value>Minimum semester</value>
+    </data>
+    <data name="IMA" xml:space="preserve">
+        <value>e.g. Mathematical Analysis</value>
+    </data>
+    <data name="MinSemesterHelperText" xml:space="preserve">
+        <value>Earliest allowed semester</value>
+    </data>
+    <data name="Cancel" xml:space="preserve">
+        <value>Cancel</value>
+    </data>
+    <data name="Submit" xml:space="preserve">
+        <value>Submit</value>
+    </data>
+    <data name="Any" xml:space="preserve">
+        <value>Any</value>
+    </data>
+    <data name="IMAAbbreviation" xml:space="preserve">
+        <value>e.g. IMA1, IMA2</value>
+    </data>
+    <data name="Save" xml:space="preserve">
+        <value>Save</value>
+    </data>
+    <data name="SettingsDialog_Title" xml:space="preserve">
+    <value>Settings</value>
+  </data>
+    <data name="SettingsDialog_Save" xml:space="preserve">
+    <value>Save</value>
+  </data>
+    <data name="SettingsDialog_Language" xml:space="preserve">
+    <value>Language</value>
+  </data>
+    <data name="SettingsDialog_AcademicSettings" xml:space="preserve">
+    <value>Academic Settings</value>
+  </data>
+    <data name="SettingsDialog_OverrideCredits" xml:space="preserve">
+    <value>Override required credits</value>
+  </data>
+    <data name="SettingsDialog_RequiredCredits" xml:space="preserve">
+    <value>Required Credits</value>
+  </data>
+    <data name="Language_Czech" xml:space="preserve">
+    <value>Czech</value>
+  </data>
+    <data name="Language_English" xml:space="preserve">
+    <value>English</value>
+  </data>
+    <data name="LanguageAlert" xml:space="preserve">
+        <value>Language change forces refresh of the app after saving</value>
     </data>
 </root>
