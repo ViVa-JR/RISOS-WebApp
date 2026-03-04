@@ -115,7 +115,12 @@
     
     protected override async Task OnInitializedAsync()
     {
-        _faculties = await UniversityService.GetFacultiesWithProgramsAsync();
+        var result = await UniversityService.GetFacultiesWithProgramsAsync();
+        if (result.IsSuccess)
+        {
+            _faculties = result.Value;
+        }
+        
         _initialLoading = false;
         await InvokeAsync(StateHasChanged);
         await base.OnInitializedAsync();
