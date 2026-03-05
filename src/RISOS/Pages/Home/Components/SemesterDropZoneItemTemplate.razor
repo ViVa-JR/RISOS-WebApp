@@ -1,6 +1,6 @@
-@using Humanizer
 @using RISOS.Enums
 @using RISOS.Extensions
+@using RISOS.Localization
 @using RISOS.Pages.Home.Models
 
 <MudPaper Elevation="2" Style="cursor: grab; min-width: 280px">
@@ -25,16 +25,16 @@
                     <MudStack Row AlignItems="AlignItems.Center" Spacing="1">
                         @if (!Entry.IsAssigned)
                         {
-                            <MudChip T="SemesterSeason" Value="@Entry.Subject.SemesterSeason" Text="@Entry.Subject.SemesterSeason.Humanize()" Size="Size.Small" Variant="Variant.Text"
+                            <MudChip T="SemesterSeason" Value="@Entry.Subject.SemesterSeason" Text="@Entry.Subject.SemesterSeason.ToLabel()" Size="Size.Small" Variant="Variant.Text"
                                      Color="@Entry.Subject.SemesterSeason.ToColor()" Style="font-size: 0.7rem;"/>
                             <MudText Typo="Typo.caption" Color="Color.Secondary">•</MudText>
                         }
                         <MudText Typo="Typo.caption" Color="Color.Secondary">
-                            @Entry.Subject.Credits cr •
+                            @Entry.Subject.Credits @LanguageHelper.Cr •
                         </MudText>
                         <MudTooltip Text="@Entry.Subject.CompletionType.GetDescription()">
                             <MudText Typo="Typo.caption" Color="Color.Secondary">
-                                @Entry.Subject.CompletionType.Humanize().Replace(' ', ',').ToUpper()
+                                @Entry.Subject.CompletionType.ToLabel().ToUpper()
                             </MudText>
                         </MudTooltip>
                     </MudStack>
@@ -55,23 +55,23 @@
             </MudStack>
         </ActivatorContent>
         <ChildContent>
-            <MudMenu StartIcon="@Icons.Material.Filled.Subject" IconColor="Color.Primary" Label="Move to" Dense>
+            <MudMenu StartIcon="@Icons.Material.Filled.Subject" IconColor="Color.Primary" Label="@LanguageHelper.MoveTo" Dense>
                 @if (Entry.Semester != SubjectEntry.Unassigned)
                 {
-                    <MudMenuItem Label="Unassigned" OnClick="@(() => MoveEntry(SubjectEntry.Unassigned))"/>
+                    <MudMenuItem Label="@LanguageHelper.Unassigned" OnClick="@(() => MoveEntry(SubjectEntry.Unassigned))"/>
                 }
 
                 @foreach (var semester in Enumerable.Range(1, SemesterCount))
                 {
                     if (CanMove(semester))
                     {
-                        <MudMenuItem Label="@($"{semester}. Semester")" OnClick="@(() => MoveEntry(semester.ToString()))"/>
+                        <MudMenuItem Label="@($"{semester}. {LanguageHelper.Semester}")" OnClick="@(() => MoveEntry(semester.ToString()))"/>
                     }
                 }
             </MudMenu>
             @if (Entry.Subject.Type != SubjectType.Compulsory)
             {
-                <MudMenuItem Icon="@Icons.Material.Filled.Delete" IconColor="Color.Error" Label="Delete" OnClick="@(() => RemoveEntry.InvokeAsync(Entry))"/>
+                <MudMenuItem Icon="@Icons.Material.Filled.Delete" IconColor="Color.Error" Label="@LanguageHelper.Delete" OnClick="@(() => RemoveEntry.InvokeAsync(Entry))"/>
             } 
         </ChildContent>
     </MudMenu>

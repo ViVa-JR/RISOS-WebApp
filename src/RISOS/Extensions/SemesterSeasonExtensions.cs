@@ -1,5 +1,6 @@
 using MudBlazor;
 using RISOS.Enums;
+using RISOS.Localization;
 
 namespace RISOS.Extensions;
 
@@ -25,5 +26,13 @@ public static class SemesterSeasonExtensions
 
             return season is SemesterSeason.Summer ? isEvenSemester : !isEvenSemester;
         }
+
+        public string ToLabel() => season switch
+        {
+            SemesterSeason.Winter => LanguageHelper.Winter,
+            SemesterSeason.Summer => LanguageHelper.Summer,
+            SemesterSeason.Any => LanguageHelper.Any,
+            _ => season.ToString()
+        };
     }
 }

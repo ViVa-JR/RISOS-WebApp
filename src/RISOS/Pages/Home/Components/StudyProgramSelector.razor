@@ -1,4 +1,5 @@
 @using MudExtensions
+@using RISOS.Localization
 @using RISOS.Pages.Home.Models
 @using RISOS.Services
 
@@ -37,7 +38,7 @@
         <MudTextField T="string"
                       Value="_searchString"
                       ValueChanged="OnSearchStringChanged"
-                      Placeholder="Search"
+                      Placeholder="@LanguageHelper.Search"
                       Adornment="Adornment.Start"
                       DebounceInterval="300"
                       AdornmentIcon="@Icons.Material.Filled.Search"
@@ -114,7 +115,12 @@
     
     protected override async Task OnInitializedAsync()
     {
-        _faculties = await UniversityService.GetFacultiesWithProgramsAsync();
+        var result = await UniversityService.GetFacultiesWithProgramsAsync();
+        if (result.IsSuccess)
+        {
+            _faculties = result.Value;
+        }
+        
         _initialLoading = false;
         await InvokeAsync(StateHasChanged);
         await base.OnInitializedAsync();

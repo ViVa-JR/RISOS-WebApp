@@ -1,4 +1,6 @@
 using Microsoft.JSInterop;
+using RISOS.Enums;
+using RISOS.Extensions;
 using System.Net.NetworkInformation;
 using System.Text.Json;
 
@@ -37,12 +39,12 @@ public class LocalStorageService(IJSRuntime  js)
         try
         {
             var language = await js.InvokeAsync<string>("localStorage.getItem", UserLanguage);
-            return string.IsNullOrEmpty(language) ? "en" : language;
+            return string.IsNullOrEmpty(language) ? AppLanguage.English.ToCultureString() : language;
         }
         catch
         {
             await js.InvokeVoidAsync("localStorage.removeItem", UserLanguage);
-            return "en";
+            return AppLanguage.English.ToCultureString();
         }
     }
 

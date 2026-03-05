@@ -1,23 +1,111 @@
-@using Humanizer
 @using RISOS.Enums
 @using RISOS.Extensions
+@using RISOS.Localization
 @using RISOS.Models
 @using RISOS.Pages.Home.Models
 
+@inject IJSRuntime Js
+
+<script>
+    window.setupDropzoneHeightObserver = function (elementId, cssVariableName) {
+        if (!window.__dropzoneRegistry) {
+            window.__dropzoneRegistry = new Map();
+        }
+
+        const targetElement = document.getElementById(elementId);
+        if (!targetElement) {
+            return;
+        }
+        
+        const existingData = window.__dropzoneRegistry.get(elementId);
+        if (existingData) {
+            if (existingData.mutObs) existingData.mutObs.disconnect();
+            if (existingData.resObs) existingData.resObs.disconnect();
+        }
+
+        let debounceTimer = null;
+
+        const calculateTrueHeight = () => {
+            const maxHeights = {};
+
+            window.__dropzoneRegistry.forEach((data, id) => {
+                if (!maxHeights[data.cssVar]) {
+                    maxHeights[data.cssVar] = 250;
+                }
+
+                const el = document.getElementById(id);
+                if (el && el.offsetParent !== null) {
+                    const parentRect = el.getBoundingClientRect();
+                    let lowestChildBottom = parentRect.top;
+
+                    const children = el.children;
+                    for (let i = 0; i < children.length; i++) {
+                        const child = children[i];
+
+                        if (child.style.display === 'none' ||
+                            child.style.position === 'absolute' ||
+                            child.style.position === 'fixed' ||
+                            child.classList.contains('mud-drop-item-preview')) {
+                            continue;
+                        }
+
+                        const childRect = child.getBoundingClientRect();
+                        if (childRect.bottom > lowestChildBottom) {
+                            lowestChildBottom = childRect.bottom;
+                        }
+                    }
+
+                    const contentHeight = (lowestChildBottom - parentRect.top) + 16;
+
+                    if (contentHeight > maxHeights[data.cssVar]) {
+                        maxHeights[data.cssVar] = contentHeight;
+                    }
+                }
+            });
+
+            for (const [cssVar, height] of Object.entries(maxHeights)) {
+                document.documentElement.style.setProperty(cssVar, `${Math.ceil(height)}px`);
+            }
+        };
+
+        const triggerRecalculation = () => {
+            if (debounceTimer) {
+                clearTimeout(debounceTimer);
+            }
+            debounceTimer = setTimeout(calculateTrueHeight, 40);
+        };
+
+        const mutObs = new MutationObserver(triggerRecalculation);
+        mutObs.observe(targetElement, {childList: true, subtree: true});
+
+        const resObs = new ResizeObserver(triggerRecalculation);
+        resObs.observe(targetElement);
+
+        window.__dropzoneRegistry.set(elementId, {
+            cssVar: cssVariableName,
+            mutObs: mutObs,
+            resObs: resObs
+        });
+
+        triggerRecalculation();
+    };
+</script>
+
 <MudStack Spacing="0" Class="flex-grow-1">
-    <MudDropZone T="SubjectEntry" Identifier="@Semester.ToString()"
+    <MudDropZone T="SubjectEntry"
+                 Identifier="@Semester.ToString()"
+                 id="@($"dropzone-{Semester}")"
                  Class="pa-2 flex-grow-1 d-flex flex-column gap-2 border-2 border-b-0 border-dashed mud-border-lines-default rounded-t-lg"
-                 Style="min-height: 250px"
+                 Style="@($"min-height: var({CssVariableName}, 250px);")"
                  CanDrop="CanDrop">
         <ChildContent>
             <MudStack Row Spacing="1" AlignItems="AlignItems.Center" Class="pa-2 border-b mud-border-lines-default mud-background-gray rounded-t-lg">
-                <MudText Typo="Typo.subtitle1" Class="font-weight-bold">@Semester. Semester •</MudText>
-                <MudChip T="SemesterSeason" Value="@SemesterSeason" Text="@SemesterSeason.Humanize()" Size="Size.Small" Variant="Variant.Text"
+                <MudText Typo="Typo.subtitle1" Class="font-weight-bold">@Semester. @LanguageHelper.Semester •</MudText>
+                <MudChip T="SemesterSeason" Value="@SemesterSeason" Text="@SemesterSeason.ToLabel()" Size="Size.Small" Variant="Variant.Text"
                          Color="@SemesterSeason.ToColor()"/>
             </MudStack>
         </ChildContent>
     </MudDropZone>
-
     <MudStack AlignItems="AlignItems.Center" Row Justify="Justify.FlexEnd" Spacing="1" Class="border-2 border-t-0 border-dashed mud-border-lines-default rounded-b-lg pa-2">
         @if (Credits.Completed > 0)
         {
@@ -25,13 +113,13 @@
             <MudText Typo="Typo.body1" Color="Color.Secondary">/</MudText>
         }
         <MudText Typo="Typo.body1" Color="Color.Secondary">
-            @Credits.Registered credits
+            @Credits.Registered @LanguageHelper.Credits
         </MudText>
     </MudStack>
-
 </MudStack>
 
 @code {
+
     [Parameter, EditorRequired]
     public required int Semester { get; set; }
 
@@ -41,8 +129,17 @@
     [Parameter]
     public Credits Credits { get; set; } = new();
 
+    private bool IsOddSemester => Semester % 2 != 0;
+    private string CssVariableName => IsOddSemester ? "--dropzone-height-odd" : "--dropzone-height-even";
+
     public bool CanDrop(SubjectEntry entry)
         => Semester < 1 || ((entry.Subject.SemesterSeason == SemesterSeason || entry.Subject.SemesterSeason == SemesterSeason.Any)
-           && entry.Subject.MinSemester <= Semester);
+                            && entry.Subject.MinSemester <= Semester);
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        await Js.InvokeVoidAsync("setupDropzoneHeightObserver", $"dropzone-{Semester}", CssVariableName);
+        await base.OnAfterRenderAsync(firstRender);
+    }
 
 }
