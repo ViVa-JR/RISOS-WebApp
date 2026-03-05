@@ -95,7 +95,7 @@
                 <MudIconButton 
                     Icon="@Icons.Material.Filled.Download" 
                     Style="color: var(--mud-palette-drawer-text)"
-                    OnClick="HandleExport"/>
+                               OnClick="@(() => ExportService.HandleExportAsync())" />
             </MudTooltip>
             <MudTooltip Text="Import">
                 <MudFileUpload T="IBrowserFile" FilesChanged="HandleImport" Accept=".json">
@@ -186,26 +186,6 @@
         Console.WriteLine($"Last data update: {lastUpdate}");
     }
 
-    private async Task HandleExport()
-    {
-        // if (_selectedProgram is null)
-        // {
-        //     Console.WriteLine("No study program selected for export.");
-        //     return;
-        // }
-        var exportState = await LocalStorageService.GetExportStateAsync();
-
-
-        if (exportState != null)
-        {
-            await ExportService.DownloadJsonAsync(exportState, "risos_backup.json");
-        }
-        else
-        {
-            var defaultState = new AppState();
-            await ExportService.DownloadJsonAsync(defaultState, "risos_default.json");
-        }
-    }
 
     private async Task HandleImport(IBrowserFile file)
     {

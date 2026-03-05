@@ -1,9 +1,10 @@
 ﻿using Microsoft.JSInterop;
+using RISOS.Services;
 using System.Text.Encodings.Web;
 using System.Text.Json;
 using System.Text.Unicode;
 
-public class ExportService(IJSRuntime js)
+public class ExportService(IJSRuntime js, LocalStorageService localStorageService)
 {
     public async Task DownloadJsonAsync<T>(T data, string fileName)
     {
@@ -26,5 +27,26 @@ public class ExportService(IJSRuntime js)
                 URL.revokeObjectURL(url);
             }})('{fileName}', `{json.Replace("`", "\\`")}`)
         ");
+    }
+
+    public async Task HandleExportAsync()
+    {
+        // if (_selectedProgram is null)
+        // {
+        //     Console.WriteLine("No study program selected for export.");
+        //     return;
+        // }
+        var exportState = await localStorageService.GetExportStateAsync();
+
+
+        if (exportState != null)
+        {
+            await this.DownloadJsonAsync(exportState, "risos_backup.json");
+        }
+        else
+        {
+            var defaultState = new AppState();
+            await this.DownloadJsonAsync(defaultState, "risos_default.json");
+        }
     }
 }
