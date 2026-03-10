@@ -39,8 +39,14 @@ public static class FacultyMapper
             credits = (int)studyDuration * 60;
         }
         
+        var name = dto.Name;
+        if (dto.StudyType != string.Empty)
+        {
+            name += " (" + dto.StudyType + ")";   
+        }
+        
         return new StudyProgram(
-            Title: dto.Name,
+            Title: name,
             Abbreviation: dto.Code,
             StudyDuration: studyDuration,
             Credits: credits,

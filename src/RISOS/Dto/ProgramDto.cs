@@ -19,6 +19,9 @@ public class ProgramDto
     [JsonPropertyName("doba_studia")]
     public string StudyDuration { get; set; } = string.Empty;
     
+    [JsonPropertyName("typ_studia")]
+    public string StudyType { get; set; } = string.Empty;
+    
     [JsonPropertyName("kredity")]
     public string Credits { get; set; } = string.Empty;
     
