@@ -1,10 +1,10 @@
 ﻿namespace RISOS.Services
 {
-    public class ImportService(ThemeStateService themeStateService)
+    public class ImportService(LocalStorageService localStorageService)
     {
         public async Task SaveFullStateAsync(AppState state)
         {
-            await themeStateService.SetDarkMode(state.IsDarkMode);
+            await localStorageService.SaveProgramAbbreviation(state.ProgramAbbreviation);
         }
     }
 }

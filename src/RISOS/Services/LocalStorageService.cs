@@ -10,6 +10,7 @@ public class LocalStorageService(IJSRuntime  js)
 {
     private const string UserTheme = "user-theme";
     private const string UserLanguage = "user-language";
+    private const string programAbbreviation = "subject-id";
 
     public async Task SaveTheme(bool isDark)
     {
@@ -28,7 +29,34 @@ public class LocalStorageService(IJSRuntime  js)
             return true;
         }
     }
-    
+
+    public async Task SaveProgramAbbreviation(string? ProgramAbbreviation)
+    {
+        if (string.IsNullOrEmpty(ProgramAbbreviation))
+        {
+            await js.InvokeVoidAsync("localStorage.removeItem", programAbbreviation);
+        }
+        else
+        {
+            await js.InvokeVoidAsync("localStorage.setItem", programAbbreviation, ProgramAbbreviation);
+        }
+    }
+
+    public async Task<string?> LoadProgramAbbreviation()
+    {
+        try
+        {
+            var id = await js.InvokeAsync<string>("localStorage.getItem", programAbbreviation);
+            return string.IsNullOrEmpty(id) ? null : id;
+        }
+        catch
+        {
+            await js.InvokeVoidAsync("localStorage.removeItem", programAbbreviation);
+            return null;
+        }
+    }
+
+
     public async Task SaveLanguage(string language)
     {
         await js.InvokeVoidAsync("localStorage.setItem", UserLanguage, language);
@@ -51,7 +79,7 @@ public class LocalStorageService(IJSRuntime  js)
     public async Task<AppState> GetExportStateAsync()
     {
         var state = new AppState();
-        state.IsDarkMode = await LoadTheme();
+        state.ProgramAbbreviation = await LoadProgramAbbreviation();
         return state;
     }
 }

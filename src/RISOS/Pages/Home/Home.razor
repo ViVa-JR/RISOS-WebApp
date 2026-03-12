@@ -161,6 +161,7 @@
     private async Task OnSelectedProgramsChanged(StudyProgram? program)
     {
         _selectedProgram = program;
+        await LocalStorageService.SaveProgramAbbreviation(program?.Abbreviation);
 
         Console.WriteLine($@"Selected {_selectedProgram?.Abbreviation ?? "no"} study program");
 
@@ -258,6 +259,17 @@
             if (validatedData != null)
             {
                 await ImportService.SaveFullStateAsync(validatedData);
+                var result = await UniversityService.GetFacultiesWithProgramsAsync();
+                
+                var programAbbreviation = await LocalStorageService.LoadProgramAbbreviation();
+                if (!string.IsNullOrEmpty(programAbbreviation))
+                {
+                    var program = result.Value.SelectMany(f => f.Programs).FirstOrDefault(p => p.Abbreviation == programAbbreviation);
+                    if (program != null)
+                    {
+                        _selectedProgram = program;
+                    }
+                }
             }
         }
         catch (Exception ex)
