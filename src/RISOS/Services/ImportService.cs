@@ -2,7 +2,7 @@
 {
     public class ImportService(LocalStorageService localStorageService)
     {
-        public async Task SaveFullStateAsync(AppState state)
+        public async Task ApplyAppStateAsync(AppState state)
         {
             await localStorageService.SaveProgramAbbreviation(state.ProgramAbbreviation);
         }

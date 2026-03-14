@@ -1,0 +1,146 @@
+﻿@using Microsoft.AspNetCore.Components.Forms
+@using RISOS.Common.Components
+@using RISOS.Localization
+@using RISOS.Services
+@using RISOS.Models
+@using RISOS.Extensions
+
+@namespace RISOS.Pages.Home.Dialogs.ImportDialog
+
+<RDialog TReturn="AppState"
+         Title="@LanguageHelper.ImportJSON"
+         SubmitText="@LanguageHelper.Import"
+         SubmitIcon="@Icons.Material.Filled.Upload"
+         OnSubmit="@OnSubmit"
+         @ref="_rDialog">
+    
+    <MudStack Style="width: 100%; min-width: 400px">
+        <MudText Typo="Typo.body2" Class="mb-2">
+            @LanguageHelper.UploadData
+        </MudText>
+
+        <MudFileUpload T="IBrowserFile"
+                       FilesChanged="OnFilesChanged"
+                       Accept=".json"
+                       Hidden="false"
+                       InputClass="absolute mud-width-full mud-height-full overflow-hidden z-20"
+                       InputStyle="opacity:0"
+                       @ondragenter="@(() => _dragClass = "mud-border-primary")"
+                       @ondragleave="@(() => _dragClass = string.Empty)">
+            <ActivatorContent>
+                <MudPaper Outlined="true"
+                          Class="@($"d-flex flex-column align-center justify-center mud-width-full py-12 border-2 border-dashed {(_isSubmitAttempted ? "mud-border-error" : _dragClass)}")">
+                    @if (_selectedFile != null)
+                    {//TODO repair clean button
+                        <MudIconButton Icon="@Icons.Material.Filled.Close"
+                                        Size="Size.Small"
+                                        Color="Color.Error"
+                                        Class="position-absolute"
+                                        Style="top:8px; right:8px;"
+                                        OnClick="ClearFile"/>
+                    }
+
+                    @if (_selectedFile == null)
+                    {
+                        <MudIcon Icon="@Icons.Material.Filled.CloudUpload" Size="Size.Large" Color="Color.Primary" />
+                    }
+                    else
+                    {
+                        <MudIcon Icon="@Icons.Material.Filled.InsertDriveFile" Color="Color.Primary" />
+                    }
+                    <MudText Typo="Typo.h6" Class="mt-2">
+                        @(_selectedFile == null ? LanguageHelper.DropJSON : _selectedFile.Name)
+                    </MudText>
+                </MudPaper>
+                @if (_isSubmitAttempted && _selectedFile == null)
+                {
+                    <MudText Typo="Typo.caption" Color="Color.Error" Class="ml-1 mt-1">
+                        @LanguageHelper.MissingFile
+                    </MudText>
+                }
+            </ActivatorContent>
+        </MudFileUpload>
+
+        @if (_importError != null)
+        {
+            <MudAlert Severity="Severity.Error" Class="mt-2">@_importError</MudAlert>
+        }
+    </MudStack>
+</RDialog>
+
+@code {
+    private RDialog<AppState> _rDialog = null!;
+    private IBrowserFile? _selectedFile;
+    private AppState? _validatedData;
+    private string _dragClass = string.Empty;
+    private string? _importError;
+    private bool _isSubmitAttempted = false;
+
+    [Inject] private ISnackbar Snackbar { get; set; } = null!;
+
+    private async Task OnFilesChanged(IBrowserFile file)
+    {
+        _dragClass = string.Empty;
+        _importError = null;
+
+        if (file == null) return;
+
+        try
+        {
+            if (!file.Name.EndsWith(".json"))
+            {
+                _importError = LanguageHelper.InvalidFormat;
+                _selectedFile = null;
+                return;
+            }
+
+            using var stream = file.OpenReadStream(maxAllowedSize: 2048000);
+            using var reader = new StreamReader(stream);
+            var content = await reader.ReadToEndAsync();
+
+            _validatedData = System.Text.Json.JsonSerializer.Deserialize<AppState>(content);
+
+            if (_validatedData != null)
+            {
+                _isSubmitAttempted = false;
+                _selectedFile = file;
+                Snackbar.Add(LanguageHelper.FileVerified, Severity.Success);
+            }
+        }
+        catch (Exception)
+        {
+            _importError = LanguageHelper.FileInvalid;
+            _selectedFile = null;
+        }
+    }
+
+    private void ClearFile()
+    {
+        _selectedFile = null;
+        _validatedData = null;
+        _importError = null;
+        _isSubmitAttempted = false;
+    }
+
+    private Task<AppState?> OnSubmit()
+    {
+        if (_validatedData == null)
+        {
+            _isSubmitAttempted = true;
+            StateHasChanged();
+            //TODO change RDIalog to not close when validation fails
+            throw new InvalidOperationException("Validation failed");
+        }
+            return Task.FromResult<AppState?>(_validatedData);       
+    }
+
+    public static async Task<DialogResult<AppState>> ShowAsync(IDialogService dialogService)
+    {
+        var dialog = await dialogService.ShowAsync<ImportDialog>(string.Empty, new DialogOptions
+        {
+            FullWidth = true,
+            MaxWidth = MaxWidth.Small
+        });
+        return await dialog.GetResultAsync<AppState>();
+    }
+}

@@ -1,365 +1,498 @@
+<?xml version="1.0" encoding="utf-8"?>
 <root>
-    <resheader name="resmimetype">
-        <value>text/microsoft-resx</value>
-    </resheader>
-    <resheader name="version">
-        <value>1.3</value>
-    </resheader>
-    <resheader name="reader">
-        <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-    </resheader>
-    <resheader name="writer">
-        <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-    </resheader>
-    <data name="Compulsory" xml:space="preserve">
-        <value>Povinné</value>
-    </data>
-    <data name="LanguageToggleTooltip" xml:space="preserve">
-        <value>Změnit jazyk</value>
-    </data>
-    <data name="CompulsoryElective" xml:space="preserve">
-        <value>Povinně-Volitelné</value>
-    </data>
-    <data name="Elective" xml:space="preserve">
-        <value>Volitelné</value>
-    </data>
-    <data name="StudyProgram" xml:space="preserve">
-        <value>Studijní program</value>
-    </data>
-    <data name="Semester" xml:space="preserve">
-        <value>Semestr</value>
-    </data>
-    <data name="Group" xml:space="preserve">
-        <value>Skupina</value>
-    </data>
-    <data name="Settings" xml:space="preserve">
-        <value>Nastavení</value>
-    </data>
-    <data name="Export" xml:space="preserve">
-        <value>Stáhnout</value>
-    </data>
-    <data name="Import" xml:space="preserve">
-        <value>Nahrát</value>
-    </data>
-    <data name="Search" xml:space="preserve">
-        <value>Vyhledat</value>
-    </data>
-    <data name="RemoveRecognizedYear" xml:space="preserve">
-        <value>Odebrat uznaný rok</value>
-    </data>
-    <data name="AddRecognizedYear" xml:space="preserve">
-        <value>Přidat uznaný rok</value>
-    </data>
-    <data name="StudyProgress" xml:space="preserve">
-        <value>Průběh studia</value>
-    </data>
-    <data name="Completed" xml:space="preserve">
-        <value>Dokončené</value>
-    </data>
-    <data name="Registered" xml:space="preserve">
-        <value>Registrované</value>
-    </data>
-    <data name="Required" xml:space="preserve">
-        <value>Požadované</value>
-    </data>
-    <data name="RequiredWarning" xml:space="preserve">
-        <value>Nepodařilo se ověřit požadované kredity. Pro úpravu přejděte do nastavení.</value>
-    </data>
-    <data name="Duration" xml:space="preserve">
-        <value>Doba studia</value>
-    </data>
-    <data name="Years_One" xml:space="preserve">
-        <value>Rok</value>
-    </data>
-    <data name="Years_Few" xml:space="preserve">
-        <value>Roky</value>
-    </data>
-    <data name="Years_Many" xml:space="preserve">
-        <value>Let</value>
-    </data>
-    <data name="AdjustYears" xml:space="preserve">
-        <value>Úprava doby studia</value>
-    </data>
-    <data name="Add" xml:space="preserve">
-        <value>Přidat</value>
-    </data>
-    <data name="AddCustomSubject" xml:space="preserve">
-        <value>Přidat vlastní předmět</value>
-    </data>
-    <data name="CompulsorySingle" xml:space="preserve">
-        <value>Povinný</value>
-    </data>
-    <data name="CompulsoryElectiveSingle" xml:space="preserve">
-        <value>Povinně-Volitelný</value>
-    </data>
-    <data name="ElectiveSingle" xml:space="preserve">
-        <value>Volitelný</value>
-    </data>
-    <data name="Winter" xml:space="preserve">
-        <value>Zimní</value>
-    </data>
-    <data name="Summer" xml:space="preserve">
-        <value>Letní</value>
-    </data>
-    <data name="Cr" xml:space="preserve">
-        <value>kr</value>
-    </data>
-    <data name="Credits" xml:space="preserve">
-        <value>kreditů</value>
-    </data>
-    <data name="CompletionTypeNone" xml:space="preserve">
-        <value>Bez ukončení</value>
-    </data>
-    <data name="CompletionTypeCr" xml:space="preserve">
-        <value>Zápočet</value>
-    </data>
-    <data name="CompletionTypeGCr" xml:space="preserve">
-        <value>Klasifikovaný zápočet</value>
-    </data>
-    <data name="CompletionTypeCrEx" xml:space="preserve">
-        <value>Zápočet a zkouška</value>
-    </data>
-    <data name="CompletionTypeEx" xml:space="preserve">
-        <value>Zkouška</value>
-    </data>
-    <data name="CompletionTypeCol" xml:space="preserve">
-        <value>Kolokvium</value>
-    </data>
-    <data name="CompletionTypeKp" xml:space="preserve">
-        <value>Klauzurní práce</value>
-    </data>
-    <data name="CompletionTypeRec" xml:space="preserve">
-        <value>Uznán</value>
-    </data>
-    <data name="CompletionTypeSzz" xml:space="preserve">
-        <value>Státní závěrečná zkouška</value>
-    </data>
-    <data name="CompletionTypeRCr" xml:space="preserve">
-        <value>Uznaný zápočet</value>
-    </data>
-    <data name="CompletionTypeRgCr" xml:space="preserve">
-        <value>Uznaný klas. zápočet</value>
-    </data>
-    <data name="CompletionTypeRCrEx" xml:space="preserve">
-        <value>Uznaný zápočet a zkouška</value>
-    </data>
-    <data name="CompletionTypeREx" xml:space="preserve">
-        <value>Uznaná zkouška</value>
-    </data>
-    <data name="CompletionTypeHs" xml:space="preserve">
-        <value>Hodnocení studia</value>
-    </data>
-    <data name="CompletionTypeHds" xml:space="preserve">
-        <value>Hodnocení dokt. studia</value>
-    </data>
-    <data name="CompletionTypeUpZa" xml:space="preserve">
-        <value>Uznaný pouze zápočet</value>
-    </data>
-    <data name="CompletionTypeRVol" xml:space="preserve">
-        <value>Uznaný ročník</value>
-    </data>
-    <data name="CompletionTypeCrFsp" xml:space="preserve">
-        <value>Zápočet a klauzurní práce</value>
-    </data>
-    <data name="CompletionTypeDrEx" xml:space="preserve">
-        <value>Doktorská zkouška</value>
-    </data>
-    <data name="CompletionTypeRecCr" xml:space="preserve">
-        <value>Uznaná doktorská zkouška</value>
-    </data>
-    <data name="CompletionTypeExDd" xml:space="preserve">
-        <value>Mimo DD</value>
-    </data>
-    <data name="CompletionTypeSpEx" xml:space="preserve">
-        <value>Specializační zkouška</value>
-    </data>
-    <data name="CompletionTypeSpCrEx" xml:space="preserve">
-        <value>Specializační zápočet a zkouška</value>
-    </data>
-    <data name="CompletionTypeRCol" xml:space="preserve">
-        <value>Uznané kolokvium</value>
-    </data>
-    <data name="CompletionTypeUnknown" xml:space="preserve">
-        <value>Neznámé</value>
-    </data>
-    <data name="Delete" xml:space="preserve">
-        <value>Smazat</value>
-    </data>
-    <data name="MoveTo" xml:space="preserve">
-        <value>Přesunout do</value>
-    </data>
-    <data name="Unassigned" xml:space="preserve">
-        <value>Nezařazené</value>
-    </data>
-    <data name="CompletionTypeShortNone" xml:space="preserve">
-    <value>-</value>
-    </data>
-    <data name="CompletionTypeShortCr" xml:space="preserve">
-        <value>zá</value>
-    </data>
-    <data name="CompletionTypeShortGCr" xml:space="preserve">
-        <value>kl</value>
-    </data>
-    <data name="CompletionTypeShortCrEx" xml:space="preserve">
-        <value>zá,zk</value>
-    </data>
-    <data name="CompletionTypeShortEx" xml:space="preserve">
-        <value>zk</value>
-    </data>
-    <data name="CompletionTypeShortCol" xml:space="preserve">
-        <value>kol</value>
-    </data>
-    <data name="CompletionTypeShortKp" xml:space="preserve">
-        <value>kp</value>
-    </data>
-    <data name="CompletionTypeShortRec" xml:space="preserve">
-        <value>u</value>
-    </data>
-    <data name="CompletionTypeShortRCr" xml:space="preserve">
-        <value>uzá</value>
-    </data>
-    <data name="CompletionTypeShortRgCr" xml:space="preserve">
-        <value>ukl</value>
-    </data>
-    <data name="CompletionTypeShortRCrEx" xml:space="preserve">
-        <value>uzá,uzk</value>
-    </data>
-    <data name="CompletionTypeShortREx" xml:space="preserve">
-        <value>uzk</value>
-    </data>
-    <data name="CompletionTypeShortHs" xml:space="preserve">
-        <value>hs</value>
-    </data>
-    <data name="CompletionTypeShortHds" xml:space="preserve">
-        <value>hds</value>
-    </data>
-    <data name="CompletionTypeShortUpZa" xml:space="preserve">
-        <value>upzá</value>
-    </data>
-    <data name="CompletionTypeShortRVol" xml:space="preserve">
-        <value>uro</value>
-    </data>
-    <data name="CompletionTypeShortCrFsp" xml:space="preserve">
-        <value>zá,kp</value>
-    </data>
-    <data name="CompletionTypeShortDrEx" xml:space="preserve">
-        <value>drzk</value>
-    </data>
-    <data name="CompletionTypeShortRecCr" xml:space="preserve">
-        <value>udrzk</value>
-    </data>
-    <data name="CompletionTypeShortExDd" xml:space="preserve">
-        <value>-DD</value>
-    </data>
-    <data name="CompletionTypeShortSpEx" xml:space="preserve">
-        <value>spzk</value>
-    </data>
-    <data name="CompletionTypeShortSpCrEx" xml:space="preserve">
-        <value>spzá,zk</value>
-    </data>
-    <data name="CompletionTypeShortRCol" xml:space="preserve">
-        <value>ukol</value>
-    </data>
-    <data name="CompletionTypeShortUnknown" xml:space="preserve">
-        <value>?</value>
-    </data>
-    <data name="YearTotal" xml:space="preserve">
-        <value>Celkem za rok</value>
-    </data>
-    <data name="UnassignedSubjects" xml:space="preserve">
-        <value>Nezařezené předměty</value>
-    </data>
-    <data name="ShowCourseInfo" xml:space="preserve">
-        <value>Zobrazit informace o předmětu</value>
-    </data>
-    <data name="Name" xml:space="preserve">
-        <value>Název</value>
-    </data>
-    <data name="IsRequired_y" xml:space="preserve">
-        <value>je povinný</value>
-    </data>
-    <data name="IsRequired_a" xml:space="preserve">
-        <value>je povinná</value>
-    </data>
-    <data name="Abbreviation" xml:space="preserve">
-        <value>Zkratka</value>
-    </data>
-    <data name="BasicInformation" xml:space="preserve">
-        <value>Základní informace</value>
-    </data>
-    <data name="Credits_y" xml:space="preserve">
-        <value>Kredity</value>
-    </data>
-    <data name="AcademicDetails" xml:space="preserve">
-        <value>Studijní parametry</value>
-    </data>
-    <data name="SubjectType" xml:space="preserve">
-        <value>Typ předmětu</value>
-    </data>
-    <data name="Classification" xml:space="preserve">
-        <value>Klasifikace předmětu</value>
-    </data>
-    <data name="NotApplicable" xml:space="preserve">
-        <value>Nepotřebné</value>
-    </data>
-    <data name="SemesterSeason" xml:space="preserve">
-        <value>Období</value>
-    </data>
-    <data name="CompletionType" xml:space="preserve">
-        <value>Forma ukončení</value>
-    </data>
-    <data name="MinimumSemester" xml:space="preserve">
-        <value>Minimální semestr</value>
-    </data>
-    <data name="IMA" xml:space="preserve">
-        <value>např.: Matematická Analýza</value>
-    </data>
-    <data name="MinSemesterHelperText" xml:space="preserve">
-        <value>Nejnižší povolený semestr pro zapsání</value>
-    </data>
-    <data name="Cancel" xml:space="preserve">
-        <value>Zrušit</value>
-    </data>
-    <data name="Submit" xml:space="preserve">
-        <value>Potvrdit</value>
-    </data>
-    <data name="Any" xml:space="preserve">
-        <value>Libovolné</value>
-    </data>
-    <data name="IMAAbbreviation" xml:space="preserve">
-        <value>nepř.: IMA1, IMA2</value>
-    </data>
-    <data name="Save" xml:space="preserve">
-        <value>Uložit</value>
-    </data>
-    <data name="SettingsDialog_Title" xml:space="preserve">
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="Compulsory" xml:space="preserve">
+    <value>Povinné</value>
+  </data>
+  <data name="LanguageToggleTooltip" xml:space="preserve">
+    <value>Změnit jazyk</value>
+  </data>
+  <data name="Import JSOn" xml:space="preserve">
+    <value>Povinně-Volitelné</value>
+  </data>
+  <data name="Elective" xml:space="preserve">
+    <value>Volitelné</value>
+  </data>
+  <data name="StudyProgram" xml:space="preserve">
+    <value>Studijní program</value>
+  </data>
+  <data name="Semester" xml:space="preserve">
+    <value>Semestr</value>
+  </data>
+  <data name="Group" xml:space="preserve">
+    <value>Skupina</value>
+  </data>
+  <data name="Settings" xml:space="preserve">
     <value>Nastavení</value>
   </data>
-    <data name="SettingsDialog_Save" xml:space="preserve">
-    <value>Uložit</value>
+  <data name="Export" xml:space="preserve">
+    <value>Stáhnout</value>
   </data>
-    <data name="SettingsDialog_Language" xml:space="preserve">
-    <value>Jazyk</value>
+  <data name="Import" xml:space="preserve">
+    <value>Nahrát</value>
   </data>
-    <data name="SettingsDialog_AcademicSettings" xml:space="preserve">
+  <data name="Search" xml:space="preserve">
+    <value>Vyhledat</value>
+  </data>
+  <data name="RemoveRecognizedYear" xml:space="preserve">
+    <value>Odebrat uznaný rok</value>
+  </data>
+  <data name="AddRecognizedYear" xml:space="preserve">
+    <value>Přidat uznaný rok</value>
+  </data>
+  <data name="StudyProgress" xml:space="preserve">
+    <value>Průběh studia</value>
+  </data>
+  <data name="Completed" xml:space="preserve">
+    <value>Dokončené</value>
+  </data>
+  <data name="Registered" xml:space="preserve">
+    <value>Registrované</value>
+  </data>
+  <data name="Required" xml:space="preserve">
+    <value>Požadované</value>
+  </data>
+  <data name="RequiredWarning" xml:space="preserve">
+    <value>Nepodařilo se ověřit požadované kredity. Pro úpravu přejděte do nastavení.</value>
+  </data>
+  <data name="Duration" xml:space="preserve">
+    <value>Doba studia</value>
+  </data>
+  <data name="Years_One" xml:space="preserve">
+    <value>Rok</value>
+  </data>
+  <data name="Years_Few" xml:space="preserve">
+    <value>Roky</value>
+  </data>
+  <data name="Years_Many" xml:space="preserve">
+    <value>Let</value>
+  </data>
+  <data name="AdjustYears" xml:space="preserve">
+    <value>Úprava doby studia</value>
+  </data>
+  <data name="Add" xml:space="preserve">
+    <value>Přidat</value>
+  </data>
+  <data name="AddCustomSubject" xml:space="preserve">
+    <value>Přidat vlastní předmět</value>
+  </data>
+  <data name="CompulsorySingle" xml:space="preserve">
+    <value>Povinný</value>
+  </data>
+  <data name="CompulsoryElectiveSingle" xml:space="preserve">
+    <value>Povinně-Volitelný</value>
+  </data>
+  <data name="ElectiveSingle" xml:space="preserve">
+    <value>Volitelný</value>
+  </data>
+  <data name="Winter" xml:space="preserve">
+    <value>Zimní</value>
+  </data>
+  <data name="Summer" xml:space="preserve">
+    <value>Letní</value>
+  </data>
+  <data name="Cr" xml:space="preserve">
+    <value>kr</value>
+  </data>
+  <data name="Credits" xml:space="preserve">
+    <value>kreditů</value>
+  </data>
+  <data name="CompletionTypeNone" xml:space="preserve">
+    <value>Bez ukončení</value>
+  </data>
+  <data name="CompletionTypeCr" xml:space="preserve">
+    <value>Zápočet</value>
+  </data>
+  <data name="CompletionTypeGCr" xml:space="preserve">
+    <value>Klasifikovaný zápočet</value>
+  </data>
+  <data name="CompletionTypeCrEx" xml:space="preserve">
+    <value>Zápočet a zkouška</value>
+  </data>
+  <data name="CompletionTypeEx" xml:space="preserve">
+    <value>Zkouška</value>
+  </data>
+  <data name="CompletionTypeCol" xml:space="preserve">
+    <value>Kolokvium</value>
+  </data>
+  <data name="CompletionTypeKp" xml:space="preserve">
+    <value>Klauzurní práce</value>
+  </data>
+  <data name="CompletionTypeRec" xml:space="preserve">
+    <value>Uznán</value>
+  </data>
+  <data name="CompletionTypeSzz" xml:space="preserve">
+    <value>Státní závěrečná zkouška</value>
+  </data>
+  <data name="CompletionTypeRCr" xml:space="preserve">
+    <value>Uznaný zápočet</value>
+  </data>
+  <data name="CompletionTypeRgCr" xml:space="preserve">
+    <value>Uznaný klas. zápočet</value>
+  </data>
+  <data name="CompletionTypeRCrEx" xml:space="preserve">
+    <value>Uznaný zápočet a zkouška</value>
+  </data>
+  <data name="CompletionTypeREx" xml:space="preserve">
+    <value>Uznaná zkouška</value>
+  </data>
+  <data name="CompletionTypeHs" xml:space="preserve">
+    <value>Hodnocení studia</value>
+  </data>
+  <data name="CompletionTypeHds" xml:space="preserve">
+    <value>Hodnocení dokt. studia</value>
+  </data>
+  <data name="CompletionTypeUpZa" xml:space="preserve">
+    <value>Uznaný pouze zápočet</value>
+  </data>
+  <data name="CompletionTypeRVol" xml:space="preserve">
+    <value>Uznaný ročník</value>
+  </data>
+  <data name="CompletionTypeCrFsp" xml:space="preserve">
+    <value>Zápočet a klauzurní práce</value>
+  </data>
+  <data name="CompletionTypeDrEx" xml:space="preserve">
+    <value>Doktorská zkouška</value>
+  </data>
+  <data name="CompletionTypeRecCr" xml:space="preserve">
+    <value>Uznaná doktorská zkouška</value>
+  </data>
+  <data name="CompletionTypeExDd" xml:space="preserve">
+    <value>Mimo DD</value>
+  </data>
+  <data name="CompletionTypeSpEx" xml:space="preserve">
+    <value>Specializační zkouška</value>
+  </data>
+  <data name="CompletionTypeSpCrEx" xml:space="preserve">
+    <value>Specializační zápočet a zkouška</value>
+  </data>
+  <data name="CompletionTypeRCol" xml:space="preserve">
+    <value>Uznané kolokvium</value>
+  </data>
+  <data name="CompletionTypeUnknown" xml:space="preserve">
+    <value>Neznámé</value>
+  </data>
+  <data name="Delete" xml:space="preserve">
+    <value>Smazat</value>
+  </data>
+  <data name="MoveTo" xml:space="preserve">
+    <value>Přesunout do</value>
+  </data>
+  <data name="Unassigned" xml:space="preserve">
+    <value>Nezařazené</value>
+  </data>
+  <data name="CompletionTypeShortCol" xml:space="preserve">
+    <value>kol</value>
+  </data>
+  <data name="CompletionTypeShortCr" xml:space="preserve">
+    <value>zá</value>
+  </data>
+  <data name="CompletionTypeShortCrEx" xml:space="preserve">
+    <value>zá,zk</value>
+  </data>
+  <data name="CompletionTypeShortCrFsp" xml:space="preserve">
+    <value>zá,kp</value>
+  </data>
+  <data name="CompletionTypeShortDrEx" xml:space="preserve">
+    <value>drzk</value>
+  </data>
+  <data name="CompletionTypeShortEx" xml:space="preserve">
+    <value>zk</value>
+  </data>
+  <data name="CompletionTypeShortExDd" xml:space="preserve">
+    <value>-DD</value>
+  </data>
+  <data name="CompletionTypeShortGCr" xml:space="preserve">
+    <value>kl</value>
+  </data>
+  <data name="CompletionTypeShortHds" xml:space="preserve">
+    <value>hds</value>
+  </data>
+  <data name="CompletionTypeShortHs" xml:space="preserve">
+    <value>hs</value>
+  </data>
+  <data name="CompletionTypeShortKp" xml:space="preserve">
+    <value>kp</value>
+  </data>
+  <data name="CompletionTypeShortNone" xml:space="preserve">
+    <value>-</value>
+  </data>
+  <data name="CompletionTypeShortRCol" xml:space="preserve">
+    <value>ukol</value>
+  </data>
+  <data name="CompletionTypeShortRCr" xml:space="preserve">
+    <value>uzá</value>
+  </data>
+  <data name="CompletionTypeShortRCrEx" xml:space="preserve">
+    <value>uzá,uzk</value>
+  </data>
+  <data name="CompletionTypeShortRec" xml:space="preserve">
+    <value>u</value>
+  </data>
+  <data name="CompletionTypeShortRecCr" xml:space="preserve">
+    <value>udrzk</value>
+  </data>
+  <data name="CompletionTypeShortREx" xml:space="preserve">
+    <value>uzk</value>
+  </data>
+  <data name="CompletionTypeShortRgCr" xml:space="preserve">
+    <value>ukl</value>
+  </data>
+  <data name="CompletionTypeShortRVol" xml:space="preserve">
+    <value>uro</value>
+  </data>
+  <data name="CompletionTypeShortSpCrEx" xml:space="preserve">
+    <value>spzá,zk</value>
+  </data>
+  <data name="CompletionTypeShortSpEx" xml:space="preserve">
+    <value>spzk</value>
+  </data>
+  <data name="CompletionTypeShortUnknown" xml:space="preserve">
+    <value>?</value>
+  </data>
+  <data name="CompletionTypeShortUpZa" xml:space="preserve">
+    <value>upzá</value>
+  </data>
+  <data name="YearTotal" xml:space="preserve">
+    <value>Celkem za rok</value>
+  </data>
+  <data name="UnassignedSubjects" xml:space="preserve">
+    <value>Nezařezené předměty</value>
+  </data>
+  <data name="ShowCourseInfo" xml:space="preserve">
+    <value>Zobrazit informace o předmětu</value>
+  </data>
+  <data name="Name" xml:space="preserve">
+    <value>Název</value>
+  </data>
+  <data name="IsRequired_y" xml:space="preserve">
+    <value>je povinný</value>
+  </data>
+  <data name="IsRequired_a" xml:space="preserve">
+    <value>je povinná</value>
+  </data>
+  <data name="Abbreviation" xml:space="preserve">
+    <value>Zkratka</value>
+  </data>
+  <data name="BasicInformation" xml:space="preserve">
+    <value>Základní informace</value>
+  </data>
+  <data name="AcademicDetails" xml:space="preserve">
     <value>Studijní parametry</value>
   </data>
-    <data name="SettingsDialog_OverrideCredits" xml:space="preserve">
+  <data name="Credits_y" xml:space="preserve">
+    <value>Kredity</value>
+  </data>
+  <data name="SubjectType" xml:space="preserve">
+    <value>Typ předmětu</value>
+  </data>
+  <data name="Classification" xml:space="preserve">
+    <value>Klasifikace předmětu</value>
+  </data>
+  <data name="NotApplicable" xml:space="preserve">
+    <value>Nepotřebné</value>
+  </data>
+  <data name="SemesterSeason" xml:space="preserve">
+    <value>Období</value>
+  </data>
+  <data name="CompletionType" xml:space="preserve">
+    <value>Forma ukončení</value>
+  </data>
+  <data name="MinimumSemester" xml:space="preserve">
+    <value>Minimální semestr</value>
+  </data>
+  <data name="IMA" xml:space="preserve">
+    <value>např.: Matematická Analýza</value>
+  </data>
+  <data name="MinSemesterHelperText" xml:space="preserve">
+    <value>Nejnižší povolený semestr pro zapsání</value>
+  </data>
+  <data name="Cancel" xml:space="preserve">
+    <value>Zrušit</value>
+  </data>
+  <data name="Submit" xml:space="preserve">
+    <value>Potvrdit</value>
+  </data>
+  <data name="Any" xml:space="preserve">
+    <value>Libovolné</value>
+  </data>
+  <data name="IMAAbbreviation" xml:space="preserve">
+    <value>nepř.: IMA1, IMA2</value>
+  </data>
+  <data name="Save" xml:space="preserve">
+    <value>Uložit</value>
+  </data>
+  <data name="SettingsDialog_Title" xml:space="preserve">
+    <value>Nastavení</value>
+  </data>
+  <data name="SettingsDialog_Save" xml:space="preserve">
+    <value>Uložit</value>
+  </data>
+  <data name="SettingsDialog_Language" xml:space="preserve">
+    <value>Jazyk</value>
+  </data>
+  <data name="SettingsDialog_AcademicSettings" xml:space="preserve">
+    <value>Studijní parametry</value>
+  </data>
+  <data name="SettingsDialog_OverrideCredits" xml:space="preserve">
     <value>Přepsat požadované kredity</value>
   </data>
-    <data name="SettingsDialog_RequiredCredits" xml:space="preserve">
+  <data name="SettingsDialog_RequiredCredits" xml:space="preserve">
     <value>Požadované kredity</value>
   </data>
-    <data name="Language_Czech" xml:space="preserve">
+  <data name="Language_Czech" xml:space="preserve">
     <value>Čeština</value>
   </data>
-    <data name="Language_English" xml:space="preserve">
+  <data name="Language_English" xml:space="preserve">
     <value>Angličtina</value>
   </data>
-    <data name="LanguageAlert" xml:space="preserve">
-        <value>Změna jazyka vynutí obnovení aplikace po uložení</value>
-    </data>
-    <data name="CompulsoryElectiveErrorMessage" xml:space="preserve">
-        <value>Musíte mít zvolený předmět z každé skupiny</value>
-    </data>
+  <data name="LanguageAlert" xml:space="preserve">
+    <value>Změna jazyka vynutí obnovení aplikace po uložení</value>
+  </data>
+  <data name="CompulsoryElectiveErrorMessage" xml:space="preserve">
+    <value>Musíte mít zvolený předmět z každé skupiny</value>
+  </data>
+  <data name="ImportJSON" xml:space="preserve">
+    <value>Importovat JSON</value>
+  </data>
+  <data name="UploadData" xml:space="preserve">
+    <value>Nahrajte soubor ve formátu JSON pro obnovení dat. </value>
+  </data>
+  <data name="DropJSON" xml:space="preserve">
+    <value>Přetáhněte JSON sem nebo klikněte</value>
+  </data>
+  <data name="CorrectFileType" xml:space="preserve">
+    <value>Soubor je správného typu</value>
+  </data>
+  <data name="CompulsoryElective" xml:space="preserve">
+    <value>Povinně-Volitelné</value>
+  </data>
+  <data name="InvalidFormat" xml:space="preserve">
+    <value>Neplatný formát. Vyberte prosím .json soubor.</value>
+  </data>
+  <data name="FileVerified" xml:space="preserve">
+    <value>Soubor byl úspěšně nahrán a ověřen.</value>
+  </data>
+  <data name="FileInvalid" xml:space="preserve">
+    <value>Soubor je poškozený nebo má neplatnou strukturu.</value>
+  </data>
+  <data name="MissingFile" xml:space="preserve">
+    <value>* Musíte vybrat soubor (.json) před importem.</value>
+  </data>
 </root>

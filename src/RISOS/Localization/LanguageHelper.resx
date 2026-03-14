@@ -1,375 +1,498 @@
 <?xml version="1.0" encoding="utf-8"?>
-
 <root>
-    <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
-        <xsd:element name="root" msdata:IsDataSet="true">
-            
-        </xsd:element>
-    </xsd:schema>
-    <resheader name="resmimetype">
-        <value>text/microsoft-resx</value>
-    </resheader>
-    <resheader name="version">
-        <value>1.3</value>
-    </resheader>
-    <resheader name="reader">
-        <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-    </resheader>
-    <resheader name="writer">
-        <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-    </resheader>
-    <data name="Compulsory" xml:space="preserve">
-        <value>Compulsory</value>
-    </data>
-    <data name="LanguageToggleTooltip" xml:space="preserve">
-        <value>Change language</value>
-    </data>
-    <data name="CompulsoryElective" xml:space="preserve">
-        <value>Compulsory-Elective</value>
-    </data>
-    <data name="Elective" xml:space="preserve">
-        <value>Elective</value>
-    </data>
-    <data name="StudyProgram" xml:space="preserve">
-        <value>Study program</value>
-    </data>
-    <data name="Semester" xml:space="preserve">
-        <value>Semester</value>
-    </data>
-    <data name="Group" xml:space="preserve">
-        <value>Group</value>
-    </data>
-    <data name="Settings" xml:space="preserve">
-        <value>Settings</value>
-    </data>
-    <data name="Export" xml:space="preserve">
-        <value>Export</value>
-    </data>
-    <data name="Import" xml:space="preserve">
-        <value>Import</value>
-    </data>
-    <data name="Search" xml:space="preserve">
-        <value>Search</value>
-    </data>
-    <data name="RemoveRecognizedYear" xml:space="preserve">
-        <value>Remove recognized year</value>
-    </data>
-    <data name="AddRecognizedYear" xml:space="preserve">
-        <value>Add recognized year</value>
-    </data>
-    <data name="StudyProgress" xml:space="preserve">
-        <value>Study progress</value>
-    </data>
-    <data name="Completed" xml:space="preserve">
-        <value>Completed</value>
-    </data>
-    <data name="Registered" xml:space="preserve">
-        <value>Registered</value>
-    </data>
-    <data name="Required" xml:space="preserve">
-        <value>Required</value>
-    </data>
-    <data name="RequiredWarning" xml:space="preserve">
-        <value>Unable to verify required credits, go to settings to adjust</value>
-    </data>
-    <data name="Duration" xml:space="preserve">
-        <value>Study duration</value>
-    </data>
-    <data name="Years_One" xml:space="preserve">
-        <value>Year</value>
-    </data>
-    <data name="Years_Few" xml:space="preserve">
-        <value>Years</value>
-    </data>
-    <data name="Years_Many" xml:space="preserve">
-        <value>Years</value>
-    </data>
-    <data name="AdjustYears" xml:space="preserve">
-        <value>Adjust study duration</value>
-    </data>
-    <data name="Add" xml:space="preserve">
-        <value>Add</value>
-    </data>
-    <data name="AddCustomSubject" xml:space="preserve">
-        <value>Add custom subject</value>
-    </data>
-    <data name="CompulsorySingle" xml:space="preserve">
-        <value>Compulsory</value>
-    </data>
-    <data name="CompulsoryElectiveSingle" xml:space="preserve">
-        <value>Compulsory-Elective</value>
-    </data>
-    <data name="ElectiveSingle" xml:space="preserve">
-        <value>Elective</value>
-    </data>
-    <data name="Winter" xml:space="preserve">
-        <value>Winter</value>
-    </data>
-    <data name="Summer" xml:space="preserve">
-        <value>Summer</value>
-    </data>
-    <data name="Cr" xml:space="preserve">
-        <value>cr</value>
-    </data>
-    <data name="Credits" xml:space="preserve">
-        <value>credits</value>
-    </data>
-    <data name="CompletionTypeNone" xml:space="preserve">
-        <value>No final classification</value>
-    </data>
-    <data name="CompletionTypeCr" xml:space="preserve">
-        <value>Course-unit credit</value>
-    </data>
-    <data name="CompletionTypeGCr" xml:space="preserve">
-        <value>Graded course-unit credit</value>
-    </data>
-    <data name="CompletionTypeCrEx" xml:space="preserve">
-        <value>Course-unit credit and examination</value>
-    </data>
-    <data name="CompletionTypeEx" xml:space="preserve">
-        <value>Examination</value>
-    </data>
-    <data name="CompletionTypeCol" xml:space="preserve">
-        <value>Colloquium</value>
-    </data>
-    <data name="CompletionTypeKp" xml:space="preserve">
-        <value>Final semester project</value>
-    </data>
-    <data name="CompletionTypeRec" xml:space="preserve">
-        <value>Recognized</value>
-    </data>
-    <data name="CompletionTypeSzz" xml:space="preserve">
-        <value>Final state examination</value>
-    </data>
-    <data name="CompletionTypeRCr" xml:space="preserve">
-        <value>Recognized course-unit credit</value>
-    </data>
-    <data name="CompletionTypeRgCr" xml:space="preserve">
-        <value>Recognized graded course-unit credit</value>
-    </data>
-    <data name="CompletionTypeRCrEx" xml:space="preserve">
-        <value>Recognized course-unit credit and examination</value>
-    </data>
-    <data name="CompletionTypeREx" xml:space="preserve">
-        <value>Recognized examination</value>
-    </data>
-    <data name="CompletionTypeHs" xml:space="preserve">
-        <value>Evaluation of study</value>
-    </data>
-    <data name="CompletionTypeHds" xml:space="preserve">
-        <value>Evaluation of doctoral study</value>
-    </data>
-    <data name="CompletionTypeUpZa" xml:space="preserve">
-        <value>Recognized course-unit credit only</value>
-    </data>
-    <data name="CompletionTypeRVol" xml:space="preserve">
-        <value>Recognized year of study</value>
-    </data>
-    <data name="CompletionTypeCrFsp" xml:space="preserve">
-        <value>Course-unit credit and final semester project</value>
-    </data>
-    <data name="CompletionTypeDrEx" xml:space="preserve">
-        <value>Examination</value>
-    </data>
-    <data name="CompletionTypeRecCr" xml:space="preserve">
-        <value>Recognized examination</value>
-    </data>
-    <data name="CompletionTypeExDd" xml:space="preserve">
-        <value>Except DD</value>
-    </data>
-    <data name="CompletionTypeSpEx" xml:space="preserve">
-        <value>Specialization examination</value>
-    </data>
-    <data name="CompletionTypeSpCrEx" xml:space="preserve">
-        <value>Specialization credit and examination</value>
-    </data>
-    <data name="CompletionTypeRCol" xml:space="preserve">
-        <value>Recognized colloquium</value>
-    </data>
-    <data name="CompletionTypeUnknown" xml:space="preserve">
-        <value>Unknown</value>
-    </data>
-    <data name="Delete" xml:space="preserve">
-        <value>Delete</value>
-    </data>
-    <data name="MoveTo" xml:space="preserve">
-        <value>Move to</value>
-    </data>
-    <data name="Unassigned" xml:space="preserve">
-        <value>Unassigned</value>
-    </data>
-    <data name="CompletionTypeShortCol" xml:space="preserve">
-        <value>Col</value>
-    </data>
-    <data name="CompletionTypeShortCr" xml:space="preserve">
-        <value>Cr</value>
-    </data>
-    <data name="CompletionTypeShortCrEx" xml:space="preserve">
-        <value>Cr,Ex</value>
-    </data>
-    <data name="CompletionTypeShortCrFsp" xml:space="preserve">
-        <value>Cr,Fsp</value>
-    </data>
-    <data name="CompletionTypeShortDrEx" xml:space="preserve">
-        <value>Dr,Ex</value>
-    </data>
-    <data name="CompletionTypeShortEx" xml:space="preserve">
-        <value>Ex</value>
-    </data>
-    <data name="CompletionTypeShortExDd" xml:space="preserve">
-        <value>Ex,DD</value>
-    </data>
-    <data name="CompletionTypeShortGCr" xml:space="preserve">
-        <value>GCr</value>
-    </data>
-    <data name="CompletionTypeShortHds" xml:space="preserve">
-        <value>Hds</value>
-    </data>
-    <data name="CompletionTypeShortHs" xml:space="preserve">
-        <value>Hs</value>
-    </data>
-    <data name="CompletionTypeShortKp" xml:space="preserve">
-        <value>Kp</value>
-    </data>
-    <data name="CompletionTypeShortNone" xml:space="preserve">
-        <value>None</value>
-    </data>
-    <data name="CompletionTypeShortRCol" xml:space="preserve">
-        <value>RCol</value>
-    </data>
-    <data name="CompletionTypeShortRCr" xml:space="preserve">
-        <value>RCr</value>
-    </data>
-    <data name="CompletionTypeShortRCrEx" xml:space="preserve">
-        <value>RCr,Ex</value>
-    </data>
-    <data name="CompletionTypeShortRec" xml:space="preserve">
-        <value>Rec</value>
-    </data>
-    <data name="CompletionTypeShortRecCr" xml:space="preserve">
-        <value>RecCr</value>
-    </data>
-    <data name="CompletionTypeShortREx" xml:space="preserve">
-        <value>REx</value>
-    </data>
-    <data name="CompletionTypeShortRgCr" xml:space="preserve">
-        <value>Rg,Cr</value>
-    </data>
-    <data name="CompletionTypeShortRVol" xml:space="preserve">
-        <value>RVol</value>
-    </data>
-    <data name="CompletionTypeShortSpCrEx" xml:space="preserve">
-        <value>Sp,Cr,Ex</value>
-    </data>
-    <data name="CompletionTypeShortSpEx" xml:space="preserve">
-        <value>Sp,Ex</value>
-    </data>
-    <data name="CompletionTypeShortSzz" xml:space="preserve">
-        <value>SZZ</value>
-    </data>
-    <data name="CompletionTypeShortUnknown" xml:space="preserve">
-        <value>Unknown</value>
-    </data>
-    <data name="CompletionTypeShortUpZa" xml:space="preserve">
-        <value>Up,Za</value>
-    </data>
-    <data name="YearTotal" xml:space="preserve">
-        <value>Year total</value>
-    </data>
-    <data name="UnassignedSubjects" xml:space="preserve">
-        <value>Unassigned Subjects</value>
-    </data>
-    <data name="ShowCourseInfo" xml:space="preserve">
-        <value>Show course info</value>
-    </data>
-    <data name="Name" xml:space="preserve">
-        <value>Name</value>
-    </data>
-    <data name="IsRequired_y" xml:space="preserve">
-        <value>is required</value>
-    </data>
-    <data name="IsRequired_a" xml:space="preserve">
-        <value>is required</value>
-    </data>
-    <data name="Abbreviation" xml:space="preserve">
-        <value>Abbreviation</value>
-    </data>
-    <data name="BasicInformation" xml:space="preserve">
-        <value>Basic Information</value>
-    </data>
-    <data name="AcademicDetails" xml:space="preserve">
-        <value>Academic Details</value>
-    </data>
-    <data name="Credits_y" xml:space="preserve">
-        <value>Credits</value>
-    </data>
-    <data name="SubjectType" xml:space="preserve">
-        <value>Subject type</value>
-    </data>
-    <data name="Classification" xml:space="preserve">
-        <value>Classification</value>
-    </data>
-    <data name="NotApplicable" xml:space="preserve">
-        <value>Not applicable</value>
-    </data>
-    <data name="SemesterSeason" xml:space="preserve">
-        <value>Semester Season</value>
-    </data>
-    <data name="CompletionType" xml:space="preserve">
-        <value>Completion Type</value>
-    </data>
-    <data name="MinimumSemester" xml:space="preserve">
-        <value>Minimum semester</value>
-    </data>
-    <data name="IMA" xml:space="preserve">
-        <value>e.g. Mathematical Analysis</value>
-    </data>
-    <data name="MinSemesterHelperText" xml:space="preserve">
-        <value>Earliest allowed semester</value>
-    </data>
-    <data name="Cancel" xml:space="preserve">
-        <value>Cancel</value>
-    </data>
-    <data name="Submit" xml:space="preserve">
-        <value>Submit</value>
-    </data>
-    <data name="Any" xml:space="preserve">
-        <value>Any</value>
-    </data>
-    <data name="IMAAbbreviation" xml:space="preserve">
-        <value>e.g. IMA1, IMA2</value>
-    </data>
-    <data name="Save" xml:space="preserve">
-        <value>Save</value>
-    </data>
-    <data name="SettingsDialog_Title" xml:space="preserve">
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="Compulsory" xml:space="preserve">
+    <value>Compulsory</value>
+  </data>
+  <data name="LanguageToggleTooltip" xml:space="preserve">
+    <value>Change language</value>
+  </data>
+  <data name="Import JSOn" xml:space="preserve">
+    <value>Compulsory-Elective</value>
+  </data>
+  <data name="Elective" xml:space="preserve">
+    <value>Elective</value>
+  </data>
+  <data name="StudyProgram" xml:space="preserve">
+    <value>Study program</value>
+  </data>
+  <data name="Semester" xml:space="preserve">
+    <value>Semester</value>
+  </data>
+  <data name="Group" xml:space="preserve">
+    <value>Group</value>
+  </data>
+  <data name="Settings" xml:space="preserve">
     <value>Settings</value>
   </data>
-    <data name="SettingsDialog_Save" xml:space="preserve">
+  <data name="Export" xml:space="preserve">
+    <value>Export</value>
+  </data>
+  <data name="Import" xml:space="preserve">
+    <value>Import</value>
+  </data>
+  <data name="Search" xml:space="preserve">
+    <value>Search</value>
+  </data>
+  <data name="RemoveRecognizedYear" xml:space="preserve">
+    <value>Remove recognized year</value>
+  </data>
+  <data name="AddRecognizedYear" xml:space="preserve">
+    <value>Add recognized year</value>
+  </data>
+  <data name="StudyProgress" xml:space="preserve">
+    <value>Study progress</value>
+  </data>
+  <data name="Completed" xml:space="preserve">
+    <value>Completed</value>
+  </data>
+  <data name="Registered" xml:space="preserve">
+    <value>Registered</value>
+  </data>
+  <data name="Required" xml:space="preserve">
+    <value>Required</value>
+  </data>
+  <data name="RequiredWarning" xml:space="preserve">
+    <value>Unable to verify required credits, go to settings to adjust</value>
+  </data>
+  <data name="Duration" xml:space="preserve">
+    <value>Study duration</value>
+  </data>
+  <data name="Years_One" xml:space="preserve">
+    <value>Year</value>
+  </data>
+  <data name="Years_Few" xml:space="preserve">
+    <value>Years</value>
+  </data>
+  <data name="Years_Many" xml:space="preserve">
+    <value>Years</value>
+  </data>
+  <data name="AdjustYears" xml:space="preserve">
+    <value>Adjust study duration</value>
+  </data>
+  <data name="Add" xml:space="preserve">
+    <value>Add</value>
+  </data>
+  <data name="AddCustomSubject" xml:space="preserve">
+    <value>Add custom subject</value>
+  </data>
+  <data name="CompulsorySingle" xml:space="preserve">
+    <value>Compulsory</value>
+  </data>
+  <data name="CompulsoryElectiveSingle" xml:space="preserve">
+    <value>Compulsory-Elective</value>
+  </data>
+  <data name="ElectiveSingle" xml:space="preserve">
+    <value>Elective</value>
+  </data>
+  <data name="Winter" xml:space="preserve">
+    <value>Winter</value>
+  </data>
+  <data name="Summer" xml:space="preserve">
+    <value>Summer</value>
+  </data>
+  <data name="Cr" xml:space="preserve">
+    <value>cr</value>
+  </data>
+  <data name="Credits" xml:space="preserve">
+    <value>credits</value>
+  </data>
+  <data name="CompletionTypeNone" xml:space="preserve">
+    <value>No final classification</value>
+  </data>
+  <data name="CompletionTypeCr" xml:space="preserve">
+    <value>Course-unit credit</value>
+  </data>
+  <data name="CompletionTypeGCr" xml:space="preserve">
+    <value>Graded course-unit credit</value>
+  </data>
+  <data name="CompletionTypeCrEx" xml:space="preserve">
+    <value>Course-unit credit and examination</value>
+  </data>
+  <data name="CompletionTypeEx" xml:space="preserve">
+    <value>Examination</value>
+  </data>
+  <data name="CompletionTypeCol" xml:space="preserve">
+    <value>Colloquium</value>
+  </data>
+  <data name="CompletionTypeKp" xml:space="preserve">
+    <value>Final semester project</value>
+  </data>
+  <data name="CompletionTypeRec" xml:space="preserve">
+    <value>Recognized</value>
+  </data>
+  <data name="CompletionTypeSzz" xml:space="preserve">
+    <value>Final state examination</value>
+  </data>
+  <data name="CompletionTypeRCr" xml:space="preserve">
+    <value>Recognized course-unit credit</value>
+  </data>
+  <data name="CompletionTypeRgCr" xml:space="preserve">
+    <value>Recognized graded course-unit credit</value>
+  </data>
+  <data name="CompletionTypeRCrEx" xml:space="preserve">
+    <value>Recognized course-unit credit and examination</value>
+  </data>
+  <data name="CompletionTypeREx" xml:space="preserve">
+    <value>Recognized examination</value>
+  </data>
+  <data name="CompletionTypeHs" xml:space="preserve">
+    <value>Evaluation of study</value>
+  </data>
+  <data name="CompletionTypeHds" xml:space="preserve">
+    <value>Evaluation of doctoral study</value>
+  </data>
+  <data name="CompletionTypeUpZa" xml:space="preserve">
+    <value>Recognized course-unit credit only</value>
+  </data>
+  <data name="CompletionTypeRVol" xml:space="preserve">
+    <value>Recognized year of study</value>
+  </data>
+  <data name="CompletionTypeCrFsp" xml:space="preserve">
+    <value>Course-unit credit and final semester project</value>
+  </data>
+  <data name="CompletionTypeDrEx" xml:space="preserve">
+    <value>Examination</value>
+  </data>
+  <data name="CompletionTypeRecCr" xml:space="preserve">
+    <value>Recognized examination</value>
+  </data>
+  <data name="CompletionTypeExDd" xml:space="preserve">
+    <value>Except DD</value>
+  </data>
+  <data name="CompletionTypeSpEx" xml:space="preserve">
+    <value>Specialization examination</value>
+  </data>
+  <data name="CompletionTypeSpCrEx" xml:space="preserve">
+    <value>Specialization credit and examination</value>
+  </data>
+  <data name="CompletionTypeRCol" xml:space="preserve">
+    <value>Recognized colloquium</value>
+  </data>
+  <data name="CompletionTypeUnknown" xml:space="preserve">
+    <value>Unknown</value>
+  </data>
+  <data name="Delete" xml:space="preserve">
+    <value>Delete</value>
+  </data>
+  <data name="MoveTo" xml:space="preserve">
+    <value>Move to</value>
+  </data>
+  <data name="Unassigned" xml:space="preserve">
+    <value>Unassigned</value>
+  </data>
+  <data name="CompletionTypeShortCol" xml:space="preserve">
+    <value>Col</value>
+  </data>
+  <data name="CompletionTypeShortCr" xml:space="preserve">
+    <value>Cr</value>
+  </data>
+  <data name="CompletionTypeShortCrEx" xml:space="preserve">
+    <value>Cr,Ex</value>
+  </data>
+  <data name="CompletionTypeShortCrFsp" xml:space="preserve">
+    <value>Cr,Fsp</value>
+  </data>
+  <data name="CompletionTypeShortDrEx" xml:space="preserve">
+    <value>Dr,Ex</value>
+  </data>
+  <data name="CompletionTypeShortEx" xml:space="preserve">
+    <value>Ex</value>
+  </data>
+  <data name="CompletionTypeShortExDd" xml:space="preserve">
+    <value>Ex,DD</value>
+  </data>
+  <data name="CompletionTypeShortGCr" xml:space="preserve">
+    <value>GCr</value>
+  </data>
+  <data name="CompletionTypeShortHds" xml:space="preserve">
+    <value>Hds</value>
+  </data>
+  <data name="CompletionTypeShortHs" xml:space="preserve">
+    <value>Hs</value>
+  </data>
+  <data name="CompletionTypeShortKp" xml:space="preserve">
+    <value>Kp</value>
+  </data>
+  <data name="CompletionTypeShortNone" xml:space="preserve">
+    <value>None</value>
+  </data>
+  <data name="CompletionTypeShortRCol" xml:space="preserve">
+    <value>RCol</value>
+  </data>
+  <data name="CompletionTypeShortRCr" xml:space="preserve">
+    <value>RCr</value>
+  </data>
+  <data name="CompletionTypeShortRCrEx" xml:space="preserve">
+    <value>RCr,Ex</value>
+  </data>
+  <data name="CompletionTypeShortRec" xml:space="preserve">
+    <value>Rec</value>
+  </data>
+  <data name="CompletionTypeShortRecCr" xml:space="preserve">
+    <value>RecCr</value>
+  </data>
+  <data name="CompletionTypeShortREx" xml:space="preserve">
+    <value>REx</value>
+  </data>
+  <data name="CompletionTypeShortRgCr" xml:space="preserve">
+    <value>Rg,Cr</value>
+  </data>
+  <data name="CompletionTypeShortRVol" xml:space="preserve">
+    <value>RVol</value>
+  </data>
+  <data name="CompletionTypeShortSpCrEx" xml:space="preserve">
+    <value>Sp,Cr,Ex</value>
+  </data>
+  <data name="CompletionTypeShortSpEx" xml:space="preserve">
+    <value>Sp,Ex</value>
+  </data>
+  <data name="CompletionTypeShortSzz" xml:space="preserve">
+    <value>SZZ</value>
+  </data>
+  <data name="CompletionTypeShortUnknown" xml:space="preserve">
+    <value>Unknown</value>
+  </data>
+  <data name="CompletionTypeShortUpZa" xml:space="preserve">
+    <value>Up,Za</value>
+  </data>
+  <data name="YearTotal" xml:space="preserve">
+    <value>Year total</value>
+  </data>
+  <data name="UnassignedSubjects" xml:space="preserve">
+    <value>Unassigned Subjects</value>
+  </data>
+  <data name="ShowCourseInfo" xml:space="preserve">
+    <value>Show course info</value>
+  </data>
+  <data name="Name" xml:space="preserve">
+    <value>Name</value>
+  </data>
+  <data name="IsRequired_y" xml:space="preserve">
+    <value>is required</value>
+  </data>
+  <data name="IsRequired_a" xml:space="preserve">
+    <value>is required</value>
+  </data>
+  <data name="Abbreviation" xml:space="preserve">
+    <value>Abbreviation</value>
+  </data>
+  <data name="BasicInformation" xml:space="preserve">
+    <value>Basic Information</value>
+  </data>
+  <data name="AcademicDetails" xml:space="preserve">
+    <value>Academic Details</value>
+  </data>
+  <data name="Credits_y" xml:space="preserve">
+    <value>Credits</value>
+  </data>
+  <data name="SubjectType" xml:space="preserve">
+    <value>Subject type</value>
+  </data>
+  <data name="Classification" xml:space="preserve">
+    <value>Classification</value>
+  </data>
+  <data name="NotApplicable" xml:space="preserve">
+    <value>Not applicable</value>
+  </data>
+  <data name="SemesterSeason" xml:space="preserve">
+    <value>Semester Season</value>
+  </data>
+  <data name="CompletionType" xml:space="preserve">
+    <value>Completion Type</value>
+  </data>
+  <data name="MinimumSemester" xml:space="preserve">
+    <value>Minimum semester</value>
+  </data>
+  <data name="IMA" xml:space="preserve">
+    <value>e.g. Mathematical Analysis</value>
+  </data>
+  <data name="MinSemesterHelperText" xml:space="preserve">
+    <value>Earliest allowed semester</value>
+  </data>
+  <data name="Cancel" xml:space="preserve">
+    <value>Cancel</value>
+  </data>
+  <data name="Submit" xml:space="preserve">
+    <value>Submit</value>
+  </data>
+  <data name="Any" xml:space="preserve">
+    <value>Any</value>
+  </data>
+  <data name="IMAAbbreviation" xml:space="preserve">
+    <value>e.g. IMA1, IMA2</value>
+  </data>
+  <data name="Save" xml:space="preserve">
     <value>Save</value>
   </data>
-    <data name="SettingsDialog_Language" xml:space="preserve">
+  <data name="SettingsDialog_Title" xml:space="preserve">
+    <value>Settings</value>
+  </data>
+  <data name="SettingsDialog_Save" xml:space="preserve">
+    <value>Save</value>
+  </data>
+  <data name="SettingsDialog_Language" xml:space="preserve">
     <value>Language</value>
   </data>
-    <data name="SettingsDialog_AcademicSettings" xml:space="preserve">
+  <data name="SettingsDialog_AcademicSettings" xml:space="preserve">
     <value>Academic Settings</value>
   </data>
-    <data name="SettingsDialog_OverrideCredits" xml:space="preserve">
+  <data name="SettingsDialog_OverrideCredits" xml:space="preserve">
     <value>Override required credits</value>
   </data>
-    <data name="SettingsDialog_RequiredCredits" xml:space="preserve">
+  <data name="SettingsDialog_RequiredCredits" xml:space="preserve">
     <value>Required Credits</value>
   </data>
-    <data name="Language_Czech" xml:space="preserve">
+  <data name="Language_Czech" xml:space="preserve">
     <value>Czech</value>
   </data>
-    <data name="Language_English" xml:space="preserve">
+  <data name="Language_English" xml:space="preserve">
     <value>English</value>
   </data>
-    <data name="LanguageAlert" xml:space="preserve">
-        <value>Language change forces refresh of the app after saving</value>
-    </data>
-    <data name="CompulsoryElectiveErrorMessage" xml:space="preserve">
-        <value>You have to select subject from every group</value>
-    </data>
+  <data name="LanguageAlert" xml:space="preserve">
+    <value>Language change forces refresh of the app after saving</value>
+  </data>
+  <data name="CompulsoryElectiveErrorMessage" xml:space="preserve">
+    <value>You have to select subject from every group</value>
+  </data>
+  <data name="ImportJSON" xml:space="preserve">
+    <value>Import JSON</value>
+  </data>
+  <data name="UploadData" xml:space="preserve">
+    <value>Upload a JSON file to restore your data. </value>
+  </data>
+  <data name="DropJSON" xml:space="preserve">
+    <value>Drag and drop JSON here or click. </value>
+  </data>
+  <data name="CompulsoryElective" xml:space="preserve">
+    <value>Compulsory elective</value>
+  </data>
+  <data name="InvalidFormat" xml:space="preserve">
+    <value>Invalid format. Please select a .json file.</value>
+  </data>
+  <data name="FileVerified" xml:space="preserve">
+    <value>The file has been successfully uploaded and verified.</value>
+  </data>
+  <data name="FileInvalid" xml:space="preserve">
+    <value>The file is corrupted or has an invalid structure.</value>
+  </data>
+  <data name="MissingFile" xml:space="preserve">
+    <value>* You must select a file (.json) before importing.</value>
+  </data>
 </root>

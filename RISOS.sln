@@ -1,5 +1,8 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 18
+VisualStudioVersion = 18.4.11605.240 stable
+MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RISOS", "src\RISOS\RISOS.csproj", "{C1BF763C-A287-458F-ADBB-CF4167A00119}"
 EndProject
 Global
@@ -12,5 +15,11 @@ Global
 		{C1BF763C-A287-458F-ADBB-CF4167A00119}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C1BF763C-A287-458F-ADBB-CF4167A00119}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C1BF763C-A287-458F-ADBB-CF4167A00119}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {C57312DE-5CD3-493E-A2BE-8CBCDC19D6C2}
 	EndGlobalSection
 EndGlobal

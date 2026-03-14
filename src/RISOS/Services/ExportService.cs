@@ -41,7 +41,8 @@ public class ExportService(IJSRuntime js, LocalStorageService localStorageServic
 
         if (exportState != null)
         {
-            await this.DownloadJsonAsync(exportState, "risos_backup.json");
+            string fileName = $"risos_backup_{DateTime.Now:yyyyMMdd}.json";
+            await this.DownloadJsonAsync(exportState, fileName);
         }
         else
         {

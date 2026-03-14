@@ -628,7 +628,7 @@ namespace RISOS.Localization {
         }
         
         /// <summary>
-        ///   Vyhledá lokalizovaný řetězec podobný Compulsory-Elective.
+        ///   Vyhledá lokalizovaný řetězec podobný Compulsory elective.
         /// </summary>
         internal static string CompulsoryElective {
             get {
@@ -700,6 +700,15 @@ namespace RISOS.Localization {
         }
         
         /// <summary>
+        ///   Vyhledá lokalizovaný řetězec podobný Drag and drop JSON here or click. .
+        /// </summary>
+        internal static string DropJSON {
+            get {
+                return ResourceManager.GetString("DropJSON", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Vyhledá lokalizovaný řetězec podobný Study duration.
         /// </summary>
         internal static string Duration {
@@ -736,6 +745,24 @@ namespace RISOS.Localization {
         }
         
         /// <summary>
+        ///   Vyhledá lokalizovaný řetězec podobný The file is corrupted or has an invalid structure..
+        /// </summary>
+        internal static string FileInvalid {
+            get {
+                return ResourceManager.GetString("FileInvalid", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Vyhledá lokalizovaný řetězec podobný The file has been successfully uploaded and verified..
+        /// </summary>
+        internal static string FileVerified {
+            get {
+                return ResourceManager.GetString("FileVerified", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Vyhledá lokalizovaný řetězec podobný Group.
         /// </summary>
         internal static string Group {
@@ -768,6 +795,33 @@ namespace RISOS.Localization {
         internal static string Import {
             get {
                 return ResourceManager.GetString("Import", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Vyhledá lokalizovaný řetězec podobný Compulsory-Elective.
+        /// </summary>
+        internal static string Import_JSOn {
+            get {
+                return ResourceManager.GetString("Import JSOn", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Vyhledá lokalizovaný řetězec podobný Import JSON.
+        /// </summary>
+        internal static string ImportJSON {
+            get {
+                return ResourceManager.GetString("ImportJSON", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Vyhledá lokalizovaný řetězec podobný Invalid format. Please select a .json file..
+        /// </summary>
+        internal static string InvalidFormat {
+            get {
+                return ResourceManager.GetString("InvalidFormat", resourceCulture);
             }
         }
         
@@ -840,6 +894,15 @@ namespace RISOS.Localization {
         internal static string MinSemesterHelperText {
             get {
                 return ResourceManager.GetString("MinSemesterHelperText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Vyhledá lokalizovaný řetězec podobný * You must select a file (.json) before importing..
+        /// </summary>
+        internal static string MissingFile {
+            get {
+                return ResourceManager.GetString("MissingFile", resourceCulture);
             }
         }
         
@@ -1074,6 +1137,15 @@ namespace RISOS.Localization {
         internal static string UnassignedSubjects {
             get {
                 return ResourceManager.GetString("UnassignedSubjects", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Vyhledá lokalizovaný řetězec podobný Upload a JSON file to restore your data. .
+        /// </summary>
+        internal static string UploadData {
+            get {
+                return ResourceManager.GetString("UploadData", resourceCulture);
             }
         }
         

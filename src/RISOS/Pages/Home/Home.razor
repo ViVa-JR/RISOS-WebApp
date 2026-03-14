@@ -7,6 +7,7 @@
 @using RISOS.Pages.Home.Models
 @using RISOS.Services
 @using System.Text.Json
+@using RISOS.Pages.Home.Dialogs.ImportDialog
 
 @inject UniversityService UniversityService
 @inject GitRepositoryInfoService GitRepositoryInfoService
@@ -109,13 +110,10 @@
                                OnClick="@(() => ExportService.HandleExportAsync())" />
             </MudTooltip>
             <MudTooltip Text="@LanguageHelper.Import">
-                <MudFileUpload T="IBrowserFile" FilesChanged="HandleImport" Accept=".json">
-                    <ActivatorContent>
                         <MudIconButton 
                             Icon="@Icons.Material.Filled.Upload" 
-                            Style="color: var(--mud-palette-drawer-text)" />
-                    </ActivatorContent>
-                </MudFileUpload>
+                            Style="color: var(--mud-palette-drawer-text)"
+                            OnClick="OnImportClick" />
             </MudTooltip>
         </MudStack>
     </AlwaysVisible>
@@ -238,43 +236,26 @@
         throw new NotImplementedException();
     }
 
-    private Task OnImportClick()
+    private async Task OnImportClick()
     {
-        throw new NotImplementedException();
-    }
+        var options = new DialogOptions { CloseOnEscapeKey = true, MaxWidth = MaxWidth.Medium };
+        var dialog = await DialogService.ShowAsync<ImportDialog>(LanguageHelper.ImportJSON, options);
+        var result = await dialog.Result;
 
-
-    private async Task HandleImport(IBrowserFile file)
-    {
-        if (file == null) return;
-
-        try
+        if (result != null && !result.Canceled && result.Data is AppState importedData)
         {
-            using var stream = file.OpenReadStream(maxAllowedSize: 2048000);
-            using var reader = new StreamReader(stream);
-            var jsonContent = await reader.ReadToEndAsync();
-
-            var validatedData = JsonSerializer.Deserialize<AppState>(jsonContent);
-
-            if (validatedData != null)
-            {
-                await ImportService.SaveFullStateAsync(validatedData);
-                var result = await UniversityService.GetFacultiesWithProgramsAsync();
+            await ImportService.ApplyAppStateAsync(importedData);
+            var faculties = await UniversityService.GetFacultiesWithProgramsAsync();
                 
-                var programAbbreviation = await LocalStorageService.LoadProgramAbbreviation();
-                if (!string.IsNullOrEmpty(programAbbreviation))
+            var programAbbreviation = await LocalStorageService.LoadProgramAbbreviation();
+            if (!string.IsNullOrEmpty(programAbbreviation))
+            {
+                var program = faculties.Value.SelectMany(f => f.Programs).FirstOrDefault(p => p.Abbreviation == programAbbreviation);
+                if (program != null)
                 {
-                    var program = result.Value.SelectMany(f => f.Programs).FirstOrDefault(p => p.Abbreviation == programAbbreviation);
-                    if (program != null)
-                    {
-                        _selectedProgram = program;
-                    }
+                    _selectedProgram = program;
                 }
             }
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine(ex.Message);
         }
     }
 }
