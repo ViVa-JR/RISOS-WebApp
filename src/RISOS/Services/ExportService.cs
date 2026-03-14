@@ -31,11 +31,6 @@ public class ExportService(IJSRuntime js, LocalStorageService localStorageServic
 
     public async Task HandleExportAsync()
     {
-        // if (_selectedProgram is null)
-        // {
-        //     Console.WriteLine("No study program selected for export.");
-        //     return;
-        // }
         var exportState = await localStorageService.GetExportStateAsync();
 
 

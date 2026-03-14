@@ -4,9 +4,11 @@
 @using RISOS.Models
 @using RISOS.Pages.Home.Dialogs.AddCustomSubjectDialog
 @using RISOS.Pages.Home.Models
+@using RISOS.Services
 
 @inject IDialogService DialogService
 @inject ISnackbar Snackbar
+@inject LocalStorageService LocalStorageService
 
 <style>
     .card-text {
@@ -102,7 +104,7 @@
 @code {
     [CascadingParameter]
     public required StudyContext StudyContext { get; set; }
-    
+
     [Parameter]
     public List<SubjectEntry> Subjects { get; set; } = [];
 
@@ -128,7 +130,7 @@
     }
 
     private Credits TotalCredits => GetTotalCredits();
-    
+
     private static bool Selector(SubjectEntry item, string dropzone)
     {
         return item.Semester == dropzone;
@@ -194,6 +196,7 @@
         {
             Snackbar.Add("Subject added", Severity.Success);
             Subjects.Add(result.Value);
+            await LocalStorageService.SaveCustomSubject(result.Value);
             await SubjectsChanged.InvokeAsync(Subjects);
             _dropContainer?.Refresh();
         }

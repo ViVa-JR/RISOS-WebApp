@@ -2,6 +2,7 @@
 
 @using RISOS.Enums
 @using RISOS.Localization
+@using RISOS.Mappers
 @using RISOS.Pages.Home.Components
 @using RISOS.Pages.Home.Dialogs.SettingsDialog
 @using RISOS.Pages.Home.Models
@@ -72,7 +73,7 @@
             <SubjectsPanel TGroupKey="int"
                            HeaderTemplate="@(x => $"{x}. {LanguageHelper.Semester}")"
                            GroupBy="@(x => x.Subject.MinSemester)"
-                           SubjectChanged="SubjectChanged"
+                           SubjectChanged="@SubjectChanged"
                            Title="@LanguageHelper.Compulsory"
                            Disabled="@Disabled"
                            Subjects="@CompulsorySubjects"
@@ -81,7 +82,7 @@
                            ReadOnly/>
             <SubjectsPanel TGroupKey="string"
                            GroupBy="@(x => x.Subject.GroupId!)"
-                           SubjectChanged="SubjectChanged"
+                           SubjectChanged="@SubjectChanged"
                            Title="@LanguageHelper.CompulsoryElective"
                            Disabled="@Disabled"
                            Subjects="@CompulsoryElectiveSubjects"
@@ -90,7 +91,7 @@
                            CompulsoryGroups/>
             <SubjectsPanel TGroupKey="SemesterSeason"
                            GroupBy="@(x => x.Subject.SemesterSeason)"
-                           SubjectChanged="SubjectChanged"
+                           SubjectChanged="@SubjectChanged"
                            Title="@LanguageHelper.Elective"
                            Disabled="@Disabled"
                            Subjects="@ElectiveSubjects"
@@ -147,7 +148,28 @@
         if (result.IsSuccess)
         {
             _subjects = result.Value.Select(s => new SubjectEntry(s)).ToDictionary(x => x.Subject.Id);
-            _selectedSubjects = _subjects.Values.Where(x => x.Selected).ToList();
+            var customSubjects = await LocalStorageService.LoadCustomSubjectsAsync();
+            if(customSubjects != null)
+            {
+                foreach (var custom in customSubjects)
+                {
+                    if (!_subjects.ContainsKey(custom.Subject.Id))
+                    {
+                        _subjects[custom.Subject.Id] = custom;
+                    }
+                }
+            }
+            var subjects = await LocalStorageService.LoadSubjectsAsync();
+            if (subjects == null)
+            {
+                _selectedSubjects = _subjects.Values.Where(x => x.Selected).ToList();
+                await LocalStorageService.SaveSubjects(SubjectStorageMapper.ToStorageList(_selectedSubjects));
+            }
+            else
+            {
+                SyncSubjectsFromStorage(subjects);
+            }
+
             Console.WriteLine($@"Loaded {_subjects.Count} subjects");
         }
 
@@ -171,6 +193,7 @@
         {
             _subjects.Clear();
             _selectedSubjects.Clear();
+            await LocalStorageService.ResetSubjectsAsync();
         }
         else
         {
@@ -187,16 +210,18 @@
         _dropContainer.Refresh();
     }
 
-    private void SubjectChanged(SubjectEntry subject)
+    private async Task SubjectChanged(SubjectEntry subject)
     {
         _subjects[subject.Subject.Id] = subject;
         if (subject.Selected)
         {
             _selectedSubjects.Add(subject);
+            await LocalStorageService.UpdateSubjectAsync(SubjectStorageMapper.ToStorage(subject));
         }
         else
         {
             _selectedSubjects.Remove(subject);
+            await LocalStorageService.RemoveSubjectAsync(subject.Subject.Id);
         }
 
         _dropContainer.Refresh();
@@ -231,11 +256,6 @@
         }
     }
 
-    private Task OnExportClick()
-    {
-        throw new NotImplementedException();
-    }
-
     private async Task OnImportClick()
     {
         var options = new DialogOptions { CloseOnEscapeKey = true, MaxWidth = MaxWidth.Medium };
@@ -253,8 +273,28 @@
                 var program = faculties.Value.SelectMany(f => f.Programs).FirstOrDefault(p => p.Abbreviation == programAbbreviation);
                 if (program != null)
                 {
-                    _selectedProgram = program;
+                    await LoadData(program);
+
                 }
+            }
+        }
+    }
+
+    private void SyncSubjectsFromStorage(List<SubjectStorage> storedSubjects)
+    {
+        _selectedSubjects.Clear();
+
+        foreach (var subject in _subjects.Values)
+        {
+            subject.Selected = false;
+        }
+
+        foreach (var storageItem in storedSubjects)
+        {
+            if (_subjects.TryGetValue(storageItem.SubjectId, out var subjectEntry))
+            {
+                var updatedEntry = SubjectStorageMapper.ToSubjectEntry(storageItem, subjectEntry);
+                _selectedSubjects.Add(updatedEntry);
             }
         }
     }
