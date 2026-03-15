@@ -38,10 +38,12 @@
                     }
 
                     <MudTooltip Text="@LanguageHelper.Required">
-                        <MudText Typo="Typo.h6" Color="Color.Default">@StudyContext.RequiredCredits @LanguageHelper.Cr</MudText>
+                        <MudText Typo="Typo.h6" Color="Color.Default">
+                            @StudyContext.Credits @LanguageHelper.Cr
+                        </MudText>
                     </MudTooltip>
                     
-                    @if (StudyContext.CreditsWarn)
+                    @if (StudyContext is { CreditsWarn: true, CreditOverride: null })
                     {
                         <MudTooltip Text="@LanguageHelper.RequiredWarning">
                             <MudIcon Icon="@Icons.Material.Filled.WarningAmber" Color="Color.Warning" Size="Size.Small"/>
@@ -92,7 +94,7 @@
     [Parameter]
     public EventCallback<int> YearsChanged { get; set; }
 
-    private int SafeNeededCredits => StudyContext.RequiredCredits > 0 ? StudyContext.RequiredCredits : 180;
+    private int SafeNeededCredits => StudyContext.Credits > 0 ? StudyContext.Credits : 180;
 
     private int CompletedProgress => TotalCredits.Completed > 0
         ? (int)Math.Min(100, Math.Round((double)TotalCredits.Completed / SafeNeededCredits * 100))
