@@ -495,4 +495,7 @@
   <data name="MissingFile" xml:space="preserve">
     <value>* You must select a file (.json) before importing.</value>
   </data>
+  <data name="ShowProgramInfo" xml:space="preserve">
+    <value>Show study program info</value>
+  </data>
 </root>

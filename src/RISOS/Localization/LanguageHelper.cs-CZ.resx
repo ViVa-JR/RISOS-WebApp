@@ -495,4 +495,7 @@
   <data name="MissingFile" xml:space="preserve">
     <value>* Musíte vybrat soubor (.json) před importem.</value>
   </data>
+  <data name="ShowProgramInfo" xml:space="preserve">
+    <value>Zobrazit informace o studijním programu</value>
+  </data>
 </root>
