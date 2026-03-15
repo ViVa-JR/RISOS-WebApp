@@ -752,5 +752,11 @@ namespace RISOS.Localization {
                 return ResourceManager.GetString("CompulsoryElectiveErrorMessage", resourceCulture);
             }
         }
+        
+        internal static string LastDataUpdate {
+            get {
+                return ResourceManager.GetString("LastDataUpdate", resourceCulture);
+            }
+        }
     }
 }

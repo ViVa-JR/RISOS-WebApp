@@ -8,83 +8,98 @@
 @using RISOS.Services
 
 @inject LanguageService LanguageService
+@inject GitRepositoryInfoService GitRepositoryInfoService
 
 <RDialog TReturn="SettingsDialogModel"
          Title="@LanguageHelper.SettingsDialog_Title"
          SubmitIcon="@Icons.Material.Filled.Save"
          SubmitText="@LanguageHelper.SettingsDialog_Save"
          OnSubmit="@OnSubmit">
-    <ContentOrCircularLoading IsLoading="_loading">
-        <MudStack Spacing="4" Class="pb-1">
-            <MudStack Spacing="2">
-                <MudText Typo="Typo.subtitle2" Color="Color.Primary">
-                    <b>@LanguageHelper.SettingsDialog_Language</b>
-                </MudText>
+    <ChildContent>
+        <ContentOrCircularLoading IsLoading="_loading">
+            <MudStack Spacing="4" Class="pb-1">
+                <MudStack Spacing="2">
+                    <MudText Typo="Typo.subtitle2" Color="Color.Primary">
+                        <b>@LanguageHelper.SettingsDialog_Language</b>
+                    </MudText>
 
-                <MudToggleGroup T="AppLanguage" @bind-Value="_model.Language" Color="Color.Primary" SelectionMode="SelectionMode.SingleSelection" Class="w-100">
-                    <MudToggleItem Value="AppLanguage.Czech">
-                        <div class="d-flex align-center gap-2 pa-1">
-                            <CzechFlag Style="width: 40px; border-radius: 2px;"/>
-                            <MudText Typo="Typo.body2">@LanguageHelper.Language_Czech</MudText>
-                        </div>
-                    </MudToggleItem>
-                    <MudToggleItem Value="AppLanguage.English">
-                        <div class="d-flex align-center gap-2 pa-1">
-                            <EnglishFlag Style="width: 40px; border-radius: 2px;"/>
-                            <MudText Typo="Typo.body2">@LanguageHelper.Language_English</MudText>
-                        </div>
-                    </MudToggleItem>
-                </MudToggleGroup>
-                
-                @if (LanguageChanged)
-                {
-                    <MudAlert Variant="Variant.Outlined" Severity="Severity.Info" Dense>
-                        @LanguageHelper.LanguageAlert
-                    </MudAlert>
-                }
-            </MudStack>
+                    <MudToggleGroup T="AppLanguage" @bind-Value="_model.Language" Color="Color.Primary"
+                                    SelectionMode="SelectionMode.SingleSelection" Class="w-100">
+                        <MudToggleItem Value="AppLanguage.Czech">
+                            <div class="d-flex align-center gap-2 pa-1">
+                                <CzechFlag Style="width: 40px; border-radius: 2px;"/>
+                                <MudText Typo="Typo.body2">@LanguageHelper.Language_Czech</MudText>
+                            </div>
+                        </MudToggleItem>
+                        <MudToggleItem Value="AppLanguage.English">
+                            <div class="d-flex align-center gap-2 pa-1">
+                                <EnglishFlag Style="width: 40px; border-radius: 2px;"/>
+                                <MudText Typo="Typo.body2">@LanguageHelper.Language_English</MudText>
+                            </div>
+                        </MudToggleItem>
+                    </MudToggleGroup>
 
-            <MudStack Spacing="2">
-                <MudText Typo="Typo.subtitle2" Color="Color.Primary">
-                    <b>@LanguageHelper.SettingsDialog_AcademicSettings</b>
-                </MudText>
+                    @if (LanguageChanged)
+                    {
+                        <MudAlert Variant="Variant.Outlined" Severity="Severity.Info" Dense>
+                            @LanguageHelper.LanguageAlert
+                        </MudAlert>
+                    }
+                </MudStack>
 
                 <MudStack Spacing="2">
-                    <MudSwitch T="bool"
-                               Value="_overrideCredits"
-                               ValueChanged="OnOverrideToggled"
-                               Color="Color.Primary"
-                               Label="@LanguageHelper.SettingsDialog_OverrideCredits"/>
-                    <MudNumericField T="int?"
-                                     @bind-Value="_model.Credits"
-                                     Disabled="@(!_overrideCredits)"
-                                     Label="@LanguageHelper.SettingsDialog_RequiredCredits"
-                                     Variant="Variant.Outlined"
-                                     Min="0"
-                                     Adornment="Adornment.End"
-                                     AdornmentText="@LanguageHelper.Cr"/>
+                    <MudText Typo="Typo.subtitle2" Color="Color.Primary">
+                        <b>@LanguageHelper.SettingsDialog_AcademicSettings</b>
+                    </MudText>
+
+                    <MudStack Spacing="2">
+                        <MudSwitch T="bool"
+                                   Value="_overrideCredits"
+                                   ValueChanged="OnOverrideToggled"
+                                   Color="Color.Primary"
+                                   Label="@LanguageHelper.SettingsDialog_OverrideCredits"/>
+                        <MudNumericField T="int?"
+                                         @bind-Value="_model.Credits"
+                                         Disabled="@(!_overrideCredits)"
+                                         Label="@LanguageHelper.SettingsDialog_RequiredCredits"
+                                         Variant="Variant.Outlined"
+                                         Min="0"
+                                         Adornment="Adornment.End"
+                                         AdornmentText="@LanguageHelper.Cr"/>
+                    </MudStack>
                 </MudStack>
             </MudStack>
-        </MudStack>
-    </ContentOrCircularLoading>
+        </ContentOrCircularLoading>
+    </ChildContent>
+    <FooterLeft>
+        <MudText Typo="Typo.caption" Style="color: var(--mud-palette-text-disabled);">
+            @(LanguageHelper.LastDataUpdate + ": " + _dateTime)
+        </MudText>
+    </FooterLeft>
 </RDialog>
 
 @code {
 
-    [Parameter]
-    public required StudyContext StudyContext { get; set; }
+    [Parameter] public required StudyContext StudyContext { get; set; }
 
     private bool _loading = true;
     private SettingsDialogModel _model = new();
     private bool _overrideCredits;
     private bool LanguageChanged => _model.Language != _originalLanguage;
     private AppLanguage _originalLanguage;
+    private DateTime? _dateTime;
 
     protected override async Task OnInitializedAsync()
     {
         _model.Language = await LanguageService.GetAppLanguageAsync();
         _originalLanguage = _model.Language;
         _overrideCredits = StudyContext.CreditOverride.HasValue;
+
+        var result = await GitRepositoryInfoService.GetLastUpdateDateAsync();
+        if (result.IsSuccess)
+        {
+            _dateTime = result.Value;
+        }
 
         _loading = false;
         await InvokeAsync(StateHasChanged);

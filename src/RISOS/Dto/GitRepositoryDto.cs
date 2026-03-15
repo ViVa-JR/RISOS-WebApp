@@ -4,6 +4,12 @@ namespace RISOS.Dto;
 
 public class GitRepositoryDto
 {
-    [JsonPropertyName("pushed_at")]
-    public string PushedAt { get; set; } = string.Empty;
+    [JsonPropertyName("workflow_runs")] 
+    public List<WorkflowRunDto> WorkflowList { get; set; } = [];
+}
+
+public class WorkflowRunDto
+{
+    [JsonPropertyName("updated_at")]
+    public DateTime UpdatedAt { get; set; }
 }
