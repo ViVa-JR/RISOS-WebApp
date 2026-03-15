@@ -372,4 +372,7 @@
     <data name="CompulsoryElectiveErrorMessage" xml:space="preserve">
         <value>You have to select subject from every group</value>
     </data>
+    <data name="LastDataUpdate" xml:space="preserve">
+        <value>Last data update</value>
+    </data>
 </root>

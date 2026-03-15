@@ -7,12 +7,12 @@ namespace RISOS.Services;
 
 public class GitRepositoryInfoService(IOptions<ApiOptions> options, ApiService apiService)
 {
-    public async Task<Result<string>> GetLastUpdateDateAsync()
+    public async Task<Result<DateTime?>> GetLastUpdateDateAsync()
     {
         var result = await apiService.TryRequestAsync<GitRepositoryDto>(client => client.GetAsync(options.Value.GitUrl));
 
         return result.IsFailure
-            ? Result.Failure<string>(result.Error)
-            : result.Value.PushedAt;
+            ? Result.Failure<DateTime?>(result.Error)
+            : result.Value.WorkflowList.FirstOrDefault()?.UpdatedAt;
     }
 }

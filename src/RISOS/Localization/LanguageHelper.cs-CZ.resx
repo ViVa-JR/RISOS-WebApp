@@ -362,4 +362,7 @@
     <data name="CompulsoryElectiveErrorMessage" xml:space="preserve">
         <value>Musíte mít zvolený předmět z každé skupiny</value>
     </data>
+    <data name="LastDataUpdate" xml:space="preserve">
+        <value>Poslední aktualizace dat</value>
+    </data>
 </root>
