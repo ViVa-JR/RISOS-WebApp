@@ -81,7 +81,7 @@
     private MudTextField<string> _groupIdField = null!;
     private AddCustomSubjectModel _model = new();
 
-    private void OnTypeChanged()
+    private async Task OnTypeChanged()
     {
         if (_model.Type == SubjectType.CompulsoryElective)
         {
@@ -89,7 +89,7 @@
         }
 
         _model.GroupId = null;
-        _groupIdField.ResetValidation();
+        await _groupIdField.ResetValidationAsync();
     }
 
     private Task<SubjectEntry> OnSubmit()

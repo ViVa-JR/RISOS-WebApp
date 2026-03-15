@@ -13,7 +13,7 @@
         <MudDivider/>
     </TitleContent>
     <DialogContent>
-        <MudForm @ref="_form" Class="mt-2 pb-4">
+        <MudForm @ref="_form" Class="mt-2 pb-2">
             @ChildContent
         </MudForm>
     </DialogContent>
@@ -56,7 +56,7 @@
 
     private async Task OnSubmitInternal()
     {
-        await _form.Validate();
+        await _form.ValidateAsync();
         if (!_form.IsValid)
         {
             return;

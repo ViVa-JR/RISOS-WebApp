@@ -14,9 +14,12 @@ public class AddCustomSubjectModel
 
     public SemesterSeason SemesterSeason { get; set; } = SemesterSeason.Any;
     public SubjectType Type { get; set; } = SubjectType.Compulsory;
-    
+
     public string? GroupId { get; set; } = null;
 
-    public SubjectEntry ToSubjectEntry() => new (new Subject("custom-" + Name + ShortName, Name, ShortName,  Credits, MinSemester, Type, SemesterSeason, CompletionType, GroupId)) 
-    { Semester = SubjectEntry.Unassigned};
+    public SubjectEntry ToSubjectEntry()
+        => new(new Subject("custom-" + Name + ShortName, Name, ShortName, Credits, MinSemester, Type, SemesterSeason, CompletionType, GroupId))
+        {
+            Semester = SubjectEntry.Unassigned
+        };
 }

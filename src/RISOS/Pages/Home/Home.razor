@@ -7,7 +7,6 @@
 @using RISOS.Pages.Home.Dialogs.SettingsDialog
 @using RISOS.Pages.Home.Models
 @using RISOS.Services
-@using System.Text.Json
 @using RISOS.Pages.Home.Dialogs.ImportDialog
 
 @inject UniversityService UniversityService
@@ -23,7 +22,7 @@
     :root {
         --dropzone-height: 250px;
     }
-    
+
     .side-bar .mud-expand-panel {
         background: var(--mud-palette-primary);
         color: white;
@@ -105,16 +104,16 @@
                 <MudIconButton Icon="@Icons.Material.Filled.Settings" Style="color: var(--mud-palette-drawer-text)" OnClick="@OnSettingsClick"/>
             </MudTooltip>
             <MudTooltip Text="@LanguageHelper.Export">
-                <MudIconButton 
-                    Icon="@Icons.Material.Filled.Download" 
+                <MudIconButton
+                    Icon="@Icons.Material.Filled.Download"
                     Style="color: var(--mud-palette-drawer-text)"
-                               OnClick="@(() => ExportService.HandleExportAsync())" />
+                    OnClick="@(() => ExportService.HandleExportAsync())"/>
             </MudTooltip>
             <MudTooltip Text="@LanguageHelper.Import">
-                        <MudIconButton 
-                            Icon="@Icons.Material.Filled.Upload" 
-                            Style="color: var(--mud-palette-drawer-text)"
-                            OnClick="OnImportClick" />
+                <MudIconButton
+                    Icon="@Icons.Material.Filled.Upload"
+                    Style="color: var(--mud-palette-drawer-text)"
+                    OnClick="@OnImportClick"/>
             </MudTooltip>
         </MudStack>
     </AlwaysVisible>
@@ -149,16 +148,11 @@
         {
             _subjects = result.Value.Select(s => new SubjectEntry(s)).ToDictionary(x => x.Subject.Id);
             var customSubjects = await LocalStorageService.LoadCustomSubjectsAsync();
-            if(customSubjects != null)
+            foreach (var custom in customSubjects)
             {
-                foreach (var custom in customSubjects)
-                {
-                    if (!_subjects.ContainsKey(custom.Subject.Id))
-                    {
-                        _subjects[custom.Subject.Id] = custom;
-                    }
-                }
+                _subjects.TryAdd(custom.Subject.Id, custom);
             }
+
             var subjects = await LocalStorageService.LoadSubjectsAsync();
             if (subjects.Count == 0)
             {
@@ -227,7 +221,7 @@
 
         _dropContainer.Refresh();
     }
-    
+
     private async Task PrintLastDataUpdate()
     {
         var result = await GitRepositoryInfoService.GetLastUpdateDateAsync();
@@ -248,7 +242,7 @@
 
         _studyContext.CreditOverride = result.Value.Credits;
         //TODO save to localstorage so the refresh doesn't remove the override
-        
+
         var language = await LanguageService.GetAppLanguageAsync();
         if (result.Value.Language != language)
         {
@@ -263,11 +257,11 @@
         var dialog = await DialogService.ShowAsync<ImportDialog>(LanguageHelper.ImportJSON, options);
         var result = await dialog.Result;
 
-        if (result != null && !result.Canceled && result.Data is AppState importedData)
+        if (result is { Canceled: false, Data: AppState importedData })
         {
             await ImportService.ApplyAppStateAsync(importedData);
             var faculties = await UniversityService.GetFacultiesWithProgramsAsync();
-                
+
             var programAbbreviation = await LocalStorageService.LoadProgramAbbreviation();
             if (!string.IsNullOrEmpty(programAbbreviation))
             {
@@ -275,7 +269,6 @@
                 if (program != null)
                 {
                     await LoadData(program);
-
                 }
             }
         }
@@ -292,11 +285,13 @@
 
         foreach (var storageItem in storedSubjects)
         {
-            if (_subjects.TryGetValue(storageItem.SubjectId, out var subjectEntry))
+            if (!_subjects.TryGetValue(storageItem.SubjectId, out var subjectEntry))
             {
-                var updatedEntry = SubjectStorageMapper.ToSubjectEntry(storageItem, subjectEntry);
-                _selectedSubjects.Add(updatedEntry);
+                continue;
             }
+
+            var updatedEntry = SubjectStorageMapper.ToSubjectEntry(storageItem, subjectEntry);
+            _selectedSubjects.Add(updatedEntry);
         }
     }
 }

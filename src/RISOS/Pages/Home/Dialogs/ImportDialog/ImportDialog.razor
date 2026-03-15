@@ -1,12 +1,11 @@
-﻿@using Microsoft.AspNetCore.Components.Forms
-@using RISOS.Common.Components
+﻿@using RISOS.Common.Components
 @using RISOS.Common.Models
 @using RISOS.Localization
 @using RISOS.Services
 @using RISOS.Models
 @using RISOS.Extensions
 
-@namespace RISOS.Pages.Home.Dialogs.ImportDialog
+@inject ISnackbar Snackbar
 
 <RDialog TReturn="AppState"
          Title="@LanguageHelper.ImportJSON"
@@ -14,43 +13,39 @@
          SubmitIcon="@Icons.Material.Filled.Upload"
          OnSubmit="@OnSubmit"
          OnValidateFunc="Validate"
-         HeaderIcon="@Icons.Material.Filled.CloudUpload"
-         @ref="_rDialog">
-    
+         HeaderIcon="@Icons.Material.Filled.CloudUpload">
+
     <MudStack Style="width: 100%; min-width: 400px">
-
         <MudFileUpload T="IBrowserFile"
-                       FilesChanged="OnFilesChanged"
+                       FilesChanged="@OnFilesChanged"
+                       AppendMultipleFiles="false"
+                       DragAndDrop="true"
                        Accept=".json"
-                       Hidden="false"
-                       InputClass="absolute mud-width-full mud-height-full overflow-hidden z-20"
-                       InputStyle="opacity:0"
-                       @ondragenter="@(() => _dragClass = "mud-border-primary")"
-                       @ondragleave="@(() => _dragClass = string.Empty)">
-            <ActivatorContent>
-                <MudPaper Outlined="true"
-                          Class="@($"d-flex flex-column align-center justify-center mud-width-full py-12 border-2 border-dashed {(_isSubmitAttempted ? "mud-border-error" : _dragClass)}")">
-                    @if (_selectedFile != null)
-                    {//TODO repair clean button
-                        <MudIconButton Icon="@Icons.Material.Filled.Close"
-                                        Size="Size.Small"
-                                        Color="Color.Error"
-                                        Class="position-absolute"
-                                        Style="top:8px; right:8px;"
-                                        OnClick="ClearFile"/>
-                    }
-
-                    @if (_selectedFile == null)
-                    {
-                        <MudIcon Icon="@Icons.Material.Filled.CloudUpload" Size="Size.Large" Color="Color.Primary" />
-                    }
-                    else
-                    {
-                        <MudIcon Icon="@Icons.Material.Filled.InsertDriveFile" Color="Color.Primary" />
-                    }
-                    <MudText Typo="Typo.subtitle1" Class="mt-2">
-                        @(_selectedFile == null ? LanguageHelper.DropJSON : _selectedFile.Name)
-                    </MudText>
+                       tabindex="-1"
+                       Style="cursor: pointer;"
+                       Class="overflow-hidden z-20 mt-n6"
+                       @bind-Dragging="@_dragging"
+                       @bind-Dragging:after="@ClearDragClass">
+            <CustomContent>
+                <MudPaper Height="200px"
+                          Outlined="true"
+                          @onclick="@context.OpenFilePickerAsync"
+                          @ondragenter="@SetDragClass"
+                          Class="@_dragClass">
+                    <MudStack Class="w-100 h-100" AlignItems="AlignItems.Center" Justify="Justify.Center">
+                        @if (_selectedFile == null)
+                        {
+                            <MudIcon Icon="@Icons.Material.Filled.CloudUpload" Size="Size.Large" Color="Color.Primary"/>
+                        }
+                        else
+                        {
+                            <MudIconButton Size="Size.Small" Icon="@Icons.Material.Filled.Close" Color="Color.Error" Style="position: absolute; top: 8px; right: 8px" OnClick="@ClearFile"/>
+                            <MudIcon Icon="@Icons.Material.Filled.InsertDriveFile" Color="Color.Primary" Size="Size.Large"/>
+                        }
+                        <MudText Typo="Typo.subtitle1" Class="mt-2">
+                            @(_selectedFile == null ? LanguageHelper.DropJSON : _selectedFile.Name)
+                        </MudText>
+                    </MudStack>
                 </MudPaper>
                 @if (_isSubmitAttempted && _selectedFile == null)
                 {
@@ -58,9 +53,9 @@
                         @LanguageHelper.MissingFile
                     </MudText>
                 }
-            </ActivatorContent>
+            </CustomContent>
+            <SelectedTemplate/>
         </MudFileUpload>
-
         @if (_importError != null)
         {
             <MudAlert Severity="Severity.Error" Class="mt-2">@_importError</MudAlert>
@@ -69,21 +64,39 @@
 </RDialog>
 
 @code {
-    private RDialog<AppState> _rDialog = null!;
+    private const string DefaultDragClass = "relative d-flex flex-column p-r gap-2 rounded-lg border-2 border-dashed pa-4 mt-4 mud-width-full mud-height-full";
+
     private IBrowserFile? _selectedFile;
     private AppState? _validatedData;
-    private string _dragClass = string.Empty;
     private string? _importError;
-    private bool _isSubmitAttempted = false;
+    private bool _isSubmitAttempted;
 
-    [Inject] private ISnackbar Snackbar { get; set; } = null!;
+    private string _dragClass = DefaultDragClass;
+    private bool _dragging;
 
-    private async Task OnFilesChanged(IBrowserFile file)
+    private void SetDragClass()
     {
-        _dragClass = string.Empty;
+        _dragClass = $"{DefaultDragClass} mud-border-success";
+        _dragging = true;
+    }
+
+    private void ClearDragClass()
+    {
+        if (!_dragging)
+        {
+            _dragClass = DefaultDragClass;
+        }
+    }
+
+    private async Task OnFilesChanged(IBrowserFile? file)
+    {
+        _dragClass = DefaultDragClass;
         _importError = null;
 
-        if (file == null) return;
+        if (file == null)
+        {
+            return;
+        }
 
         try
         {
@@ -94,7 +107,7 @@
                 return;
             }
 
-            using var stream = file.OpenReadStream(maxAllowedSize: 2048000);
+            await using var stream = file.OpenReadStream(maxAllowedSize: 2048000);
             using var reader = new StreamReader(stream);
             var content = await reader.ReadToEndAsync();
 
@@ -114,15 +127,17 @@
         }
     }
 
-    private async Task <Result> Validate()
+    private Task<Result> Validate()
     {
-        if (_validatedData == null)
+        if (_validatedData != null)
         {
-            _isSubmitAttempted = true;
-            StateHasChanged();
-            return Result.Failure(Error.NullValue);
+            return Task.FromResult(Result.Success());
         }
-        return Result.Success();
+
+        _isSubmitAttempted = true;
+        _dragClass = $"{DefaultDragClass} mud-border-error";
+        StateHasChanged();
+        return Task.FromResult(Result.Failure(Error.NullValue));
     }
 
     private void ClearFile()
@@ -135,7 +150,7 @@
 
     private Task<AppState?> OnSubmit()
     {
-            return Task.FromResult<AppState?>(_validatedData);       
+        return Task.FromResult(_validatedData);
     }
 
     public static async Task<DialogResult<AppState>> ShowAsync(IDialogService dialogService)
