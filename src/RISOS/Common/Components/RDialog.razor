@@ -1,10 +1,11 @@
+@using RISOS.Common.Models
 @using RISOS.Localization
 @typeparam TReturn
 
 <MudDialog Class="pa-2">
     <TitleContent>
         <MudStack Row Spacing="3" AlignItems="AlignItems.Center">
-            <MudIcon Icon="@Icons.Material.Filled.School" Color="Color.Primary"/>
+            <MudIcon Icon="@HeaderIcon" Color="Color.Primary"/>
             <MudText Typo="Typo.h6" Class="font-weight-bold">
                 @Title
             </MudText>
@@ -44,6 +45,12 @@
     
     [Parameter, EditorRequired]
     public required RenderFragment ChildContent { get; set; }
+
+    [Parameter]
+    public string HeaderIcon { get; set; } = Icons.Material.Filled.School;
+    
+    [Parameter]
+    public Func<Task<Result>>? OnValidateFunc { get; set; }
     
     private MudForm _form = null!;
 
@@ -53,6 +60,15 @@
         if (!_form.IsValid)
         {
             return;
+        }
+
+        if (OnValidateFunc is not null)
+        {
+            var result = await OnValidateFunc.Invoke();
+            if (result.IsFailure)
+            {
+                return;
+            }
         }
 
         if (OnSubmit is null)
