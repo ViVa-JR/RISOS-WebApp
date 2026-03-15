@@ -495,4 +495,7 @@
   <data name="CorrectFileType" xml:space="preserve">
     <value>Soubor je správného typu</value>
   </data>
+  <data name="ShowProgramInfo" xml:space="preserve">
+    <value>Zobrazit informace o studijním programu</value>
+  </data>
 </root>

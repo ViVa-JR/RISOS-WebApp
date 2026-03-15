@@ -1078,6 +1078,15 @@ namespace RISOS.Localization {
         }
         
         /// <summary>
+        ///   Vyhledá lokalizovaný řetězec podobný Show study program info.
+        /// </summary>
+        internal static string ShowProgramInfo {
+            get {
+                return ResourceManager.GetString("ShowProgramInfo", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Vyhledá lokalizovaný řetězec podobný Study program.
         /// </summary>
         internal static string StudyProgram {

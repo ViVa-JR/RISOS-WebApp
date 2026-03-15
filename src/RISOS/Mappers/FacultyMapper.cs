@@ -45,6 +45,7 @@ public static class FacultyMapper
             StudyDuration: studyDuration,
             Credits: credits,
             CreditsWarn: creditsWarn,
+            Url: dto.Url,
             Specialization: dto.Specialization
         );
     }
