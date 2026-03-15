@@ -60,7 +60,7 @@ public class LocalStorageService(IJSRuntime js)
         }
     }
 
-    public async Task SaveSubjects(List<SubjectStorage> subjects)
+    public async Task SaveSubjects(ICollection<SubjectStorage> subjects)
     {
         if (subjects == null) return;
 

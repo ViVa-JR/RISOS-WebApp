@@ -1,6 +1,7 @@
 @using RISOS.Enums
 @using RISOS.Extensions
 @using RISOS.Localization
+@using RISOS.Mappers
 @using RISOS.Models
 @using RISOS.Pages.Home.Dialogs.AddCustomSubjectDialog
 @using RISOS.Pages.Home.Models
@@ -97,7 +98,7 @@
         </MudStack>
     </ChildContent>
     <ItemRenderer>
-        <SemesterDropZoneItemTemplate Entry="context" EntryChanged="@(() => _dropContainer?.Refresh())" SemesterCount="@(Years * 2)" RemoveEntry="@OnRemove"/>
+        <SemesterDropZoneItemTemplate Entry="context" EntryChanged="@EntryChanged" SemesterCount="@(Years * 2)" RemoveEntry="@OnRemove"/>
     </ItemRenderer>
 </MudDropContainer>
 
@@ -136,6 +137,12 @@
         return item.Semester == dropzone;
     }
 
+    private async Task EntryChanged(SubjectEntry entry)
+    {
+        await LocalStorageService.UpdateSubjectAsync(SubjectStorageMapper.ToStorage(entry));//TODO add mapper to local storage
+        _dropContainer?.Refresh();
+    }
+
     private static void ItemUpdated(MudItemDropInfo<SubjectEntry> dropItem)
     {
         dropItem.Item?.Semester = dropItem.DropzoneIdentifier;
@@ -171,7 +178,7 @@
         );
     }
 
-    private void OnYearsChanged(int years)
+    private void OnYearsChanged(int years)//TODO add year to local storage
     {
         StudyContext.Years = years;
         var maxValidSemester = years * 2;

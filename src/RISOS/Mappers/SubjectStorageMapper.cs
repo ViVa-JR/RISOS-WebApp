@@ -14,10 +14,12 @@ namespace RISOS.Mappers
             return result;
         }
 
-        public static List<SubjectStorage> ToStorageList(List<SubjectEntry> subjectEntries)
+        public static ICollection<SubjectStorage> ToStorageList(List<SubjectEntry> subjectEntries)
         {
             if (subjectEntries == null)
-                return new List<SubjectStorage>();
+            {
+                return [];
+            }
 
             return subjectEntries.Select(entry => ToStorage(entry)).ToList();
         }

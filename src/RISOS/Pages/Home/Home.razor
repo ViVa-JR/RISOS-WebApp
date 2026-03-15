@@ -160,7 +160,7 @@
                 }
             }
             var subjects = await LocalStorageService.LoadSubjectsAsync();
-            if (subjects == null)
+            if (subjects == null)//TODO repair error
             {
                 _selectedSubjects = _subjects.Values.Where(x => x.Selected).ToList();
                 await LocalStorageService.SaveSubjects(SubjectStorageMapper.ToStorageList(_selectedSubjects));
@@ -203,7 +203,7 @@
         StateHasChanged();
     }
 
-    private void OnRemove(SubjectEntry entry)
+    private void OnRemove(SubjectEntry entry)//TODO update local storage
     {
         entry.Selected = false;
         _selectedSubjects.Remove(entry);
@@ -298,6 +298,4 @@
             }
         }
     }
-}
-
 }
