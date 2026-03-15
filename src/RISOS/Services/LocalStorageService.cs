@@ -1,6 +1,7 @@
 using Microsoft.JSInterop;
 using RISOS.Enums;
 using RISOS.Extensions;
+using RISOS.Mappers;
 using RISOS.Pages.Home.Models;
 using System.Net.NetworkInformation;
 using System.Text.Json;
@@ -135,8 +136,9 @@ public class LocalStorageService(IJSRuntime js)
         await SaveSubjects(emptyList);
     }
 
-    public async Task UpdateSubjectAsync(SubjectStorage updatedSubject)
+    public async Task UpdateSubjectAsync(SubjectEntry updatedSubjectEntry)
     {
+        var updatedSubject = SubjectStorageMapper.ToStorage(updatedSubjectEntry);
         if (updatedSubject == null) return;
 
         var subjects = await LoadSubjectsAsync();

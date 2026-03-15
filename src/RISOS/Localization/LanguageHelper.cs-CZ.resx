@@ -469,16 +469,13 @@
     <value>Musíte mít zvolený předmět z každé skupiny</value>
   </data>
   <data name="ImportJSON" xml:space="preserve">
-    <value>Importovat JSON</value>
+    <value>Importovat plán</value>
   </data>
   <data name="UploadData" xml:space="preserve">
     <value>Nahrajte soubor ve formátu JSON pro obnovení dat. </value>
   </data>
   <data name="DropJSON" xml:space="preserve">
-    <value>Přetáhněte JSON sem nebo klikněte</value>
-  </data>
-  <data name="CorrectFileType" xml:space="preserve">
-    <value>Soubor je správného typu</value>
+    <value>Přetáhněte váš plán sem nebo klikněte</value>
   </data>
   <data name="CompulsoryElective" xml:space="preserve">
     <value>Povinně-Volitelné</value>
@@ -494,5 +491,8 @@
   </data>
   <data name="MissingFile" xml:space="preserve">
     <value>* Musíte vybrat soubor (.json) před importem.</value>
+  </data>
+  <data name="CorrectFileType" xml:space="preserve">
+    <value>Soubor je správného typu</value>
   </data>
 </root>

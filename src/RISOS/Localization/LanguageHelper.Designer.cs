@@ -700,7 +700,7 @@ namespace RISOS.Localization {
         }
         
         /// <summary>
-        ///   Vyhledá lokalizovaný řetězec podobný Drag and drop JSON here or click. .
+        ///   Vyhledá lokalizovaný řetězec podobný Drag and drop your plan here or click. .
         /// </summary>
         internal static string DropJSON {
             get {
@@ -808,7 +808,7 @@ namespace RISOS.Localization {
         }
         
         /// <summary>
-        ///   Vyhledá lokalizovaný řetězec podobný Import JSON.
+        ///   Vyhledá lokalizovaný řetězec podobný Import your plan.
         /// </summary>
         internal static string ImportJSON {
             get {

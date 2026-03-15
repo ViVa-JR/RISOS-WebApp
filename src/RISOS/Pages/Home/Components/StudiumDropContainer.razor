@@ -139,7 +139,7 @@
 
     private async Task EntryChanged(SubjectEntry entry)
     {
-        await LocalStorageService.UpdateSubjectAsync(SubjectStorageMapper.ToStorage(entry));//TODO add mapper to local storage
+        await LocalStorageService.UpdateSubjectAsync(entry);
         _dropContainer?.Refresh();
     }
 

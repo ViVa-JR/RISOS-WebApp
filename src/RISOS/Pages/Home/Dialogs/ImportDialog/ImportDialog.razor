@@ -1,5 +1,6 @@
 ﻿@using Microsoft.AspNetCore.Components.Forms
 @using RISOS.Common.Components
+@using RISOS.Common.Models
 @using RISOS.Localization
 @using RISOS.Services
 @using RISOS.Models
@@ -12,12 +13,11 @@
          SubmitText="@LanguageHelper.Import"
          SubmitIcon="@Icons.Material.Filled.Upload"
          OnSubmit="@OnSubmit"
+         OnValidateFunc="Validate"
+         HeaderIcon="@Icons.Material.Filled.CloudUpload"
          @ref="_rDialog">
     
     <MudStack Style="width: 100%; min-width: 400px">
-        <MudText Typo="Typo.body2" Class="mb-2">
-            @LanguageHelper.UploadData
-        </MudText>
 
         <MudFileUpload T="IBrowserFile"
                        FilesChanged="OnFilesChanged"
@@ -48,7 +48,7 @@
                     {
                         <MudIcon Icon="@Icons.Material.Filled.InsertDriveFile" Color="Color.Primary" />
                     }
-                    <MudText Typo="Typo.h6" Class="mt-2">
+                    <MudText Typo="Typo.subtitle1" Class="mt-2">
                         @(_selectedFile == null ? LanguageHelper.DropJSON : _selectedFile.Name)
                     </MudText>
                 </MudPaper>
@@ -114,6 +114,17 @@
         }
     }
 
+    private async Task <Result> Validate()
+    {
+        if (_validatedData == null)
+        {
+            _isSubmitAttempted = true;
+            StateHasChanged();
+            return Result.Failure(Error.NullValue);
+        }
+        return Result.Success();
+    }
+
     private void ClearFile()
     {
         _selectedFile = null;
@@ -124,13 +135,6 @@
 
     private Task<AppState?> OnSubmit()
     {
-        if (_validatedData == null)
-        {
-            _isSubmitAttempted = true;
-            StateHasChanged();
-            //TODO change RDIalog to not close when validation fails
-            throw new InvalidOperationException("Validation failed");
-        }
             return Task.FromResult<AppState?>(_validatedData);       
     }
 

@@ -160,7 +160,7 @@
                 }
             }
             var subjects = await LocalStorageService.LoadSubjectsAsync();
-            if (subjects == null)//TODO repair error
+            if (subjects.Count == 0)
             {
                 _selectedSubjects = _subjects.Values.Where(x => x.Selected).ToList();
                 await LocalStorageService.SaveSubjects(SubjectStorageMapper.ToStorageList(_selectedSubjects));
@@ -203,10 +203,11 @@
         StateHasChanged();
     }
 
-    private void OnRemove(SubjectEntry entry)//TODO update local storage
+    private async Task OnRemove(SubjectEntry entry)
     {
         entry.Selected = false;
         _selectedSubjects.Remove(entry);
+        await LocalStorageService.RemoveSubjectAsync(entry.Subject.Id);
         _dropContainer.Refresh();
     }
 
@@ -216,7 +217,7 @@
         if (subject.Selected)
         {
             _selectedSubjects.Add(subject);
-            await LocalStorageService.UpdateSubjectAsync(SubjectStorageMapper.ToStorage(subject));
+            await LocalStorageService.UpdateSubjectAsync(subject);
         }
         else
         {
@@ -238,7 +239,7 @@
 
     private async Task OnSettingsClick()
     {
-        PrintLastDataUpdate();
+        await PrintLastDataUpdate();
         var result = await SettingsDialog.ShowAsync(DialogService, _studyContext);
         if (result.IsCancelled || result.IsFailure)
         {

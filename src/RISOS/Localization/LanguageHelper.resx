@@ -472,13 +472,13 @@
     <value>You have to select subject from every group</value>
   </data>
   <data name="ImportJSON" xml:space="preserve">
-    <value>Import JSON</value>
+    <value>Import your plan</value>
   </data>
   <data name="UploadData" xml:space="preserve">
     <value>Upload a JSON file to restore your data. </value>
   </data>
   <data name="DropJSON" xml:space="preserve">
-    <value>Drag and drop JSON here or click. </value>
+    <value>Drag and drop your plan here or click. </value>
   </data>
   <data name="CompulsoryElective" xml:space="preserve">
     <value>Compulsory elective</value>
