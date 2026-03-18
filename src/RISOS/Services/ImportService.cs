@@ -5,6 +5,7 @@
         public async Task ApplyAppStateAsync(AppState state)
         {
             await localStorageService.SaveProgramAbbreviation(state.ProgramAbbreviation);
+            await localStorageService.SaveProgramSpecialization(state.ProgramSpecialization);
             await localStorageService.SaveSubjects(state.Subjects);
             await localStorageService.SaveCustomSubjects(state.CustomSubjects);
         }

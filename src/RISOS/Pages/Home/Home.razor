@@ -138,7 +138,7 @@
     private List<SubjectEntry> _selectedSubjects = [];
     private bool Disabled => _selectedProgram is null;
 
-    private async Task LoadData(StudyProgram studyProgram)
+    private async Task LoadData(StudyProgram studyProgram)//TODO fix second call program
     {
         _isLoading = true;
         await InvokeAsync(StateHasChanged);
@@ -176,6 +176,10 @@
     {
         _selectedProgram = program;
         await LocalStorageService.SaveProgramAbbreviation(program?.Abbreviation);
+        if (program?.Specialization is not null)
+        {
+            await LocalStorageService.SaveProgramSpecialization(program?.Specialization);
+        }
 
         Console.WriteLine($@"Selected {_selectedProgram?.Abbreviation ?? "no"} study program");
 
@@ -263,9 +267,14 @@
             var faculties = await UniversityService.GetFacultiesWithProgramsAsync();
 
             var programAbbreviation = await LocalStorageService.LoadProgramAbbreviation();
+            var specialization = await LocalStorageService.LoadProgramSpecialization();
             if (!string.IsNullOrEmpty(programAbbreviation))
             {
-                var program = faculties.Value.SelectMany(f => f.Programs).FirstOrDefault(p => p.Abbreviation == programAbbreviation);
+                var program = faculties.Value
+                    .SelectMany(f => f.Programs)
+                    .FirstOrDefault(p => 
+                        p.Abbreviation == programAbbreviation &&
+                        p.Specialization==specialization);
                 if (program != null)
                 {
                     await LoadData(program);

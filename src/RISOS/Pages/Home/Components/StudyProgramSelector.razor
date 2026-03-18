@@ -123,9 +123,14 @@
         }
 
         var programAbbreviation = await LocalStorageService.LoadProgramAbbreviation();
+        var specialization = await LocalStorageService.LoadProgramSpecialization();
         if (!string.IsNullOrEmpty(programAbbreviation))
         {
-            var program = _faculties.SelectMany(f => f.Programs).FirstOrDefault(p => p.Abbreviation == programAbbreviation);
+            var program = _faculties
+                .SelectMany(f => f.Programs)
+                .FirstOrDefault(p => 
+                    p.Abbreviation == programAbbreviation && 
+                    p.Specialization == specialization);
             if (program != null)
             {
                 SelectedProgram = program;

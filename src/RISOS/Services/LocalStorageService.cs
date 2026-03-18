@@ -13,6 +13,7 @@ public class LocalStorageService(IJSRuntime js)
     private const string UserTheme = "user-theme";
     private const string UserLanguage = "user-language";
     private const string programAbbreviation = "subject-id";
+    private const string programSpecialization = "subject-specialization";
 
     private const string Subjects = "user-subjects";
     private const string CustomSubjects = "custom-subjects";
@@ -57,6 +58,32 @@ public class LocalStorageService(IJSRuntime js)
         catch
         {
             await js.InvokeVoidAsync("localStorage.removeItem", programAbbreviation);
+            return null;
+        }
+    }
+
+    public async Task SaveProgramSpecialization(string? ProgramSpecialization)
+    {
+        if (string.IsNullOrEmpty(ProgramSpecialization))
+        {
+            await js.InvokeVoidAsync("localStorage.removeItem", programSpecialization);
+        }
+        else
+        {
+            await js.InvokeVoidAsync("localStorage.setItem", programSpecialization, ProgramSpecialization);
+        }
+    }
+
+    public async Task<string?> LoadProgramSpecialization()
+    {
+        try
+        {
+            var id = await js.InvokeAsync<string>("localStorage.getItem", programSpecialization);
+            return string.IsNullOrEmpty(id) ? null : id;
+        }
+        catch
+        {
+            await js.InvokeVoidAsync("localStorage.removeItem", programSpecialization);
             return null;
         }
     }
@@ -188,6 +215,7 @@ public class LocalStorageService(IJSRuntime js)
     {
         var state = new AppState();
         state.ProgramAbbreviation = await LoadProgramAbbreviation();
+        state.ProgramSpecialization = await LoadProgramSpecialization();
         state.Subjects = await LoadSubjectsAsync();
         state.CustomSubjects = await LoadCustomSubjectsAsync();
         return state;
