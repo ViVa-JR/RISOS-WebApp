@@ -7,6 +7,8 @@ namespace RISOS.Services
         public string? ProgramAbbreviation { get; set; }
 
         public string? ProgramSpecialization { get; set; }
+        public int? CreditOverride { get; set; }
+        public int? StudyYears { get; set; }
         public List<SubjectStorage> Subjects { get; set; } = new();
 
         public List<SubjectEntry> CustomSubjects { get; set; } = new();

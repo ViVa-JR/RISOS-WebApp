@@ -17,6 +17,8 @@ public class LocalStorageService(IJSRuntime js)
 
     private const string Subjects = "user-subjects";
     private const string CustomSubjects = "custom-subjects";
+    private const string CreditOverride= "credit-override";
+    private const string StudyYears = "study-years";
 
     public async Task SaveTheme(bool isDark)
     {
@@ -84,6 +86,66 @@ public class LocalStorageService(IJSRuntime js)
         catch
         {
             await js.InvokeVoidAsync("localStorage.removeItem", programSpecialization);
+            return null;
+        }
+    }
+
+    public async Task SaveCreditOverride(int? creditOverride)
+    {
+        if (creditOverride == null)
+        {
+            await js.InvokeVoidAsync("localStorage.removeItem", CreditOverride);
+        }
+        else
+        {
+            await js.InvokeVoidAsync("localStorage.setItem", CreditOverride, creditOverride.ToString());
+        }
+    }
+
+    public async Task<int?> LoadCreditOverride()
+    {
+        try
+        {
+            var value = await js.InvokeAsync<string>("localStorage.getItem", CreditOverride);
+            if (int.TryParse(value, out int result))
+            {
+                return result;
+            }
+            return null;
+        }
+        catch
+        {
+            await js.InvokeVoidAsync("localStorage.removeItem", CreditOverride);
+            return null;
+        }
+    }
+
+    public async Task SaveStudyYears(int? studyYears)
+    {
+        if (studyYears == null)
+        {
+            await js.InvokeVoidAsync("localStorage.removeItem", StudyYears);
+        }
+        else
+        {
+            await js.InvokeVoidAsync("localStorage.setItem", StudyYears, studyYears.ToString());
+        }
+    }
+
+    public async Task<int?> LoadStudyYears()
+    {
+        try
+        {
+            var value = await js.InvokeAsync<string>("localStorage.getItem", StudyYears);
+            if (int.TryParse(value, out int result))
+            {
+                return result;
+            }
+            return null;
+        }
+        catch
+        {
+            await js.InvokeVoidAsync("localStorage.removeItem", StudyYears);
             return null;
         }
     }
@@ -218,6 +280,8 @@ public class LocalStorageService(IJSRuntime js)
         state.ProgramSpecialization = await LoadProgramSpecialization();
         state.Subjects = await LoadSubjectsAsync();
         state.CustomSubjects = await LoadCustomSubjectsAsync();
+        state.CreditOverride = await LoadCreditOverride();
+        state.StudyYears = await LoadStudyYears();
         return state;
     }
 }

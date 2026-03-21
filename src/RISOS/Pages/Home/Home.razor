@@ -138,7 +138,7 @@
     private List<SubjectEntry> _selectedSubjects = [];
     private bool Disabled => _selectedProgram is null;
 
-    private async Task LoadData(StudyProgram studyProgram)//TODO fix second call program
+    private async Task LoadData(StudyProgram studyProgram, Boolean fromStorage)
     {
         _isLoading = true;
         await InvokeAsync(StateHasChanged);
@@ -154,7 +154,7 @@
             }
 
             var subjects = await LocalStorageService.LoadSubjectsAsync();
-            if (subjects.Count == 0)
+            if (!fromStorage)
             {
                 _selectedSubjects = _subjects.Values.Where(x => x.Selected).ToList();
                 await LocalStorageService.SaveSubjects(SubjectStorageMapper.ToStorageList(_selectedSubjects));
@@ -167,25 +167,44 @@
             Console.WriteLine($@"Loaded {_subjects.Count} subjects");
         }
 
+        var creaditOverride = await LocalStorageService.LoadCreditOverride();
+        if (creaditOverride.HasValue)
+        {
+            _studyContext.CreditOverride = creaditOverride.Value;
+        }
+
         _isLoading = false;
         await InvokeAsync(StateHasChanged);
         _dropContainer.Refresh();
     }
 
     private async Task OnSelectedProgramsChanged(StudyProgram? program)
-    {
+    {   
         _selectedProgram = program;
-        await LocalStorageService.SaveProgramAbbreviation(program?.Abbreviation);
-        if (program?.Specialization is not null)
+
+        var savedAbbreviation = await LocalStorageService.LoadProgramAbbreviation();//TODO fix adding years
+        var savedSpecialization = await LocalStorageService.LoadProgramSpecialization();
+
+        bool isSameProgram = program?.Abbreviation == savedAbbreviation && program?.Specialization == savedSpecialization;
+        if (isSameProgram)
         {
-            await LocalStorageService.SaveProgramSpecialization(program?.Specialization);
+            var savedYears = await LocalStorageService.LoadStudyYears();
+            _studyContext.Years = savedYears ?? (int)Math.Ceiling(_selectedProgram?.StudyDuration ?? 3.0);
         }
+        else
+        {
+            _studyContext.Years = (int)Math.Ceiling(_selectedProgram?.StudyDuration ?? 3.0);
+            await LocalStorageService.SaveStudyYears(_studyContext.Years);
+        }
+
+        await LocalStorageService.SaveProgramAbbreviation(program?.Abbreviation);
+        await LocalStorageService.SaveProgramSpecialization(program?.Specialization);
 
         Console.WriteLine($@"Selected {_selectedProgram?.Abbreviation ?? "no"} study program");
 
-        _studyContext.Years = (int)Math.Ceiling(_selectedProgram?.StudyDuration ?? 3.0);
         _studyContext.RequiredCredits = _selectedProgram?.Credits ?? 0;
         _studyContext.CreditsWarn = _selectedProgram?.CreditsWarn ?? true;
+
 
         if (_selectedProgram is null)
         {
@@ -195,7 +214,7 @@
         }
         else
         {
-            await LoadData(_selectedProgram);
+            await LoadData(_selectedProgram, false);
         }
 
         StateHasChanged();
@@ -245,7 +264,7 @@
         }
 
         _studyContext.CreditOverride = result.Value.Credits;
-        //TODO save to localstorage so the refresh doesn't remove the override
+        await LocalStorageService.SaveCreditOverride(result.Value.Credits);
 
         var language = await LanguageService.GetAppLanguageAsync();
         if (result.Value.Language != language)
@@ -277,9 +296,11 @@
                         p.Specialization==specialization);
                 if (program != null)
                 {
-                    await LoadData(program);
+                    await LoadData(program, true);
                 }
             }
+            var studyYears = await LocalStorageService.LoadStudyYears();
+            _studyContext.Years = studyYears ?? _studyContext.Years;
         }
     }
 

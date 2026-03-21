@@ -2,6 +2,9 @@
 @using RISOS.Localization
 @using RISOS.Models
 @using RISOS.Pages.Home.Models
+@using RISOS.Services
+
+@inject LocalStorageService LocalStorageService
 
 <MudPaper Elevation="0" Class="pa-3 border-2 mud-border-lines-default rounded-lg">
     <MudStack Row AlignItems="AlignItems.Center" Justify="Justify.SpaceBetween">
@@ -122,11 +125,13 @@
     private async Task DecreaseYears()
     {
         await YearsChanged.InvokeAsync(Math.Max(0, StudyContext.Years - 1));
+        await LocalStorageService.SaveStudyYears(StudyContext.Years-1);
     }
 
     private async Task IncreaseYears()
     {
         await YearsChanged.InvokeAsync(++StudyContext.Years);
+        await LocalStorageService.SaveStudyYears(++StudyContext.Years);
     }
 
 }
