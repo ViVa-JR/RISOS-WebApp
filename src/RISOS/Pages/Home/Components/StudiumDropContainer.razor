@@ -23,7 +23,9 @@
     }
 </style>
 
-<MudDropContainer T="SubjectEntry" @ref="_dropContainer" Items="@Subjects" ItemsSelector="@Selector" ItemDropped="@ItemUpdated" Class="d-flex flex-column gap-3 mb-2"
+<MudDropContainer T="SubjectEntry" @ref="_dropContainer" Items="@Subjects" ItemsSelector="@Selector" ItemDropped="@ItemUpdated"
+                  Class="d-flex flex-column gap-3 mb-2"
+                  Style="height: calc(100vh - 20px)"
                   ApplyDropClassesOnDragStarted
                   CanDropClass="mud-alert-text-success mud-border-success"
                   NoDropClass="mud-alert-text-error mud-border-error">
@@ -62,7 +64,7 @@
 
         <ControlCenter @bind-RecognizedYear="_recognizedYear" YearsChanged="OnYearsChanged" TotalCredits="TotalCredits"/>
 
-        <MudStack Row Style="overflow-x: scroll">
+        <MudStack Row Style="overflow: scroll" Class="mb-3">
             @foreach (var year in Enumerable.Range(StartYear, Years))
             {
                 var winterSem = year * 2 - 1;
