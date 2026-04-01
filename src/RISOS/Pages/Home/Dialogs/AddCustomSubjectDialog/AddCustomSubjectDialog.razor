@@ -94,7 +94,7 @@
 
     private Task<SubjectEntry> OnSubmit()
     {
-        return Task.FromResult(_model.ToSubjectEntry());
+        return Task.FromResult(_model.ToSubjectEntry(true));
     }
 
     public static async Task<DialogResult<SubjectEntry>> ShowAsync(IDialogService dialogService)

@@ -12,6 +12,7 @@ public class SubjectEntry(Subject subject)
     public string Semester { get; set; } = subject.Type == SubjectType.Compulsory
         ? $"{(subject.MinSemester == 0 ? Unassigned : subject.MinSemester)}"
         : Unassigned;
+    public bool IsCustomSubject { get; set; }
 
     public const string Unassigned = "unassigned";
 }
