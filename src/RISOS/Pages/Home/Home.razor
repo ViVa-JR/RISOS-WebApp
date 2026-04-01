@@ -1,6 +1,7 @@
 ﻿@page "/"
 
 @using RISOS.Enums
+@using RISOS.Extensions
 @using RISOS.Localization
 @using RISOS.Mappers
 @using RISOS.Pages.Home.Components
@@ -90,6 +91,7 @@
                            CompulsoryGroups/>
             <SubjectsPanel TGroupKey="SemesterSeason"
                            GroupBy="@(x => x.Subject.SemesterSeason)"
+                           HeaderTemplate="@(x => x.ToLabel())"
                            SubjectChanged="@SubjectChanged"
                            Title="@LanguageHelper.Elective"
                            Disabled="@Disabled"
