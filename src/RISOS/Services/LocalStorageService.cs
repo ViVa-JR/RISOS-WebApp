@@ -3,7 +3,6 @@ using RISOS.Enums;
 using RISOS.Extensions;
 using RISOS.Mappers;
 using RISOS.Pages.Home.Models;
-using System.Net.NetworkInformation;
 using System.Text.Json;
 
 namespace RISOS.Services;
@@ -12,12 +11,12 @@ public class LocalStorageService(IJSRuntime js)
 {
     private const string UserTheme = "user-theme";
     private const string UserLanguage = "user-language";
-    private const string programAbbreviation = "subject-id";
-    private const string programSpecialization = "subject-specialization";
+    private const string ProgramAbbreviation = "subject-id";
+    private const string ProgramSpecialization = "subject-specialization";
 
     private const string Subjects = "user-subjects";
     private const string CustomSubjects = "custom-subjects";
-    private const string CreditOverride= "credit-override";
+    private const string CreditOverride = "credit-override";
     private const string StudyYears = "study-years";
 
     public async Task SaveTheme(bool isDark)
@@ -38,15 +37,15 @@ public class LocalStorageService(IJSRuntime js)
         }
     }
 
-    public async Task SaveProgramAbbreviation(string? ProgramAbbreviation)
+    public async Task SaveProgramAbbreviation(string? programAbbreviation)
     {
-        if (string.IsNullOrEmpty(ProgramAbbreviation))
+        if (string.IsNullOrEmpty(programAbbreviation))
         {
             await js.InvokeVoidAsync("localStorage.removeItem", programAbbreviation);
         }
         else
         {
-            await js.InvokeVoidAsync("localStorage.setItem", programAbbreviation, ProgramAbbreviation);
+            await js.InvokeVoidAsync("localStorage.setItem", programAbbreviation, programAbbreviation);
         }
     }
 
@@ -54,25 +53,25 @@ public class LocalStorageService(IJSRuntime js)
     {
         try
         {
-            var id = await js.InvokeAsync<string>("localStorage.getItem", programAbbreviation);
+            var id = await js.InvokeAsync<string>("localStorage.getItem", ProgramAbbreviation);
             return string.IsNullOrEmpty(id) ? null : id;
         }
         catch
         {
-            await js.InvokeVoidAsync("localStorage.removeItem", programAbbreviation);
+            await js.InvokeVoidAsync("localStorage.removeItem", ProgramAbbreviation);
             return null;
         }
     }
 
-    public async Task SaveProgramSpecialization(string? ProgramSpecialization)
+    public async Task SaveProgramSpecialization(string? programSpecializtion)
     {
-        if (string.IsNullOrEmpty(ProgramSpecialization))
+        if (string.IsNullOrEmpty(programSpecializtion))
         {
-            await js.InvokeVoidAsync("localStorage.removeItem", programSpecialization);
+            await js.InvokeVoidAsync("localStorage.removeItem", ProgramSpecialization);
         }
         else
         {
-            await js.InvokeVoidAsync("localStorage.setItem", programSpecialization, ProgramSpecialization);
+            await js.InvokeVoidAsync("localStorage.setItem", ProgramSpecialization, programSpecializtion);
         }
     }
 
@@ -80,12 +79,12 @@ public class LocalStorageService(IJSRuntime js)
     {
         try
         {
-            var id = await js.InvokeAsync<string>("localStorage.getItem", programSpecialization);
+            var id = await js.InvokeAsync<string>("localStorage.getItem", ProgramSpecialization);
             return string.IsNullOrEmpty(id) ? null : id;
         }
         catch
         {
-            await js.InvokeVoidAsync("localStorage.removeItem", programSpecialization);
+            await js.InvokeVoidAsync("localStorage.removeItem", ProgramSpecialization);
             return null;
         }
     }
@@ -111,6 +110,7 @@ public class LocalStorageService(IJSRuntime js)
             {
                 return result;
             }
+
             return null;
         }
         catch
@@ -141,6 +141,7 @@ public class LocalStorageService(IJSRuntime js)
             {
                 return result;
             }
+
             return null;
         }
         catch
@@ -152,8 +153,6 @@ public class LocalStorageService(IJSRuntime js)
 
     public async Task SaveSubjects(ICollection<SubjectStorage> subjects)
     {
-        if (subjects == null) return;
-
         var json = JsonSerializer.Serialize(subjects);
         await js.InvokeVoidAsync("localStorage.setItem", Subjects, json);
     }
@@ -163,7 +162,7 @@ public class LocalStorageService(IJSRuntime js)
         var json = await js.InvokeAsync<string>("localStorage.getItem", Subjects);
         if (string.IsNullOrWhiteSpace(json))
         {
-            return new List<SubjectStorage>();
+            return [];
         }
 
         try
@@ -179,23 +178,21 @@ public class LocalStorageService(IJSRuntime js)
 
     public async Task SaveCustomSubjects(List<SubjectEntry> customSubjects)
     {
-        if (customSubjects == null) return;
-
         var json = JsonSerializer.Serialize(customSubjects);
         await js.InvokeVoidAsync("localStorage.setItem", CustomSubjects, json);
     }
 
     public async Task SaveCustomSubject(SubjectEntry customSubject)
     {
-        if (customSubject == null) return;
-        var customSubjects= await LoadCustomSubjectsAsync();
-        if(customSubjects == null)
-        {
-            customSubjects = new List<SubjectEntry>();
+        var customSubjects = await LoadCustomSubjectsAsync();
 
+        var old = customSubjects.FirstOrDefault(x => x.Subject.Id == customSubject.Subject.Id);
+        if (old is not null)
+        {
+            customSubjects.Remove(old);
         }
-        
-         customSubjects.Add(customSubject);
+
+        customSubjects.Add(customSubject);
         var json = JsonSerializer.Serialize(customSubjects);
         await js.InvokeVoidAsync("localStorage.setItem", CustomSubjects, json);
     }
@@ -205,17 +202,17 @@ public class LocalStorageService(IJSRuntime js)
         var json = await js.InvokeAsync<string>("localStorage.getItem", CustomSubjects);
         if (string.IsNullOrWhiteSpace(json))
         {
-            return new List<SubjectEntry>();
+            return [];
         }
 
         try
         {
             var subjects = JsonSerializer.Deserialize<List<SubjectEntry>>(json);
-            return subjects ?? new List<SubjectEntry>();
+            return subjects ?? [];
         }
         catch (Exception)
         {
-            return new List<SubjectEntry>();
+            return [];
         }
     }
 
@@ -228,7 +225,6 @@ public class LocalStorageService(IJSRuntime js)
     public async Task UpdateSubjectAsync(SubjectEntry updatedSubjectEntry)
     {
         var updatedSubject = SubjectStorageMapper.ToStorage(updatedSubjectEntry);
-        if (updatedSubject == null) return;
 
         var subjects = await LoadSubjectsAsync();
         var index = subjects.FindIndex(s => s.SubjectId == updatedSubject.SubjectId);
@@ -241,12 +237,12 @@ public class LocalStorageService(IJSRuntime js)
         {
             subjects.Add(updatedSubject);
         }
+
         await SaveSubjects(subjects);
     }
 
     public async Task RemoveSubjectAsync(string deletedSubjectId)
     {
-
         var subjects = await LoadSubjectsAsync();
         subjects.RemoveAll(s => s.SubjectId == deletedSubjectId);
 
@@ -275,13 +271,15 @@ public class LocalStorageService(IJSRuntime js)
 
     public async Task<AppState> GetExportStateAsync()
     {
-        var state = new AppState();
-        state.ProgramAbbreviation = await LoadProgramAbbreviation();
-        state.ProgramSpecialization = await LoadProgramSpecialization();
-        state.Subjects = await LoadSubjectsAsync();
-        state.CustomSubjects = await LoadCustomSubjectsAsync();
-        state.CreditOverride = await LoadCreditOverride();
-        state.StudyYears = await LoadStudyYears();
+        var state = new AppState
+        {
+            ProgramAbbreviation = await LoadProgramAbbreviation(),
+            ProgramSpecialization = await LoadProgramSpecialization(),
+            Subjects = await LoadSubjectsAsync(),
+            CustomSubjects = await LoadCustomSubjectsAsync(),
+            CreditOverride = await LoadCreditOverride(),
+            StudyYears = await LoadStudyYears()
+        };
         return state;
     }
 }

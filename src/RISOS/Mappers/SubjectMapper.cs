@@ -1,3 +1,4 @@
+using RISOS.Common.Models;
 using RISOS.Dto;
 using RISOS.Enums;
 using RISOS.Models;

@@ -169,10 +169,10 @@
             Console.WriteLine($@"Loaded {_subjects.Count} subjects");
         }
 
-        var creaditOverride = await LocalStorageService.LoadCreditOverride();
-        if (creaditOverride.HasValue)
+        var creditOverride = await LocalStorageService.LoadCreditOverride();
+        if (creditOverride.HasValue)
         {
-            _studyContext.CreditOverride = creaditOverride.Value;
+            _studyContext.CreditOverride = creditOverride.Value;
         }
 
         _isLoading = false;

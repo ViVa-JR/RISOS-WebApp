@@ -101,7 +101,7 @@
         </div>
     </ChildContent>
     <ItemRenderer>
-        <SemesterDropZoneItemTemplate Entry="context" EntryChanged="@EntryChanged" SemesterCount="@(Years * 2)" RemoveEntry="@OnRemove"/>
+        <SemesterDropZoneItemTemplate Entry="context" EntryChanged="@EntryChanged" SemesterCount="@(Years * 2)" RemoveEntry="@OnRemove" AddEntry="@AddSubjectAsync"/>
     </ItemRenderer>
 </MudDropContainer>
 
@@ -201,15 +201,20 @@
 
     private async Task OpenAddDialog()
     {
-        var result = await AddCustomSubjectDialog.ShowAsync(DialogService);
+        var result = await CreateEditCustomSubjectDialog.ShowAsync(DialogService);
         if (result.IsSuccess)
         {
-            Snackbar.Add("Subject added", Severity.Success);
-            Subjects.Add(result.Value);
-            await LocalStorageService.SaveCustomSubject(result.Value);
-            await SubjectsChanged.InvokeAsync(Subjects);
-            _dropContainer?.Refresh();
+            await AddSubjectAsync(result.Value);
         }
+    }
+
+    private async Task AddSubjectAsync(SubjectEntry entry)
+    {
+        Snackbar.Add("Subject added", Severity.Success);
+        Subjects.Add(entry);
+        await LocalStorageService.SaveCustomSubject(entry);
+        await SubjectsChanged.InvokeAsync(Subjects);
+        _dropContainer?.Refresh();
     }
 
     public void Refresh() => _dropContainer?.Refresh();

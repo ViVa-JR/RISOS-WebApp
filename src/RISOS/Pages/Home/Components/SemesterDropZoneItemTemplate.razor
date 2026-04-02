@@ -1,7 +1,13 @@
 @using RISOS.Enums
 @using RISOS.Extensions
 @using RISOS.Localization
+@using RISOS.Pages.Home.Dialogs.AddCustomSubjectDialog
 @using RISOS.Pages.Home.Models
+@using RISOS.Services
+
+@inject IDialogService DialogService
+@inject ISnackbar Snackbar
+@inject LocalStorageService LocalStorageService
 
 <MudPaper Elevation="2" Style="cursor: grab; min-width: 280px">
     <MudMenu ActivationEvent="MouseEvent.RightClick" Dense Class="pa-2 d-flex align-center" Style="width: 100%">
@@ -71,6 +77,11 @@
                     }
                 }
             </MudMenu>
+            @if (Entry.IsCustomSubject)
+            {
+                <MudMenuItem Icon="@Icons.Material.Filled.ContentCopy" Label="@LanguageHelper.Clone" OnClick="@(() => OnCloneClick())"/>
+                <MudMenuItem Icon="@Icons.Material.Filled.Edit" Label="@LanguageHelper.Edit" OnClick="@(() => OnEditClick())"/>
+            }
             @if (Entry.Subject.Type != SubjectType.Compulsory || Entry.IsCustomSubject)
             {
                 <MudMenuItem Icon="@Icons.Material.Filled.Delete" IconColor="Color.Error" Label="@LanguageHelper.Delete" OnClick="@(() => RemoveEntry.InvokeAsync(Entry))"/>
@@ -92,6 +103,9 @@
     [Parameter]
     public EventCallback<SubjectEntry> RemoveEntry { get; set; }
 
+    [Parameter]
+    public EventCallback<SubjectEntry> AddEntry { get; set; }
+
     private bool CanMove(int semester) => Entry.Semester != semester.ToString() &&
                                           Entry.Subject.MinSemester <= semester &&
                                           Entry.Subject.SemesterSeason.IsValidForSemester(semester);
@@ -106,5 +120,29 @@
     {
         Entry.Completed = arg;
         await EntryChanged.InvokeAsync(Entry);
+    }
+
+    private async Task OnEditClick()
+    {
+        var result = await CreateEditCustomSubjectDialog.ShowAsync(DialogService, Entry);
+        if (result.IsSuccess)
+        {
+            Entry = result.Value;
+            await LocalStorageService.SaveCustomSubject(Entry);
+            Snackbar.Add("Subject successfully updated", Severity.Success);
+        }
+    }
+
+    private async Task OnCloneClick()
+    {
+        var clone = FastCloner.FastCloner.DeepClone(Entry);
+        if (clone is null)
+        {
+            return;
+        }
+
+        clone.Subject.Id = CustomSubjectModel.GenerateNewId();
+        clone.Semester = SubjectEntry.Unassigned;
+        await AddEntry.InvokeAsync(clone);
     }
 }
