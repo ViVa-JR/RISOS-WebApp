@@ -124,14 +124,14 @@
 
     private async Task DecreaseYears()
     {
-        await YearsChanged.InvokeAsync(Math.Max(0, StudyContext.Years - 1));
-        await LocalStorageService.SaveStudyYears(StudyContext.Years-1);
+        await YearsChanged.InvokeAsync(Math.Max(0, --StudyContext.Years));
+        await LocalStorageService.SaveStudyYears(StudyContext.Years);
     }
 
     private async Task IncreaseYears()
     {
         await YearsChanged.InvokeAsync(++StudyContext.Years);
-        await LocalStorageService.SaveStudyYears(++StudyContext.Years);
+        await LocalStorageService.SaveStudyYears(StudyContext.Years);
     }
 
 }
