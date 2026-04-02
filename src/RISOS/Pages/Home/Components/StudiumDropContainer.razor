@@ -1,7 +1,6 @@
 @using RISOS.Enums
 @using RISOS.Extensions
 @using RISOS.Localization
-@using RISOS.Mappers
 @using RISOS.Models
 @using RISOS.Pages.Home.Dialogs.AddCustomSubjectDialog
 @using RISOS.Pages.Home.Models
@@ -17,7 +16,7 @@
         text-overflow: ellipsis;
         overflow: hidden;
     }
-    
+
     .mud-icon-button:focus-within {
         background: unset !important;
     }
@@ -45,8 +44,8 @@
                     }
                 </MudStack>
                 <MudTooltip Text="@LanguageHelper.AddCustomSubject">
-                    <MudButton 
-                        Variant="Variant.Text" 
+                    <MudButton
+                        Variant="Variant.Text"
                         StartIcon="@Icons.Material.Filled.AddCircleOutline"
                         IconColor="Color.Primary"
                         Color="Color.Primary"
@@ -64,40 +63,42 @@
 
         <ControlCenter @bind-RecognizedYear="_recognizedYear" YearsChanged="OnYearsChanged" TotalCredits="TotalCredits"/>
 
-        <MudStack Row Style="overflow: scroll" Class="mb-3">
-            @foreach (var year in Enumerable.Range(StartYear, Years))
-            {
-                var winterSem = year * 2 - 1;
-                var summerSem = year * 2;
+        <div style="overflow: scroll">
+            <MudStack Row Class="mb-3">
+                @foreach (var year in Enumerable.Range(StartYear, Years))
+                {
+                    var winterSem = year * 2 - 1;
+                    var summerSem = year * 2;
 
-                <div class="rounded-lg pa-4 d-flex flex-column mt-4" style="position: relative; border: 2px dotted var(--mud-palette-lines-default); height: 100%; min-width: 336px; flex: 1;">
-                    <div style="position: absolute; top: -16px; left: 15%; transform: translateX(-50%); background-color: var(--mud-palette-background); padding: 0 16px;">
-                        <MudText Typo="Typo.h6" Color="Color.Primary" Class="font-weight-bold">@year. @LanguageHelper.Years_One</MudText>
+                    <div class="rounded-lg pa-4 d-flex flex-column mt-4" style="position: relative; border: 2px dotted var(--mud-palette-lines-default); height: 100%; min-width: 336px; flex: 1;">
+                        <div style="position: absolute; top: -16px; left: 15%; transform: translateX(-50%); background-color: var(--mud-palette-background); padding: 0 16px;">
+                            <MudText Typo="Typo.h6" Color="Color.Primary" Class="font-weight-bold">@year. @LanguageHelper.Years_One</MudText>
+                        </div>
+
+                        <MudStack Class="flex-grow-1">
+                            <SemesterDropZone Semester="@winterSem" Credits="@GetSemesterCredits(winterSem)" SemesterSeason="SemesterSeason.Winter"/>
+                            <SemesterDropZone Semester="@summerSem" Credits="@GetSemesterCredits(summerSem)" SemesterSeason="SemesterSeason.Summer"/>
+                        </MudStack>
+                        <MudStack AlignItems="AlignItems.Center" Row StretchItems="StretchItems.Start" Spacing="1" Class="pt-2" Style="border-top: solid 1px var(--mud-palette-background-gray)">
+                            <MudText Typo="Typo.subtitle2" Color="Color.Default">@LanguageHelper.YearTotal</MudText>
+
+                            @{
+                                var yearCredits = GetYearCredits(year);
+                            }
+
+                            @if (yearCredits.Completed > 0)
+                            {
+                                <MudText Typo="Typo.body1" Color="Color.Success">@yearCredits.Completed</MudText>
+                                <MudText Typo="Typo.body1" Color="Color.Secondary">/</MudText>
+                            }
+                            <MudText Typo="Typo.body1" Color="Color.Primary">
+                                <b>@yearCredits.Registered</b> @LanguageHelper.Credits
+                            </MudText>
+                        </MudStack>
                     </div>
-
-                    <MudStack Class="flex-grow-1">
-                        <SemesterDropZone Semester="@winterSem" Credits="@GetSemesterCredits(winterSem)" SemesterSeason="SemesterSeason.Winter"/>
-                        <SemesterDropZone Semester="@summerSem" Credits="@GetSemesterCredits(summerSem)" SemesterSeason="SemesterSeason.Summer"/>
-                    </MudStack>
-                    <MudStack AlignItems="AlignItems.Center" Row StretchItems="StretchItems.Start" Spacing="1" Class="pt-2" Style="border-top: solid 1px var(--mud-palette-background-gray)">
-                        <MudText Typo="Typo.subtitle2" Color="Color.Default">@LanguageHelper.YearTotal</MudText>
-
-                        @{
-                            var yearCredits = GetYearCredits(year);
-                        }
-
-                        @if (yearCredits.Completed > 0)
-                        {
-                            <MudText Typo="Typo.body1" Color="Color.Success">@yearCredits.Completed</MudText>
-                            <MudText Typo="Typo.body1" Color="Color.Secondary">/</MudText>
-                        }
-                        <MudText Typo="Typo.body1" Color="Color.Primary">
-                            <b>@yearCredits.Registered</b> @LanguageHelper.Credits
-                        </MudText>
-                    </MudStack>
-                </div>
-            }
-        </MudStack>
+                }
+            </MudStack>
+        </div>
     </ChildContent>
     <ItemRenderer>
         <SemesterDropZoneItemTemplate Entry="context" EntryChanged="@EntryChanged" SemesterCount="@(Years * 2)" RemoveEntry="@OnRemove"/>
