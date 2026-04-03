@@ -10,6 +10,7 @@
             await localStorageService.SaveCustomSubjects(state.CustomSubjects);
             await localStorageService.SaveCreditOverride(state.CreditOverride);
             await localStorageService.SaveStudyYears(state.StudyYears);
+            await localStorageService.SaveRecognizedYear(state.RecognizedYear);
         }
     }
 }

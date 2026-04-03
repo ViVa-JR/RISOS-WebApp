@@ -119,6 +119,7 @@
     private async Task OnRecognizedYearClick()
     {
         RecognizedYear = !RecognizedYear;
+        await LocalStorageService.SaveRecognizedYear(RecognizedYear);
         await RecognizedYearChanged.InvokeAsync(RecognizedYear);
     }
 

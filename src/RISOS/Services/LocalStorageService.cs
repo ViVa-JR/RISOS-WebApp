@@ -18,6 +18,7 @@ public class LocalStorageService(IJSRuntime js)
     private const string CustomSubjects = "custom-subjects";
     private const string CreditOverride = "credit-override";
     private const string StudyYears = "study-years";
+    private const string RecognizedYear = "recognized-years";
 
     public async Task SaveTheme(bool isDark)
     {
@@ -41,11 +42,11 @@ public class LocalStorageService(IJSRuntime js)
     {
         if (string.IsNullOrEmpty(programAbbreviation))
         {
-            await js.InvokeVoidAsync("localStorage.removeItem", programAbbreviation);
+            await js.InvokeVoidAsync("localStorage.removeItem", ProgramAbbreviation);
         }
         else
         {
-            await js.InvokeVoidAsync("localStorage.setItem", programAbbreviation, programAbbreviation);
+            await js.InvokeVoidAsync("localStorage.setItem", ProgramAbbreviation, programAbbreviation);
         }
     }
 
@@ -148,6 +149,30 @@ public class LocalStorageService(IJSRuntime js)
         {
             await js.InvokeVoidAsync("localStorage.removeItem", StudyYears);
             return null;
+        }
+    }
+
+    public async Task SaveRecognizedYear(bool recognizedYear)
+    {
+        await js.InvokeVoidAsync("localStorage.setItem", RecognizedYear, recognizedYear.ToString());
+    }
+
+    public async Task<bool> LoadRecognizedYear()
+    {
+        try
+        {
+            var value = await js.InvokeAsync<string>("localStorage.getItem", RecognizedYear);
+            if (string.IsNullOrEmpty(value))
+            {
+                return false;
+            }
+
+            return bool.TryParse(value, out var result) && result;
+        }
+        catch
+        {
+            await js.InvokeVoidAsync("localStorage.removeItem", RecognizedYear);
+            return false;
         }
     }
 
@@ -278,7 +303,8 @@ public class LocalStorageService(IJSRuntime js)
             Subjects = await LoadSubjectsAsync(),
             CustomSubjects = await LoadCustomSubjectsAsync(),
             CreditOverride = await LoadCreditOverride(),
-            StudyYears = await LoadStudyYears()
+            StudyYears = await LoadStudyYears(),
+            RecognizedYear = await LoadRecognizedYear()
         };
         return state;
     }

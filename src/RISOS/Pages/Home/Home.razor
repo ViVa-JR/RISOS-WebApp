@@ -122,7 +122,7 @@
 </SideBar>
 
 <CascadingValue Value="_studyContext">
-    <StudiumDropContainer @ref="_dropContainer" Subjects="@_selectedSubjects" OnRemove="OnRemove"/>
+    <StudiumDropContainer @ref="_dropContainer" Subjects="@_selectedSubjects" OnRemove="OnRemove" RecognizedYear="_recognizedYear" LocalStorageLoading="_localStorageLoading"/>
 </CascadingValue>
 
 @code {
@@ -130,6 +130,8 @@
     private StudyProgram? _selectedProgram;
 
     private bool _isLoading;
+    private bool _localStorageLoading;
+    private bool _recognizedYear;
     private StudiumDropContainer _dropContainer = null!;
 
     private readonly StudyContext _studyContext = new();
@@ -174,6 +176,7 @@
         {
             _studyContext.CreditOverride = creditOverride.Value;
         }
+        _recognizedYear = await LocalStorageService.LoadRecognizedYear();
 
         _isLoading = false;
         await InvokeAsync(StateHasChanged);
@@ -181,10 +184,13 @@
     }
 
     private async Task OnSelectedProgramsChanged(StudyProgram? program)
-    {   
+    {
+        _localStorageLoading = true;
+        await InvokeAsync(StateHasChanged);
+
         _selectedProgram = program;
 
-        var savedAbbreviation = await LocalStorageService.LoadProgramAbbreviation();//TODO fix adding years
+        var savedAbbreviation = await LocalStorageService.LoadProgramAbbreviation();
         var savedSpecialization = await LocalStorageService.LoadProgramSpecialization();
 
         bool isSameProgram = program?.Abbreviation == savedAbbreviation && program?.Specialization == savedSpecialization;
@@ -219,6 +225,8 @@
             await LoadData(_selectedProgram, false);
         }
 
+        _localStorageLoading = false;
+        await InvokeAsync(StateHasChanged);
         StateHasChanged();
     }
 
@@ -284,6 +292,7 @@
 
         if (result is { Canceled: false, Data: AppState importedData })
         {
+            _localStorageLoading = true;
             await ImportService.ApplyAppStateAsync(importedData);
             var faculties = await UniversityService.GetFacultiesWithProgramsAsync();
 
@@ -303,6 +312,8 @@
             }
             var studyYears = await LocalStorageService.LoadStudyYears();
             _studyContext.Years = studyYears ?? _studyContext.Years;
+            _recognizedYear = await LocalStorageService.LoadRecognizedYear();
+            _localStorageLoading = false;
         }
     }
 
