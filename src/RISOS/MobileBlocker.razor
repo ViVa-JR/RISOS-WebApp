@@ -1,0 +1,147 @@
+<div class="mobile-blocker-wrapper">
+    <div class="mobile-blocker-card">
+        <div class="icon-container">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect>
+                <line x1="8" y1="21" x2="16" y2="21"></line>
+                <line x1="12" y1="17" x2="12" y2="21"></line>
+            </svg>
+        </div>
+
+        <h2 class="title">Desktop Experience Required</h2>
+
+        <p class="description">
+            We are currently working on our mobile experience. To access all features and ensure the best performance, please open this application on a desktop or laptop device.
+        </p>
+
+        <div class="status-badge">
+            <span class="status-dot"></span> Mobile version in production
+        </div>
+    </div>
+</div>
+
+<style>
+    /* Hidden completely on desktop */
+    .mobile-blocker-wrapper {
+        display: none;
+    }
+
+    @@media (max-width: 1004px) {
+        .main-app-content {
+            display: none !important;
+        }
+    }
+
+    @@media (max-width: 1004px) {
+        body {
+            overflow: hidden !important;
+        }
+
+        .mobile-blocker-wrapper {
+            display: flex;
+            position: fixed;
+            top: 0 !important;
+            left: 0 !important;
+            width: 100vw !important;
+            height: 100vh !important;
+            margin: 0 !important;
+            padding: 1.5rem;
+            box-sizing: border-box;
+
+            z-index: 2147483647 !important;
+            background-color: rgba(15, 23, 42, 0.85);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+
+            align-items: center !important;
+            justify-content: center !important;
+
+            animation: fadeIn 0.4s ease-out;
+        }
+
+        .mobile-blocker-card {
+            background: #ffffff;
+            border-radius: 16px;
+            padding: 2.5rem 1.5rem;
+            text-align: center;
+            max-width: 400px;
+            width: 100%;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+            font-family: system-ui, -apple-system, sans-serif;
+        }
+
+        .icon-container {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 64px;
+            height: 64px;
+            background-color: #f3f4f6;
+            color: #3b82f6;
+            border-radius: 50%;
+            margin-bottom: 1.5rem;
+        }
+
+        .icon-container svg {
+            width: 32px;
+            height: 32px;
+        }
+
+        .title {
+            margin: 0 0 1rem 0;
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #111827;
+        }
+
+        .description {
+            margin: 0 0 2rem 0;
+            font-size: 0.9375rem;
+            line-height: 1.6;
+            color: #4b5563;
+        }
+
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background-color: #fef3c7;
+            color: #92400e;
+            padding: 0.5rem 1rem;
+            border-radius: 9999px;
+            font-size: 0.875rem;
+            font-weight: 500;
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            background-color: #d97706;
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+
+        @@keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @@keyframes pulse {
+            0% {
+                box-shadow: 0 0 0 0 rgba(217, 119, 6, 0.4);
+            }
+            70% {
+                box-shadow: 0 0 0 6px rgba(217, 119, 6, 0);
+            }
+            100% {
+                box-shadow: 0 0 0 0 rgba(217, 119, 6, 0);
+            }
+        }
+    }
+</style>
