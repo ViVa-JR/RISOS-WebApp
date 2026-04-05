@@ -193,11 +193,11 @@ public class LocalStorageService(IJSRuntime js)
         try
         {
             var subjects = JsonSerializer.Deserialize<List<SubjectStorage>>(json);
-            return subjects ?? new List<SubjectStorage>();
+            return subjects ?? [];
         }
         catch (Exception)
         {
-            return new List<SubjectStorage>();
+            return [];
         }
     }
 
@@ -269,9 +269,17 @@ public class LocalStorageService(IJSRuntime js)
     public async Task RemoveSubjectAsync(string deletedSubjectId)
     {
         var subjects = await LoadSubjectsAsync();
-        subjects.RemoveAll(s => s.SubjectId == deletedSubjectId);
+        if (subjects.RemoveAll(s => s.SubjectId == deletedSubjectId) > 0)
+        {
+            await SaveSubjects(subjects);
+            return;
+        }
 
-        await SaveSubjects(subjects);
+        var customSubjects = await LoadCustomSubjectsAsync();
+        if (customSubjects.RemoveAll(s => s.Subject.Id == deletedSubjectId) > 0)
+        {
+            await SaveCustomSubjects(customSubjects);
+        }
     }
 
 

@@ -167,8 +167,6 @@
             {
                 SyncSubjectsFromStorage(subjects);
             }
-
-            Console.WriteLine($@"Loaded {_subjects.Count} subjects");
         }
 
         var creditOverride = await LocalStorageService.LoadCreditOverride();
@@ -193,7 +191,7 @@
         var savedAbbreviation = await LocalStorageService.LoadProgramAbbreviation();
         var savedSpecialization = await LocalStorageService.LoadProgramSpecialization();
 
-        bool isSameProgram = program?.Abbreviation == savedAbbreviation && program?.Specialization == savedSpecialization;
+        var isSameProgram = program?.Abbreviation == savedAbbreviation && program?.Specialization == savedSpecialization;
         if (isSameProgram)
         {
             var savedYears = await LocalStorageService.LoadStudyYears();
@@ -207,9 +205,7 @@
 
         await LocalStorageService.SaveProgramAbbreviation(program?.Abbreviation);
         await LocalStorageService.SaveProgramSpecialization(program?.Specialization);
-
-        Console.WriteLine($@"Selected {_selectedProgram?.Abbreviation ?? "no"} study program");
-
+        
         _studyContext.RequiredCredits = _selectedProgram?.Credits ?? 0;
         _studyContext.CreditsWarn = _selectedProgram?.CreditsWarn ?? true;
 
