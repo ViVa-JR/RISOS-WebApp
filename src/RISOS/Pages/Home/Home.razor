@@ -156,7 +156,6 @@
                 _subjects.TryAdd(custom.Subject.Id, custom);
             }
 
-            var subjects = await LocalStorageService.LoadSubjectsAsync();
             if (!fromStorage)
             {
                 _selectedSubjects = _subjects.Values.Where(x => x.Selected).ToList();
@@ -164,6 +163,7 @@
             }
             else
             {
+                var subjects = await LocalStorageService.LoadSubjectsAsync();
                 SyncSubjectsFromStorage(subjects);
             }
         }
@@ -204,7 +204,7 @@
 
         await LocalStorageService.SaveProgramAbbreviation(program?.Abbreviation);
         await LocalStorageService.SaveProgramSpecialization(program?.Specialization);
-        
+
         _studyContext.RequiredCredits = _selectedProgram?.Credits ?? 0;
         _studyContext.CreditsWarn = _selectedProgram?.CreditsWarn ?? true;
 
@@ -217,7 +217,7 @@
         }
         else
         {
-            await LoadData(_selectedProgram, false);
+            await LoadData(_selectedProgram, isSameProgram);
         }
 
         _localStorageLoading = false;
@@ -249,7 +249,7 @@
 
         _dropContainer.Refresh();
     }
-    
+
     private async Task OnSettingsClick()
     {
         var result = await SettingsDialog.ShowAsync(DialogService, _studyContext);
@@ -308,7 +308,17 @@
 
         foreach (var subject in _subjects.Values)
         {
-            subject.Selected = false;
+            if (!subject.IsCustomSubject)
+            {
+                subject.Selected = false;
+            }
+            else
+            {
+                if(subject.Selected)
+                {
+                    _selectedSubjects.Add(subject);
+                }
+            }
         }
 
         foreach (var storageItem in storedSubjects)

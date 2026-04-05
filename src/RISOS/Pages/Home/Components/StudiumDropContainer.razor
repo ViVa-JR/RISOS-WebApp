@@ -159,12 +159,6 @@
         }
     }
 
-    // protected override async Task OnInitializedAsync()
-    // {
-    //     _recognizedYear = await LocalStorageService.LoadRecognizedYear();
-    
-    // }
-
     private Credits TotalCredits => GetTotalCredits();
 
     private static bool Selector(SubjectEntry item, string dropzone)
@@ -178,9 +172,11 @@
         _dropContainer?.Refresh();
     }
 
-    private static void ItemUpdated(MudItemDropInfo<SubjectEntry> dropItem)
+    private async Task ItemUpdated(MudItemDropInfo<SubjectEntry> dropItem)
     {
         dropItem.Item?.Semester = dropItem.DropzoneIdentifier;
+        if (dropItem.Item is null) return;
+        await LocalStorageService.UpdateSubjectAsync(dropItem.Item);
     }
 
     private Credits GetSemesterCredits(int semesterIdentifier)
