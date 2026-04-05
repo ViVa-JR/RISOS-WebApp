@@ -127,7 +127,7 @@
         var result = await CreateEditCustomSubjectDialog.ShowAsync(DialogService, Entry);
         if (result.IsSuccess)
         {
-            Entry = result.Value;
+            FastCloner.FastCloner.DeepCloneTo(result.Value, Entry);
             await LocalStorageService.SaveCustomSubject(Entry);
             Snackbar.Add("Subject successfully updated", Severity.Success);
         }
