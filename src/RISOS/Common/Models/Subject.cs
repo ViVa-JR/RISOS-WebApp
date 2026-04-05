@@ -1,6 +1,6 @@
 using RISOS.Enums;
 
-namespace RISOS.Models;
+namespace RISOS.Common.Models;
 
 public class Subject(
     string id,
@@ -15,7 +15,7 @@ public class Subject(
     string? url = null
 )
 {
-    public string Id { get; } = id;
+    public string Id { get; set; } = id;
     public string Name { get; } = name;
     public string ShortName { get; } = shortName;
     public int Credits { get; } = credits;

@@ -49,7 +49,7 @@
                 }
                 else
                 {
-                    <SubjectsListEntryTemplate T="TGroupKey" Row="row" ReadOnly="@ReadOnly" SubjectChanged="SubjectChanged"/>
+                    <SubjectsListEntryTemplate T="TGroupKey" Row="row" ReadOnly="@ReadOnly" SubjectChanged="@SubjectChanged"/>
                 }
             </Virtualize>
         </MudList>

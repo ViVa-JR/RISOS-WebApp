@@ -6,4 +6,6 @@ public class StudyContext
     public int? CreditOverride { get; set; } = null;
     public int Years { get; set; } = 3;
     public bool CreditsWarn { get; set; } = true;
+    
+    public int Credits => CreditOverride ?? RequiredCredits;
 }

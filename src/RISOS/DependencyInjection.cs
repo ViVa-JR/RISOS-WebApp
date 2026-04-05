@@ -19,6 +19,8 @@ public static class DependencyInjection
                 .AddScoped<ApiService>()
                 .AddSingleton<ThemeStateService>()
                 .AddSingleton<LocalStorageService>()
+                .AddSingleton<ExportService>()
+                .AddSingleton<ImportService>()
                 .AddSingleton<LanguageService>()
                 .AddScoped<GitRepositoryInfoService>()
                 .AddScoped<UniversityService>()
@@ -52,7 +54,7 @@ public static class DependencyInjection
         {
             var themeService = host.Services.GetRequiredService<ThemeStateService>();
             await themeService.InitializeAsync();
-            
+
             var languageService = host.Services.GetRequiredService<LanguageService>();
             var appLanguage = await languageService.GetAppLanguageAsync();
             var culture = new CultureInfo(appLanguage.ToCultureString());

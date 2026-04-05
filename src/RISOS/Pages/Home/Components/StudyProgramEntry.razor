@@ -1,4 +1,5 @@
 @using MudExtensions
+@using RISOS.Localization
 @using RISOS.Pages.Home.Models
 
 <style>
@@ -12,7 +13,7 @@
             color: var(--mud-palette-primary) !important;
             border-color: var(--mud-palette-primary) !important;
         }
-        
+
         .label {
             color: var(--mud-palette-primary) !important;
         }
@@ -21,28 +22,42 @@
     .label {
         color: var(--mud-palette-text-primary);
     }
+    
+    .study-program-item {
+        background-color: var(--mud-palette-surface) !important;
+        padding-right: 0 !important;
+    }
+
+    .study-program-item .mud-icon-button {
+        padding: 6px !important;
+    }
 </style>
 
-<MudListItemExtended T="StudyProgram" Value="@Program" Style="background-color: var(--mud-palette-surface) !important;">
+<MudListItemExtended T="StudyProgram" Value="@Program" Class="study-program-item">
     <MudTooltip Text="@Program.Title" RootStyle="width: 100%;" RootClass="d-flex pt-2 pb-2">
-        @if (Program.Specialization != null)
-        {
-            <MudStack Row Spacing="2" Wrap="Wrap.Wrap" AlignItems="AlignItems.Center">
-                <MudChip T="string" Size="Size.Small" Variant="Variant.Outlined" Class="ma-0">
-                    @Program.Abbreviation
-                </MudChip>
+        <MudStack AlignItems="AlignItems.Center" StretchItems="StretchItems.Start" Row Class="w-100">
+            @if (Program.Specialization != null)
+            {
+                <MudStack Row Spacing="2" Wrap="Wrap.Wrap" AlignItems="AlignItems.Center">
+                    <MudChip T="string" Size="Size.Small" Variant="Variant.Outlined" Class="ma-0">
+                        @Program.Abbreviation
+                    </MudChip>
 
-                <MudText Typo="Typo.body2" Class="text-nowrap label">
-                    <b>@Program.Specialization</b>
+                    <MudText Typo="Typo.body2" Class="text-nowrap label">
+                        <b>@Program.Specialization</b>
+                    </MudText>
+                </MudStack>
+            }
+            else
+            {
+                <MudText Typo="Typo.body2" Class="label">
+                    <b>@Program.Abbreviation</b>
                 </MudText>
-            </MudStack>
-        }
-        else
-        {
-            <MudText Typo="Typo.body2" Class="label">
-                <b>@Program.Abbreviation</b>
-            </MudText>
-        }
+            }
+            <MudLink Href="@Program.Url" Target="_blank">
+                <MudIconButton Size="Size.Small" Icon="@Icons.Material.Outlined.Info" Color="Color.Info" Class="flex-shrink-0" title="@LanguageHelper.ShowProgramInfo"/>
+            </MudLink>
+        </MudStack>
     </MudTooltip>
 </MudListItemExtended>
 

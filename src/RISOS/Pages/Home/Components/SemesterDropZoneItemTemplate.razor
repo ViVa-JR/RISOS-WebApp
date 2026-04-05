@@ -1,58 +1,66 @@
 @using RISOS.Enums
 @using RISOS.Extensions
 @using RISOS.Localization
+@using RISOS.Pages.Home.Dialogs.AddCustomSubjectDialog
 @using RISOS.Pages.Home.Models
+@using RISOS.Services
+
+@inject IDialogService DialogService
+@inject ISnackbar Snackbar
+@inject LocalStorageService LocalStorageService
 
 <MudPaper Elevation="2" Style="cursor: grab; min-width: 280px">
     <MudMenu ActivationEvent="MouseEvent.RightClick" Dense Class="pa-2 d-flex align-center" Style="width: 100%">
         <ActivatorContent>
-            <MudStack Row AlignItems="AlignItems.Center" Style="width: 100%">
-                <MudAvatar Variant="Variant.Filled" Color="@Entry.Subject.Type.ToColor()" Class="rounded" 
-                           Style="min-width: 48px; width: auto; padding: 0 8px; height: 48px; flex-shrink: 0;">
-                    <MudText Typo="Typo.button" Style="font-size: 0.85rem; font-weight: bold; white-space: nowrap;">
-                        @Entry.Subject.ShortName
-                    </MudText>
-                </MudAvatar>
-
-                <div class="d-flex flex-column flex-grow-1 overflow-hidden">
-
-                    <MudTooltip RootClass="d-flex" Text="@Entry.Subject.Name">
-                        <MudText Typo="Typo.subtitle2" Class="card-text">
-                            @Entry.Subject.Name
+            <div @oncontextmenu="@context.ToggleAsync" @oncontextmenu:preventDefault style="width: 100%">
+                <MudStack Row AlignItems="AlignItems.Center" Style="width: 100%">
+                    <MudAvatar Variant="Variant.Filled" Color="@Entry.Subject.Type.ToColor()" Class="rounded"
+                               Style="min-width: 48px; width: auto; padding: 0 8px; height: 48px; flex-shrink: 0;">
+                        <MudText Typo="Typo.button" Style="font-size: 0.85rem; font-weight: bold; white-space: nowrap;">
+                            @Entry.Subject.ShortName
                         </MudText>
-                    </MudTooltip>
+                    </MudAvatar>
 
-                    <MudStack Row AlignItems="AlignItems.Center" Spacing="1">
-                        @if (!Entry.IsAssigned)
-                        {
-                            <MudChip T="SemesterSeason" Value="@Entry.Subject.SemesterSeason" Text="@Entry.Subject.SemesterSeason.ToLabel()" Size="Size.Small" Variant="Variant.Text"
-                                     Color="@Entry.Subject.SemesterSeason.ToColor()" Style="font-size: 0.7rem;"/>
-                            <MudText Typo="Typo.caption" Color="Color.Secondary">•</MudText>
-                        }
-                        <MudText Typo="Typo.caption" Color="Color.Secondary">
-                            @Entry.Subject.Credits @LanguageHelper.Cr •
-                        </MudText>
-                        <MudTooltip Text="@Entry.Subject.CompletionType.GetDescription()">
-                            <MudText Typo="Typo.caption" Color="Color.Secondary">
-                                @Entry.Subject.CompletionType.ToLabel().ToUpper()
+                    <div class="d-flex flex-column flex-grow-1 overflow-hidden">
+
+                        <MudTooltip RootClass="d-flex" Text="@Entry.Subject.Name">
+                            <MudText Typo="Typo.subtitle2" Class="card-text">
+                                @Entry.Subject.Name
                             </MudText>
                         </MudTooltip>
-                    </MudStack>
-                </div>
-                @if (Entry.IsAssigned)
-                {
-                    <MudCheckBox T="bool?"
-                                 Value="@Entry.Completed"
-                                 ValueChanged="@CompletedChanged"
-                                 TriState="true"
-                                 CheckedIcon="@Icons.Material.Filled.CheckCircle"
-                                 UncheckedIcon="@Icons.Material.Filled.Cancel"
-                                 IndeterminateIcon="@Icons.Material.Outlined.RadioButtonUnchecked"
-                                 Color="@Color.Success"
-                                 UnCheckedColor="@Color.Error"
-                                 Class="ma-0 pa-1"/>
-                }
-            </MudStack>
+
+                        <MudStack Row AlignItems="AlignItems.Center" Spacing="1">
+                            @if (!Entry.IsAssigned)
+                            {
+                                <MudChip T="SemesterSeason" Value="@Entry.Subject.SemesterSeason" Text="@Entry.Subject.SemesterSeason.ToLabel()" Size="Size.Small" Variant="Variant.Text"
+                                         Color="@Entry.Subject.SemesterSeason.ToColor()" Style="font-size: 0.7rem;"/>
+                                <MudText Typo="Typo.caption" Color="Color.Secondary">•</MudText>
+                            }
+                            <MudText Typo="Typo.caption" Color="Color.Secondary">
+                                @Entry.Subject.Credits @LanguageHelper.Cr •
+                            </MudText>
+                            <MudTooltip Text="@Entry.Subject.CompletionType.GetDescription()">
+                                <MudText Typo="Typo.caption" Color="Color.Secondary">
+                                    @Entry.Subject.CompletionType.ToLabel().ToUpper()
+                                </MudText>
+                            </MudTooltip>
+                        </MudStack>
+                    </div>
+                    @if (Entry.IsAssigned)
+                    {
+                        <MudCheckBox T="bool?"
+                                     Value="@Entry.Completed"
+                                     ValueChanged="@CompletedChanged"
+                                     TriState="true"
+                                     CheckedIcon="@Icons.Material.Filled.CheckCircle"
+                                     UncheckedIcon="@Icons.Material.Filled.Cancel"
+                                     IndeterminateIcon="@Icons.Material.Outlined.RadioButtonUnchecked"
+                                     Color="@Color.Success"
+                                     UnCheckedColor="@Color.Error"
+                                     Class="ma-0 pa-1"/>
+                    }
+                </MudStack>
+            </div>
         </ActivatorContent>
         <ChildContent>
             <MudMenu StartIcon="@Icons.Material.Filled.Subject" IconColor="Color.Primary" Label="@LanguageHelper.MoveTo" Dense>
@@ -69,10 +77,15 @@
                     }
                 }
             </MudMenu>
-            @if (Entry.Subject.Type != SubjectType.Compulsory)
+            @if (Entry.IsCustomSubject)
+            {
+                <MudMenuItem Icon="@Icons.Material.Filled.ContentCopy" Label="@LanguageHelper.Clone" OnClick="@(() => OnCloneClick())"/>
+                <MudMenuItem Icon="@Icons.Material.Filled.Edit" Label="@LanguageHelper.Edit" OnClick="@(() => OnEditClick())"/>
+            }
+            @if (Entry.Subject.Type != SubjectType.Compulsory || Entry.IsCustomSubject)
             {
                 <MudMenuItem Icon="@Icons.Material.Filled.Delete" IconColor="Color.Error" Label="@LanguageHelper.Delete" OnClick="@(() => RemoveEntry.InvokeAsync(Entry))"/>
-            } 
+            }
         </ChildContent>
     </MudMenu>
 </MudPaper>
@@ -90,6 +103,9 @@
     [Parameter]
     public EventCallback<SubjectEntry> RemoveEntry { get; set; }
 
+    [Parameter]
+    public EventCallback<SubjectEntry> AddEntry { get; set; }
+
     private bool CanMove(int semester) => Entry.Semester != semester.ToString() &&
                                           Entry.Subject.MinSemester <= semester &&
                                           Entry.Subject.SemesterSeason.IsValidForSemester(semester);
@@ -106,4 +122,27 @@
         await EntryChanged.InvokeAsync(Entry);
     }
 
+    private async Task OnEditClick()
+    {
+        var result = await CreateEditCustomSubjectDialog.ShowAsync(DialogService, Entry);
+        if (result.IsSuccess)
+        {
+            FastCloner.FastCloner.DeepCloneTo(result.Value, Entry);
+            await LocalStorageService.SaveCustomSubject(Entry);
+            Snackbar.Add("Subject successfully updated", Severity.Success);
+        }
+    }
+
+    private async Task OnCloneClick()
+    {
+        var clone = FastCloner.FastCloner.DeepClone(Entry);
+        if (clone is null)
+        {
+            return;
+        }
+
+        clone.Subject.Id = CustomSubjectModel.GenerateNewId();
+        clone.Semester = SubjectEntry.Unassigned;
+        await AddEntry.InvokeAsync(clone);
+    }
 }

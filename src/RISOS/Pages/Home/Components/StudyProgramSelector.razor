@@ -4,6 +4,7 @@
 @using RISOS.Services
 
 @inject UniversityService UniversityService
+@inject LocalStorageService LocalStorageService
 
 <style>
     .study-program-selector-list .mud-list-item-extended {
@@ -98,21 +99,21 @@
 
     [Parameter]
     public EventCallback<StudyProgram?> SelectedProgramChanged { get; set; }
-    
+
     [Parameter]
     public bool Loading { get; set; }
-    
+
     private const int FixedPixels = 310;
 
     private IEnumerable<Faculty> Faculties => _filteredFaculties ?? _faculties;
     private bool IsLoading => _isSearching || _initialLoading || Loading;
-    
+
     private IEnumerable<Faculty> _faculties = [];
     private IEnumerable<Faculty>? _filteredFaculties;
     private bool _isSearching;
     private string _searchString = string.Empty;
     private bool _initialLoading = true;
-    
+
     protected override async Task OnInitializedAsync()
     {
         var result = await UniversityService.GetFacultiesWithProgramsAsync();
@@ -120,7 +121,22 @@
         {
             _faculties = result.Value;
         }
-        
+
+        var programAbbreviation = await LocalStorageService.LoadProgramAbbreviation();
+        var specialization = await LocalStorageService.LoadProgramSpecialization();
+        if (!string.IsNullOrEmpty(programAbbreviation))
+        {
+            var program = _faculties
+                .SelectMany(f => f.Programs)
+                .FirstOrDefault(p => 
+                    p.Abbreviation == programAbbreviation && 
+                    p.Specialization == specialization);
+            if (program != null)
+            {
+                SelectedProgram = program;
+            }
+        }
+
         _initialLoading = false;
         await InvokeAsync(StateHasChanged);
         await base.OnInitializedAsync();

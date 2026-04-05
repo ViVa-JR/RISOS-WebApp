@@ -9,10 +9,11 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="CodeBeam.MudBlazor.Extensions" Version="8.3.0" />
-        <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="10.0.0"/>
-        <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="10.0.0" PrivateAssets="all"/>
-        <PackageReference Include="MudBlazor" Version="8.15.0" />
+        <PackageReference Include="CodeBeam.MudBlazor.Extensions" Version="9.0.3" />
+        <PackageReference Include="FastCloner" Version="3.5.3" />
+        <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="10.0.0" />
+        <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="10.0.0" PrivateAssets="all" />
+        <PackageReference Include="MudBlazor" Version="9.2.0" />
     </ItemGroup>
 
     <ItemGroup>
@@ -30,7 +31,7 @@
       <Compile Update="Localization\LanguageHelper.Designer.cs">
         <DesignTime>True</DesignTime>
         <AutoGen>True</AutoGen>
-        <DependentUpon>SharedResource.resx</DependentUpon>
+        <DependentUpon>LanguageHelper.resx</DependentUpon>
       </Compile>
     </ItemGroup>
 

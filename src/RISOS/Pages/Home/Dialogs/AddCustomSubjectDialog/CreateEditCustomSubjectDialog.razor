@@ -7,8 +7,8 @@
 
 <RDialog TReturn="SubjectEntry"
          Title="@LanguageHelper.AddCustomSubject"
-         SubmitText="@LanguageHelper.Add"
-         SubmitIcon="@Icons.Material.Filled.Add"
+         SubmitText="@(Entry is null ? LanguageHelper.Add : LanguageHelper.Save)"
+         SubmitIcon="@(Entry is null ? Icons.Material.Filled.Add : Icons.Material.Filled.Save)"
          OnSubmit="@OnSubmit">
     <MudGrid Spacing="3">
         <MudItem xs="12">
@@ -17,10 +17,12 @@
             </MudText>
         </MudItem>
         <MudItem xs="12" md="8">
-            <MudTextField @bind-Value="_model.Name" Label="@LanguageHelper.Name" Required="true" RequiredError="@($"{LanguageHelper.Name} {LanguageHelper.IsRequired_y}")" Variant="Variant.Outlined" Placeholder="@LanguageHelper.IMA"/>
+            <MudTextField @bind-Value="_model.Name" Label="@LanguageHelper.Name" Required="true" RequiredError="@($"{LanguageHelper.Name} {LanguageHelper.IsRequired_y}")" Variant="Variant.Outlined"
+                          Placeholder="@LanguageHelper.IMA"/>
         </MudItem>
         <MudItem xs="12" md="4">
-            <MudTextField @bind-Value="_model.ShortName" Label="@LanguageHelper.Abbreviation" Required="true" RequiredError="@($"{LanguageHelper.Abbreviation} {LanguageHelper.IsRequired_a}")"  MaxLength="10" Variant="Variant.Outlined"
+            <MudTextField @bind-Value="_model.ShortName" Label="@LanguageHelper.Abbreviation" Required="true" RequiredError="@($"{LanguageHelper.Abbreviation} {LanguageHelper.IsRequired_a}")"
+                          MaxLength="10" Variant="Variant.Outlined"
                           Placeholder="@LanguageHelper.IMAAbbreviation" Class="hlinena-rapuje"/>
         </MudItem>
 
@@ -33,7 +35,8 @@
             <MudNumericField @bind-Value="_model.Credits" Label="@LanguageHelper.Credits_y" Min="0" Required="true" Variant="Variant.Outlined" Adornment="Adornment.End" AdornmentText="cr"/>
         </MudItem>
         <MudItem xs="12" sm="6">
-            <MudNumericField @bind-Value="_model.MinSemester" Label="@LanguageHelper.MinimumSemester" Min="1" Required="true" Variant="Variant.Outlined" HelperText="@LanguageHelper.MinSemesterHelperText"/>
+            <MudNumericField @bind-Value="_model.MinSemester" Label="@LanguageHelper.MinimumSemester" Min="1" Required="true" Variant="Variant.Outlined"
+                             HelperText="@LanguageHelper.MinSemesterHelperText"/>
         </MudItem>
 
         <MudItem xs="12">
@@ -78,10 +81,19 @@
 </RDialog>
 
 @code {
-    private MudTextField<string> _groupIdField = null!;
-    private AddCustomSubjectModel _model = new();
+    [Parameter]
+    public SubjectEntry? Entry { get; set; }
 
-    private void OnTypeChanged()
+    private MudTextField<string> _groupIdField = null!;
+    private CustomSubjectModel _model = new();
+
+    protected override void OnParametersSet()
+    {
+        _model = Entry is null ? new CustomSubjectModel() : new CustomSubjectModel(Entry);
+        base.OnParametersSet();
+    }
+
+    private async Task OnTypeChanged()
     {
         if (_model.Type == SubjectType.CompulsoryElective)
         {
@@ -89,21 +101,24 @@
         }
 
         _model.GroupId = null;
-        _groupIdField.ResetValidation();
+        await _groupIdField.ResetValidationAsync();
     }
 
     private Task<SubjectEntry> OnSubmit()
     {
-        return Task.FromResult(_model.ToSubjectEntry());
+        return Task.FromResult(_model.ToSubjectEntry(true));
     }
 
-    public static async Task<DialogResult<SubjectEntry>> ShowAsync(IDialogService dialogService)
+    public static async Task<DialogResult<SubjectEntry>> ShowAsync(IDialogService dialogService, SubjectEntry? entry = null)
     {
-        var dialog = await dialogService.ShowAsync<AddCustomSubjectDialog>(string.Empty, new DialogOptions
-        {
-            FullWidth = true
-        });
+        var dialog = await dialogService.ShowAsync<CreateEditCustomSubjectDialog>(string.Empty,
+            new DialogParameters<CreateEditCustomSubjectDialog>
+            {
+                { x => x.Entry, entry }
+            }, new DialogOptions
+            {
+                FullWidth = true
+            });
         return await dialog.GetResultAsync<SubjectEntry>();
     }
-
 }

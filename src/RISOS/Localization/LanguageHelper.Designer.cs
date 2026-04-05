@@ -11,7 +11,7 @@ namespace RISOS.Localization {
     using System;
     
     
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "4.0.0.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "18.0.0.0")]
     [System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     internal class LanguageHelper {
@@ -57,9 +57,9 @@ namespace RISOS.Localization {
             }
         }
         
-        internal static string CompulsoryElective {
+        internal static string Import_JSOn {
             get {
-                return ResourceManager.GetString("CompulsoryElective", resourceCulture);
+                return ResourceManager.GetString("Import JSOn", resourceCulture);
             }
         }
         
@@ -750,6 +750,72 @@ namespace RISOS.Localization {
         internal static string CompulsoryElectiveErrorMessage {
             get {
                 return ResourceManager.GetString("CompulsoryElectiveErrorMessage", resourceCulture);
+            }
+        }
+        
+        internal static string ImportJSON {
+            get {
+                return ResourceManager.GetString("ImportJSON", resourceCulture);
+            }
+        }
+        
+        internal static string UploadData {
+            get {
+                return ResourceManager.GetString("UploadData", resourceCulture);
+            }
+        }
+        
+        internal static string DropJSON {
+            get {
+                return ResourceManager.GetString("DropJSON", resourceCulture);
+            }
+        }
+        
+        internal static string CompulsoryElective {
+            get {
+                return ResourceManager.GetString("CompulsoryElective", resourceCulture);
+            }
+        }
+        
+        internal static string InvalidFormat {
+            get {
+                return ResourceManager.GetString("InvalidFormat", resourceCulture);
+            }
+        }
+        
+        internal static string FileVerified {
+            get {
+                return ResourceManager.GetString("FileVerified", resourceCulture);
+            }
+        }
+        
+        internal static string FileInvalid {
+            get {
+                return ResourceManager.GetString("FileInvalid", resourceCulture);
+            }
+        }
+        
+        internal static string MissingFile {
+            get {
+                return ResourceManager.GetString("MissingFile", resourceCulture);
+            }
+        }
+        
+        internal static string ShowProgramInfo {
+            get {
+                return ResourceManager.GetString("ShowProgramInfo", resourceCulture);
+            }
+        }
+        
+        internal static string Edit {
+            get {
+                return ResourceManager.GetString("Edit", resourceCulture);
+            }
+        }
+        
+        internal static string Clone {
+            get {
+                return ResourceManager.GetString("Clone", resourceCulture);
             }
         }
         
