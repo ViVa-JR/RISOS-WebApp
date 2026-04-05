@@ -504,4 +504,7 @@
   <data name="Clone" xml:space="preserve">
       <value>Vytvořit kopii</value>
   </data>
+    <data name="LastDataUpdate" xml:space="preserve">
+        <value>Poslední aktualizace dat</value>
+    </data>
 </root>

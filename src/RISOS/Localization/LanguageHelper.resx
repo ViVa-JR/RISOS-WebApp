@@ -504,4 +504,13 @@
   <data name="Clone" xml:space="preserve">
       <value>Create clone</value>
   </data>
+    <data name="LanguageAlert" xml:space="preserve">
+        <value>Language change forces refresh of the app after saving</value>
+    </data>
+    <data name="CompulsoryElectiveErrorMessage" xml:space="preserve">
+        <value>You have to select subject from every group</value>
+    </data>
+    <data name="LastDataUpdate" xml:space="preserve">
+        <value>Last data update</value>
+    </data>
 </root>

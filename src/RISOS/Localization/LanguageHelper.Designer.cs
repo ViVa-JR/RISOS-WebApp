@@ -818,5 +818,11 @@ namespace RISOS.Localization {
                 return ResourceManager.GetString("Clone", resourceCulture);
             }
         }
+        
+        internal static string LastDataUpdate {
+            get {
+                return ResourceManager.GetString("LastDataUpdate", resourceCulture);
+            }
+        }
     }
 }

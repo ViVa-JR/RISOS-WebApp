@@ -11,7 +11,6 @@
 @using RISOS.Pages.Home.Dialogs.ImportDialog
 
 @inject UniversityService UniversityService
-@inject GitRepositoryInfoService GitRepositoryInfoService
 @inject IDialogService DialogService
 @inject LanguageService LanguageService
 @inject NavigationManager NavigationManager
@@ -250,19 +249,9 @@
 
         _dropContainer.Refresh();
     }
-
-    private async Task PrintLastDataUpdate()
-    {
-        var result = await GitRepositoryInfoService.GetLastUpdateDateAsync();
-        if (result.IsSuccess)
-        {
-            Console.WriteLine($@"Last data update: {result.Value}");
-        }
-    }
-
+    
     private async Task OnSettingsClick()
     {
-        await PrintLastDataUpdate();
         var result = await SettingsDialog.ShowAsync(DialogService, _studyContext);
         if (result.IsCancelled || result.IsFailure)
         {
