@@ -824,5 +824,35 @@ namespace RISOS.Localization {
                 return ResourceManager.GetString("LastDataUpdate", resourceCulture);
             }
         }
+        
+        internal static string Retake {
+            get {
+                return ResourceManager.GetString("Retake", resourceCulture);
+            }
+        }
+        
+        internal static string SubjectAdded {
+            get {
+                return ResourceManager.GetString("SubjectAdded", resourceCulture);
+            }
+        }
+        
+        internal static string RetakeSnackbarText {
+            get {
+                return ResourceManager.GetString("RetakeSnackbarText", resourceCulture);
+            }
+        }
+        
+        internal static string Semester_u {
+            get {
+                return ResourceManager.GetString("Semester_u", resourceCulture);
+            }
+        }
+        
+        internal static string RetakeSnackbarFailure {
+            get {
+                return ResourceManager.GetString("RetakeSnackbarFailure", resourceCulture);
+            }
+        }
     }
 }

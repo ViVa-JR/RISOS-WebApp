@@ -121,27 +121,27 @@
 </SideBar>
 
 <CascadingValue Value="_studyContext">
-    <StudiumDropContainer @ref="_dropContainer" Subjects="@_selectedSubjects" OnRemove="OnRemove" RecognizedYear="_recognizedYear" LocalStorageLoading="_localStorageLoading"/>
+    <StudiumDropContainer @ref="_dropContainer" Subjects="_selectedSubjects" OnRemove="OnRemove" RecognizedYear="_recognizedYear" LocalStorageLoading="_dropZoneContainerLoading"/>
 </CascadingValue>
 
 @code {
-    private Dictionary<string, SubjectEntry> _subjects = [];
+    private Dictionary<SubjectEntryKey, SubjectEntry> _subjects = [];
     private StudyProgram? _selectedProgram;
 
     private bool _isLoading;
-    private bool _localStorageLoading;
+    private bool _dropZoneContainerLoading;
     private bool _recognizedYear;
     private StudiumDropContainer _dropContainer = null!;
 
     private readonly StudyContext _studyContext = new();
 
-    private Dictionary<string, SubjectEntry> CompulsorySubjects => _subjects.Where(s => s.Value.Subject.Type == SubjectType.Compulsory).ToDictionary();
-    private Dictionary<string, SubjectEntry> CompulsoryElectiveSubjects => _subjects.Where(s => s.Value.Subject.Type == SubjectType.CompulsoryElective).ToDictionary();
-    private Dictionary<string, SubjectEntry> ElectiveSubjects => _subjects.Where(s => s.Value.Subject.Type == SubjectType.Elective).ToDictionary();
+    private Dictionary<SubjectEntryKey, SubjectEntry> CompulsorySubjects => _subjects.Where(s => s.Value.Subject.Type == SubjectType.Compulsory && !s.Value.IsCustomSubject).ToDictionary();
+    private Dictionary<SubjectEntryKey, SubjectEntry> CompulsoryElectiveSubjects => _subjects.Where(s => s.Value.Subject.Type == SubjectType.CompulsoryElective && !s.Value.IsCustomSubject).ToDictionary();
+    private Dictionary<SubjectEntryKey, SubjectEntry> ElectiveSubjects => _subjects.Where(s => s.Value.Subject.Type == SubjectType.Elective && !s.Value.IsCustomSubject).ToDictionary();
     private List<SubjectEntry> _selectedSubjects = [];
     private bool Disabled => _selectedProgram is null;
 
-    private async Task LoadData(StudyProgram studyProgram, Boolean fromStorage)
+    private async Task LoadData(StudyProgram studyProgram, bool fromStorage)
     {
         _isLoading = true;
         await InvokeAsync(StateHasChanged);
@@ -149,22 +149,26 @@
         var result = await UniversityService.GetSubjectsAsync(studyProgram);
         if (result.IsSuccess)
         {
-            _subjects = result.Value.Select(s => new SubjectEntry(s)).ToDictionary(x => x.Subject.Id);
-            var customSubjects = await LocalStorageService.LoadCustomSubjectsAsync();
-            foreach (var custom in customSubjects)
-            {
-                _subjects.TryAdd(custom.Subject.Id, custom);
-            }
-
+            _subjects = result.Value.Select(s => new SubjectEntry(s)).ToDictionary(x => x.Key);
             if (!fromStorage)
             {
                 _selectedSubjects = _subjects.Values.Where(x => x.Selected).ToList();
+                var groupedBySemester = _selectedSubjects.GroupBy(x => x.Semester);
+                foreach (var semesterGroup in groupedBySemester)
+                {
+                    var currentIndex = 0;
+                    foreach (var subject in semesterGroup)
+                    {
+                        subject.IndexInZone = currentIndex;
+                        currentIndex++;
+                    }
+                }
+
                 await LocalStorageService.SaveSubjects(SubjectStorageMapper.ToStorageList(_selectedSubjects));
             }
             else
             {
-                var subjects = await LocalStorageService.LoadSubjectsAsync();
-                SyncSubjectsFromStorage(subjects);
+                await SyncSubjectsFromStorage();
             }
         }
 
@@ -173,7 +177,15 @@
         {
             _studyContext.CreditOverride = creditOverride.Value;
         }
+
         _recognizedYear = await LocalStorageService.LoadRecognizedYear();
+
+        _selectedSubjects = _selectedSubjects
+            .OrderBy(x => x.Semester)
+            .ThenBy(x => x.IndexInZone)
+            .ToList();
+        
+        Console.WriteLine(_selectedSubjects.Any(x => x.IsCustomSubject));
 
         _isLoading = false;
         await InvokeAsync(StateHasChanged);
@@ -182,7 +194,7 @@
 
     private async Task OnSelectedProgramsChanged(StudyProgram? program)
     {
-        _localStorageLoading = true;
+        _dropZoneContainerLoading = true;
         await InvokeAsync(StateHasChanged);
 
         _selectedProgram = program;
@@ -220,7 +232,7 @@
             await LoadData(_selectedProgram, isSameProgram);
         }
 
-        _localStorageLoading = false;
+        _dropZoneContainerLoading = false;
         await InvokeAsync(StateHasChanged);
         StateHasChanged();
     }
@@ -228,23 +240,66 @@
     private async Task OnRemove(SubjectEntry entry)
     {
         entry.Selected = false;
-        _selectedSubjects.Remove(entry);
-        await LocalStorageService.RemoveSubjectAsync(entry.Subject.Id);
+        var affectedZones = new HashSet<string>();
+
+        if (entry.Attempt != 1)
+        {
+            affectedZones.Add(entry.Semester);
+            _selectedSubjects.Remove(entry);
+
+            var latestAttempt = _selectedSubjects.FirstOrDefault(x => x.Subject.Id == entry.Subject.Id && x.Attempt == entry.Attempt - 1);
+            if (latestAttempt is not null)
+            {
+                latestAttempt.LatestAttempt = true;
+                await LocalStorageService.UpdateSubjectAsync(latestAttempt);
+            }
+        }
+        else
+        {
+            var itemsToRemove = _selectedSubjects.Where(x => x.Subject.Id == entry.Subject.Id);
+            foreach (var item in itemsToRemove)
+            {
+                affectedZones.Add(item.Semester);
+            }
+
+            _selectedSubjects.RemoveAll(x => x.Subject.Id == entry.Subject.Id);
+        }
+
+        await LocalStorageService.RemoveSubjectAsync(entry.Key);
+
+        foreach (var zone in affectedZones)
+        {
+            await FixZoneIndexesAsync(zone);
+        }
+
         _dropContainer.Refresh();
     }
 
     private async Task SubjectChanged(SubjectEntry subject)
     {
-        _subjects[subject.Subject.Id] = subject;
+        _subjects[subject.Key] = subject;
+
         if (subject.Selected)
         {
+            subject.IndexInZone = _selectedSubjects.Count(x => x.Semester == subject.Semester);
             _selectedSubjects.Add(subject);
             await LocalStorageService.UpdateSubjectAsync(subject);
         }
         else
         {
-            _selectedSubjects.Remove(subject);
-            await LocalStorageService.RemoveSubjectAsync(subject.Subject.Id);
+            subject.LatestAttempt = true;
+            var affectedZones = _selectedSubjects
+                .Where(s => s.Subject.Id == subject.Subject.Id)
+                .Select(s => s.Semester)
+                .Distinct()
+                .ToList();
+
+            _selectedSubjects.RemoveAll(s => s.Subject.Id == subject.Subject.Id);
+            await LocalStorageService.RemoveSubjectAsync(subject.Key);
+            foreach (var zone in affectedZones)
+            {
+                await FixZoneIndexesAsync(zone);
+            }
         }
 
         _dropContainer.Refresh();
@@ -277,7 +332,7 @@
 
         if (result is { Canceled: false, Data: AppState importedData })
         {
-            _localStorageLoading = true;
+            _dropZoneContainerLoading = true;
             await ImportService.ApplyAppStateAsync(importedData);
             var faculties = await UniversityService.GetFacultiesWithProgramsAsync();
 
@@ -287,49 +342,63 @@
             {
                 var program = faculties.Value
                     .SelectMany(f => f.Programs)
-                    .FirstOrDefault(p => 
+                    .FirstOrDefault(p =>
                         p.Abbreviation == programAbbreviation &&
-                        p.Specialization==specialization);
+                        p.Specialization == specialization);
                 if (program != null)
                 {
                     await LoadData(program, true);
                 }
             }
+
             var studyYears = await LocalStorageService.LoadStudyYears();
             _studyContext.Years = studyYears ?? _studyContext.Years;
             _recognizedYear = await LocalStorageService.LoadRecognizedYear();
-            _localStorageLoading = false;
+            _dropZoneContainerLoading = false;
         }
     }
 
-    private void SyncSubjectsFromStorage(List<SubjectStorage> storedSubjects)
+    private async Task FixZoneIndexesAsync(string semesterZone)
     {
-        _selectedSubjects.Clear();
+        var remainingItems = _selectedSubjects
+            .Where(x => x.Semester == semesterZone)
+            .OrderBy(x => x.IndexInZone)
+            .ToList();
 
-        foreach (var subject in _subjects.Values)
+        for (var i = 0; i < remainingItems.Count; i++)
         {
-            if (!subject.IsCustomSubject)
-            {
-                subject.Selected = false;
-            }
-            else
-            {
-                if(subject.Selected)
-                {
-                    _selectedSubjects.Add(subject);
-                }
-            }
-        }
-
-        foreach (var storageItem in storedSubjects)
-        {
-            if (!_subjects.TryGetValue(storageItem.SubjectId, out var subjectEntry))
+            if (remainingItems[i].IndexInZone == i)
             {
                 continue;
             }
 
-            var updatedEntry = SubjectStorageMapper.ToSubjectEntry(storageItem, subjectEntry);
+            remainingItems[i].IndexInZone = i;
+            await LocalStorageService.UpdateSubjectAsync(remainingItems[i]);
+        }
+    }
+
+    private async Task SyncSubjectsFromStorage()
+    {
+        _selectedSubjects.Clear();
+        foreach (var subject in _subjects.Values)
+        {
+            subject.Selected = false;
+        }
+
+        var storedSubjects = await LocalStorageService.LoadSubjectsAsync();
+
+        foreach (var storageItem in storedSubjects)
+        {
+            if (!_subjects.TryGetValue(new SubjectEntryKey(storageItem.SubjectId, 1), out var subject))
+            {
+                continue;
+            }
+
+            var updatedEntry = SubjectStorageMapper.ToSubjectEntry(storageItem, subject);
             _selectedSubjects.Add(updatedEntry);
         }
+
+        var customSubjects = await LocalStorageService.LoadCustomSubjectsAsync();
+        _selectedSubjects.AddRange(customSubjects);
     }
 }

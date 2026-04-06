@@ -16,7 +16,7 @@
         if (!targetElement) {
             return;
         }
-        
+
         const existingData = window.__dropzoneRegistry.get(elementId);
         if (existingData) {
             if (existingData.mutObs) existingData.mutObs.disconnect();
@@ -97,7 +97,8 @@
                  id="@($"dropzone-{Semester}")"
                  Class="pa-2 flex-grow-1 d-flex flex-column gap-2 border-2 border-b-0 border-dashed mud-border-lines-default rounded-t-lg"
                  Style="@($"min-height: var({CssVariableName}, 250px);")"
-                 CanDrop="CanDrop">
+                 CanDrop="CanDrop"
+                 AllowReorder>
         <ChildContent>
             <MudStack Row Spacing="1" AlignItems="AlignItems.Center" Class="pa-2 border-b mud-border-lines-default mud-background-gray rounded-t-lg">
                 <MudText Typo="Typo.subtitle1" Class="font-weight-bold">@Semester. @LanguageHelper.Semester •</MudText>
@@ -119,7 +120,6 @@
 </MudStack>
 
 @code {
-
     [Parameter, EditorRequired]
     public required int Semester { get; set; }
 
@@ -141,5 +141,4 @@
         await Js.InvokeVoidAsync("setupDropzoneHeightObserver", $"dropzone-{Semester}", CssVariableName);
         await base.OnAfterRenderAsync(firstRender);
     }
-
 }
