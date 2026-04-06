@@ -1,6 +1,6 @@
+using System.Text.Json.Serialization;
 using RISOS.Common.Models;
 using RISOS.Enums;
-using RISOS.Models;
 
 namespace RISOS.Pages.Home.Models;
 
@@ -14,6 +14,13 @@ public class SubjectEntry(Subject subject)
         ? $"{(subject.MinSemester == 0 ? Unassigned : subject.MinSemester)}"
         : Unassigned;
     public bool IsCustomSubject { get; init; }
-
+    public int Attempt { get; set; } = 1;
+    public bool LatestAttempt { get; set; } = true;
+    
     public const string Unassigned = "unassigned";
+
+    [JsonIgnore]
+    public SubjectEntryKey Key => new (Subject.Id, Attempt);
 }
+
+public record SubjectEntryKey(string Id, int Attempt);

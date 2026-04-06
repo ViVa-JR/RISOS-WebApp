@@ -121,11 +121,11 @@
 </SideBar>
 
 <CascadingValue Value="_studyContext">
-    <StudiumDropContainer @ref="_dropContainer" Subjects="@_selectedSubjects" OnRemove="OnRemove" RecognizedYear="_recognizedYear" LocalStorageLoading="_localStorageLoading"/>
+    <StudiumDropContainer @ref="_dropContainer" Subjects="_selectedSubjects" OnRemove="OnRemove" RecognizedYear="_recognizedYear" LocalStorageLoading="_localStorageLoading"/>
 </CascadingValue>
 
 @code {
-    private Dictionary<string, SubjectEntry> _subjects = [];
+    private Dictionary<SubjectEntryKey, SubjectEntry> _subjects = [];
     private StudyProgram? _selectedProgram;
 
     private bool _isLoading;
@@ -135,13 +135,13 @@
 
     private readonly StudyContext _studyContext = new();
 
-    private Dictionary<string, SubjectEntry> CompulsorySubjects => _subjects.Where(s => s.Value.Subject.Type == SubjectType.Compulsory).ToDictionary();
-    private Dictionary<string, SubjectEntry> CompulsoryElectiveSubjects => _subjects.Where(s => s.Value.Subject.Type == SubjectType.CompulsoryElective).ToDictionary();
-    private Dictionary<string, SubjectEntry> ElectiveSubjects => _subjects.Where(s => s.Value.Subject.Type == SubjectType.Elective).ToDictionary();
+    private Dictionary<SubjectEntryKey, SubjectEntry> CompulsorySubjects => _subjects.Where(s => s.Value.Subject.Type == SubjectType.Compulsory && !s.Value.IsCustomSubject).ToDictionary();
+    private Dictionary<SubjectEntryKey, SubjectEntry> CompulsoryElectiveSubjects => _subjects.Where(s => s.Value.Subject.Type == SubjectType.CompulsoryElective && !s.Value.IsCustomSubject).ToDictionary();
+    private Dictionary<SubjectEntryKey, SubjectEntry> ElectiveSubjects => _subjects.Where(s => s.Value.Subject.Type == SubjectType.Elective && !s.Value.IsCustomSubject).ToDictionary();
     private List<SubjectEntry> _selectedSubjects = [];
     private bool Disabled => _selectedProgram is null;
 
-    private async Task LoadData(StudyProgram studyProgram, Boolean fromStorage)
+    private async Task LoadData(StudyProgram studyProgram, bool fromStorage)
     {
         _isLoading = true;
         await InvokeAsync(StateHasChanged);
@@ -149,13 +149,7 @@
         var result = await UniversityService.GetSubjectsAsync(studyProgram);
         if (result.IsSuccess)
         {
-            _subjects = result.Value.Select(s => new SubjectEntry(s)).ToDictionary(x => x.Subject.Id);
-            var customSubjects = await LocalStorageService.LoadCustomSubjectsAsync();
-            foreach (var custom in customSubjects)
-            {
-                _subjects.TryAdd(custom.Subject.Id, custom);
-            }
-
+            _subjects = result.Value.Select(s => new SubjectEntry(s)).ToDictionary(x => x.Key);
             if (!fromStorage)
             {
                 _selectedSubjects = _subjects.Values.Where(x => x.Selected).ToList();
@@ -163,8 +157,7 @@
             }
             else
             {
-                var subjects = await LocalStorageService.LoadSubjectsAsync();
-                SyncSubjectsFromStorage(subjects);
+                await SyncSubjectsFromStorage();
             }
         }
 
@@ -173,6 +166,7 @@
         {
             _studyContext.CreditOverride = creditOverride.Value;
         }
+
         _recognizedYear = await LocalStorageService.LoadRecognizedYear();
 
         _isLoading = false;
@@ -235,7 +229,7 @@
 
     private async Task SubjectChanged(SubjectEntry subject)
     {
-        _subjects[subject.Subject.Id] = subject;
+        _subjects[subject.Key] = subject;
         if (subject.Selected)
         {
             _selectedSubjects.Add(subject);
@@ -243,7 +237,8 @@
         }
         else
         {
-            _selectedSubjects.Remove(subject);
+            subject.LatestAttempt = true;
+            _selectedSubjects.RemoveAll(s => s.Subject.Id == subject.Subject.Id);
             await LocalStorageService.RemoveSubjectAsync(subject.Subject.Id);
         }
 
@@ -287,14 +282,15 @@
             {
                 var program = faculties.Value
                     .SelectMany(f => f.Programs)
-                    .FirstOrDefault(p => 
+                    .FirstOrDefault(p =>
                         p.Abbreviation == programAbbreviation &&
-                        p.Specialization==specialization);
+                        p.Specialization == specialization);
                 if (program != null)
                 {
                     await LoadData(program, true);
                 }
             }
+
             var studyYears = await LocalStorageService.LoadStudyYears();
             _studyContext.Years = studyYears ?? _studyContext.Years;
             _recognizedYear = await LocalStorageService.LoadRecognizedYear();
@@ -302,34 +298,28 @@
         }
     }
 
-    private void SyncSubjectsFromStorage(List<SubjectStorage> storedSubjects)
+    private async Task SyncSubjectsFromStorage()
     {
         _selectedSubjects.Clear();
-
         foreach (var subject in _subjects.Values)
         {
-            if (!subject.IsCustomSubject)
-            {
-                subject.Selected = false;
-            }
-            else
-            {
-                if(subject.Selected)
-                {
-                    _selectedSubjects.Add(subject);
-                }
-            }
+            subject.Selected = false;
         }
+
+        var storedSubjects = await LocalStorageService.LoadSubjectsAsync();
 
         foreach (var storageItem in storedSubjects)
         {
-            if (!_subjects.TryGetValue(storageItem.SubjectId, out var subjectEntry))
+            if (!_subjects.TryGetValue(new SubjectEntryKey(storageItem.SubjectId, 1), out var subject))
             {
                 continue;
             }
 
-            var updatedEntry = SubjectStorageMapper.ToSubjectEntry(storageItem, subjectEntry);
+            var updatedEntry = SubjectStorageMapper.ToSubjectEntry(storageItem, subject);
             _selectedSubjects.Add(updatedEntry);
         }
+
+        var customSubjects = await LocalStorageService.LoadCustomSubjectsAsync();
+        _selectedSubjects.AddRange(customSubjects);
     }
 }

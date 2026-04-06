@@ -64,7 +64,7 @@
     public bool IsLoading { get; set; }
 
     [Parameter]
-    public Dictionary<string, SubjectEntry> Subjects { get; set; } = [];
+    public Dictionary<SubjectEntryKey, SubjectEntry> Subjects { get; set; } = [];
 
     [Parameter]
     public EventCallback<SubjectEntry> SubjectChanged { get; set; }

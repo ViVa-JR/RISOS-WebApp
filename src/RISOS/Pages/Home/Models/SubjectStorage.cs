@@ -4,6 +4,8 @@
     {
         public string SubjectId { get; set; } = "";
         public bool? Completed { get; set; }
-        public string semester { get; set; } = SubjectEntry.Unassigned;
+        public int Attempt { get; set; } = 1;
+        public bool LatestAttempt { get; set; } = true;
+        public string Semester { get; set; } = SubjectEntry.Unassigned;
     }
 }

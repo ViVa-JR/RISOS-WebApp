@@ -24,9 +24,11 @@
                     <div class="d-flex flex-column flex-grow-1 overflow-hidden">
 
                         <MudTooltip RootClass="d-flex" Text="@Entry.Subject.Name">
-                            <MudText Typo="Typo.subtitle2" Class="card-text">
-                                @Entry.Subject.Name
-                            </MudText>
+                            <MudLink Href="@Entry.Subject.Url" Target="_blank">
+                                <MudText Typo="Typo.subtitle2" Class="card-text">
+                                    @Entry.Subject.Name
+                                </MudText>
+                            </MudLink>
                         </MudTooltip>
 
                         <MudStack Row AlignItems="AlignItems.Center" Spacing="1">
@@ -77,12 +79,16 @@
                     }
                 }
             </MudMenu>
+            @if (Entry.Completed == false && Entry.LatestAttempt)
+            {
+                <MudMenuItem Icon="@Icons.Material.Filled.RestartAlt" Label="@LanguageHelper.Retake" OnClick="@(() => RetakeEntry.InvokeAsync(Entry))"/>
+            }
             @if (Entry.IsCustomSubject)
             {
-                <MudMenuItem Icon="@Icons.Material.Filled.ContentCopy" Label="@LanguageHelper.Clone" OnClick="@(() => OnCloneClick())"/>
-                <MudMenuItem Icon="@Icons.Material.Filled.Edit" Label="@LanguageHelper.Edit" OnClick="@(() => OnEditClick())"/>
+                <MudMenuItem Icon="@Icons.Material.Filled.ContentCopy" Label="@LanguageHelper.Clone" OnClick="@OnCloneClick"/>
+                <MudMenuItem Icon="@Icons.Material.Filled.Edit" Label="@LanguageHelper.Edit" OnClick="@OnEditClick"/>
             }
-            @if (Entry.Subject.Type != SubjectType.Compulsory || Entry.IsCustomSubject)
+            @if (Entry.Subject.Type != SubjectType.Compulsory || Entry.IsCustomSubject || Entry.Attempt > 1)
             {
                 <MudMenuItem Icon="@Icons.Material.Filled.Delete" IconColor="Color.Error" Label="@LanguageHelper.Delete" OnClick="@(() => RemoveEntry.InvokeAsync(Entry))"/>
             }
@@ -105,6 +111,9 @@
 
     [Parameter]
     public EventCallback<SubjectEntry> AddEntry { get; set; }
+    
+    [Parameter]
+    public EventCallback<SubjectEntry> RetakeEntry { get; set; }
 
     private bool CanMove(int semester) => Entry.Semester != semester.ToString() &&
                                           Entry.Subject.MinSemester <= semester &&

@@ -507,4 +507,19 @@
     <data name="LastDataUpdate" xml:space="preserve">
         <value>Poslední aktualizace dat</value>
     </data>
+  <data name="Retake" xml:space="preserve">
+      <value>Opakovat</value>
+  </data>
+  <data name="SubjectAdded" xml:space="preserve">
+      <value>Předmět úspěšně přidán</value>
+  </data>
+  <data name="RetakeSnackbarText" xml:space="preserve">
+      <value>Opakovaný předmět přidán do</value>
+  </data>
+  <data name="Semester_u" xml:space="preserve">
+      <value>semestru</value>
+  </data>
+  <data name="RetakeSnackbarFailure" xml:space="preserve">
+      <value>Nepodařilo se přidat opakovaný předmět</value>
+  </data>
 </root>

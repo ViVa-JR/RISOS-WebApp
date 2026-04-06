@@ -507,4 +507,19 @@
     <data name="LastDataUpdate" xml:space="preserve">
         <value>Last data update</value>
     </data>
+    <data name="Retake" xml:space="preserve">
+        <value>Retake</value>
+    </data>
+    <data name="SubjectAdded" xml:space="preserve">
+        <value>Subject added</value>
+    </data>
+    <data name="RetakeSnackbarText" xml:space="preserve">
+        <value>Retaken subject added to</value>
+    </data>
+    <data name="Semester_u" xml:space="preserve">
+        <value>semester</value>
+    </data>
+    <data name="RetakeSnackbarFailure" xml:space="preserve">
+        <value>Failed to add retaken subject</value>
+    </data>
 </root>

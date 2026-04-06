@@ -211,7 +211,7 @@ public class LocalStorageService(IJSRuntime js)
     {
         var customSubjects = await LoadCustomSubjectsAsync();
 
-        var old = customSubjects.FirstOrDefault(x => x.Subject.Id == customSubject.Subject.Id);
+        var old = customSubjects.FirstOrDefault(x => x.Subject.Id == customSubject.Subject.Id && x.Attempt == customSubject.Attempt);
         if (old is not null)
         {
             customSubjects.Remove(old);
@@ -252,8 +252,7 @@ public class LocalStorageService(IJSRuntime js)
         var updatedSubject = SubjectStorageMapper.ToStorage(updatedSubjectEntry);
 
         var subjects = await LoadSubjectsAsync();
-        var index = subjects.FindIndex(s => s.SubjectId == updatedSubject.SubjectId);
-
+        var index = subjects.FindIndex(s => s.SubjectId == updatedSubject.SubjectId && s.Attempt == updatedSubject.Attempt);
         if (index != -1)
         {
             subjects[index] = updatedSubject;

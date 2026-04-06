@@ -35,11 +35,11 @@
                 Absolute="true"
                 ZIndex="9999">
         <MudStack AlignItems="AlignItems.Center">
-            
+
             <MudText Class="app-title">
                 RISØS
             </MudText>
-            <MudProgressCircular Color="Color.Primary" Indeterminate="true" Size="Size.Large" />
+            <MudProgressCircular Color="Color.Primary" Indeterminate="true" Size="Size.Large"/>
         </MudStack>
     </MudOverlay>
 
@@ -122,7 +122,12 @@
             </div>
         </ChildContent>
         <ItemRenderer>
-            <SemesterDropZoneItemTemplate Entry="context" EntryChanged="@EntryChanged" SemesterCount="@(Years * 2)" RemoveEntry="@OnRemove" AddEntry="@AddSubjectAsync"/>
+            <SemesterDropZoneItemTemplate Entry="context"
+                                          EntryChanged="@EntryChanged"
+                                          SemesterCount="@(Years * 2)"
+                                          RemoveEntry="@OnRemove"
+                                          AddEntry="@AddSubjectAsync"
+                                          RetakeEntry="@RetakeSubject"/>
         </ItemRenderer>
     </MudDropContainer>
 </div>
@@ -133,9 +138,6 @@
 
     [Parameter]
     public List<SubjectEntry> Subjects { get; set; } = [];
-
-    [Parameter]
-    public EventCallback<List<SubjectEntry>> SubjectsChanged { get; set; }
 
     [Parameter]
     public EventCallback<SubjectEntry> OnRemove { get; set; }
@@ -175,7 +177,11 @@
     private async Task ItemUpdated(MudItemDropInfo<SubjectEntry> dropItem)
     {
         dropItem.Item?.Semester = dropItem.DropzoneIdentifier;
-        if (dropItem.Item is null) return;
+        if (dropItem.Item is null)
+        {
+            return;
+        }
+
         await LocalStorageService.UpdateSubjectAsync(dropItem.Item);
     }
 
@@ -238,12 +244,59 @@
 
     private async Task AddSubjectAsync(SubjectEntry entry)
     {
-        Snackbar.Add("Subject added", Severity.Success);
         Subjects.Add(entry);
         await LocalStorageService.SaveCustomSubject(entry);
-        await SubjectsChanged.InvokeAsync(Subjects);
         _dropContainer?.Refresh();
+        Snackbar.Add(LanguageHelper.SubjectAdded, Severity.Success);
     }
 
     public void Refresh() => _dropContainer?.Refresh();
+
+    private async Task RetakeSubject(SubjectEntry entry)
+    {
+        var latestAttempt = Subjects
+            .FirstOrDefault(x => x.Subject.Id == entry.Subject.Id && x.LatestAttempt)?.Attempt ?? 0;
+
+        if (latestAttempt > entry.Attempt)
+        {
+            return;
+        }
+
+        if (!int.TryParse(entry.Semester, out var result))
+        {
+            return;
+        }
+
+        var newSem = result + 2;
+        var newEntry = new SubjectEntry(entry.Subject)
+        {
+            Semester = newSem.ToString(),
+            IsCustomSubject = entry.IsCustomSubject,
+            Completed = null,
+            Attempt = latestAttempt + 1
+        };
+        entry.LatestAttempt = false;
+        
+        Subjects.Add(newEntry);
+
+        if (newSem > Years * 2)
+        {
+            StudyContext.Years++;
+            await LocalStorageService.SaveStudyYears(Years);
+        }
+
+        if (newEntry.IsCustomSubject)
+        {
+            await LocalStorageService.SaveCustomSubject(entry);
+            await LocalStorageService.SaveCustomSubject(newEntry);
+        }
+        else
+        {
+            await LocalStorageService.UpdateSubjectAsync(entry);
+            await LocalStorageService.UpdateSubjectAsync(newEntry);
+        }
+
+        _dropContainer?.Refresh();
+        Snackbar.Add($"{LanguageHelper.RetakeSnackbarText} {newEntry.Semester}. {LanguageHelper.Semester_u}", Severity.Success);
+    }
 }
