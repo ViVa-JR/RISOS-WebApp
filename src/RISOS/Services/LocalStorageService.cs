@@ -207,8 +207,13 @@ public class LocalStorageService(IJSRuntime js)
         await js.InvokeVoidAsync("localStorage.setItem", CustomSubjects, json);
     }
 
-    public async Task SaveCustomSubject(SubjectEntry customSubject)
+    private async Task SaveCustomSubjectAsync(SubjectEntry customSubject)
     {
+        if (!customSubject.IsCustomSubject)
+        {
+            return;
+        }
+
         var customSubjects = await LoadCustomSubjectsAsync();
 
         var old = customSubjects.FirstOrDefault(x => x.Subject.Id == customSubject.Subject.Id && x.Attempt == customSubject.Attempt);
@@ -249,6 +254,22 @@ public class LocalStorageService(IJSRuntime js)
 
     public async Task UpdateSubjectAsync(SubjectEntry updatedSubjectEntry)
     {
+        if (updatedSubjectEntry.IsCustomSubject)
+        {
+            await SaveCustomSubjectAsync(updatedSubjectEntry);
+            return;
+        }
+
+        await SaveSubjectAsync(updatedSubjectEntry);
+    }
+
+    private async Task SaveSubjectAsync(SubjectEntry updatedSubjectEntry)
+    {
+        if (updatedSubjectEntry.IsCustomSubject)
+        {
+            return;
+        }
+
         var updatedSubject = SubjectStorageMapper.ToStorage(updatedSubjectEntry);
 
         var subjects = await LoadSubjectsAsync();
@@ -265,22 +286,43 @@ public class LocalStorageService(IJSRuntime js)
         await SaveSubjects(subjects);
     }
 
-    public async Task RemoveSubjectAsync(string deletedSubjectId)
+    public async Task RemoveSubjectAsync(SubjectEntryKey subjectEntryKey)
     {
         var subjects = await LoadSubjectsAsync();
-        if (subjects.RemoveAll(s => s.SubjectId == deletedSubjectId) > 0)
+        if (subjectEntryKey.Attempt == 1)
+        {
+            await RemoveAllOfSubjectAsync(subjectEntryKey.Id);
+            return;
+        }
+
+        if (subjects.RemoveAll(s => s.SubjectId == subjectEntryKey.Id && s.Attempt == subjectEntryKey.Attempt) > 0)
         {
             await SaveSubjects(subjects);
             return;
         }
 
         var customSubjects = await LoadCustomSubjectsAsync();
-        if (customSubjects.RemoveAll(s => s.Subject.Id == deletedSubjectId) > 0)
+        if (customSubjects.RemoveAll(s => s.Subject.Id == subjectEntryKey.Id && s.Attempt == subjectEntryKey.Attempt) > 0)
         {
             await SaveCustomSubjects(customSubjects);
         }
     }
 
+    private async Task RemoveAllOfSubjectAsync(string id)
+    {
+        var subjects = await LoadSubjectsAsync();
+        if (subjects.RemoveAll(s => s.SubjectId == id) > 0)
+        {
+            await SaveSubjects(subjects);
+            return;
+        }
+
+        var customSubjects = await LoadCustomSubjectsAsync();
+        if (customSubjects.RemoveAll(s => s.Subject.Id == id) > 0)
+        {
+            await SaveCustomSubjects(customSubjects);
+        }
+    }
 
     public async Task SaveLanguage(string language)
     {

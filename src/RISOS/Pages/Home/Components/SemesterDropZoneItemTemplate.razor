@@ -24,11 +24,20 @@
                     <div class="d-flex flex-column flex-grow-1 overflow-hidden">
 
                         <MudTooltip RootClass="d-flex" Text="@Entry.Subject.Name">
-                            <MudLink Href="@Entry.Subject.Url" Target="_blank">
+                            @if (string.IsNullOrWhiteSpace(Entry.Subject.Url))
+                            {
                                 <MudText Typo="Typo.subtitle2" Class="card-text">
                                     @Entry.Subject.Name
                                 </MudText>
-                            </MudLink>
+                            }
+                            else
+                            {
+                                <MudLink Href="@Entry.Subject.Url" Target="_blank">
+                                    <MudText Typo="Typo.subtitle2" Class="card-text">
+                                        @Entry.Subject.Name
+                                    </MudText>
+                                </MudLink>
+                            }
                         </MudTooltip>
 
                         <MudStack Row AlignItems="AlignItems.Center" Spacing="1">
@@ -79,7 +88,7 @@
                     }
                 }
             </MudMenu>
-            @if (Entry.Completed == false && Entry.LatestAttempt)
+            @if (Entry is { Completed: false, LatestAttempt: true })
             {
                 <MudMenuItem Icon="@Icons.Material.Filled.RestartAlt" Label="@LanguageHelper.Retake" OnClick="@(() => RetakeEntry.InvokeAsync(Entry))"/>
             }
@@ -137,7 +146,7 @@
         if (result.IsSuccess)
         {
             FastCloner.FastCloner.DeepCloneTo(result.Value, Entry);
-            await LocalStorageService.SaveCustomSubject(Entry);
+            await LocalStorageService.UpdateSubjectAsync(Entry);
             Snackbar.Add("Subject successfully updated", Severity.Success);
         }
     }

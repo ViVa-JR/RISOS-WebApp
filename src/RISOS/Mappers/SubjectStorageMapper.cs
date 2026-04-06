@@ -12,7 +12,8 @@ namespace RISOS.Mappers
                 Completed = subjectEntry.Completed,
                 Semester = subjectEntry.Semester,
                 Attempt = subjectEntry.Attempt,
-                LatestAttempt = subjectEntry.LatestAttempt
+                LatestAttempt = subjectEntry.LatestAttempt,
+                IndexInZone = subjectEntry.IndexInZone,
             };
             return result;
         }
@@ -31,6 +32,7 @@ namespace RISOS.Mappers
                     Semester = storage.Semester,
                     Attempt = storage.Attempt,
                     LatestAttempt = storage.LatestAttempt,
+                    IndexInZone = storage.IndexInZone,
                     Selected = true
                 };
             }
@@ -40,6 +42,7 @@ namespace RISOS.Mappers
             subjectEntry.Semester = storage.Semester;
             subjectEntry.Attempt = storage.Attempt;
             subjectEntry.LatestAttempt = storage.LatestAttempt;
+            subjectEntry.IndexInZone = storage.IndexInZone;
             return subjectEntry;
         }
     }

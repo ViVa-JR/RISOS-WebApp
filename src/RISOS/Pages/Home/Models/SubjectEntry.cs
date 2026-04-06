@@ -16,6 +16,7 @@ public class SubjectEntry(Subject subject)
     public bool IsCustomSubject { get; init; }
     public int Attempt { get; set; } = 1;
     public bool LatestAttempt { get; set; } = true;
+    public int IndexInZone { get; set; }
     
     public const string Unassigned = "unassigned";
 
