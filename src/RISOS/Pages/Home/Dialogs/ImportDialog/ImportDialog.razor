@@ -157,8 +157,8 @@
     {
         var dialog = await dialogService.ShowAsync<ImportDialog>(string.Empty, new DialogOptions
         {
-            FullWidth = true,
-            MaxWidth = MaxWidth.Small
+            CloseOnEscapeKey = true, 
+            MaxWidth = MaxWidth.Medium
         });
         return await dialog.GetResultAsync<AppState>();
     }

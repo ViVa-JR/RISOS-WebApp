@@ -854,5 +854,11 @@ namespace RISOS.Localization {
                 return ResourceManager.GetString("RetakeSnackbarFailure", resourceCulture);
             }
         }
+        
+        internal static string ClearStorage {
+            get {
+                return ResourceManager.GetString("ClearStorage", resourceCulture);
+            }
+        }
     }
 }

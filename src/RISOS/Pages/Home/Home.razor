@@ -184,7 +184,7 @@
             .OrderBy(x => x.Semester)
             .ThenBy(x => x.IndexInZone)
             .ToList();
-        
+
         Console.WriteLine(_selectedSubjects.Any(x => x.IsCustomSubject));
 
         _isLoading = false;
@@ -326,36 +326,35 @@
 
     private async Task OnImportClick()
     {
-        var options = new DialogOptions { CloseOnEscapeKey = true, MaxWidth = MaxWidth.Medium };
-        var dialog = await DialogService.ShowAsync<ImportDialog>(LanguageHelper.ImportJSON, options);
-        var result = await dialog.Result;
-
-        if (result is { Canceled: false, Data: AppState importedData })
+        var result = await ImportDialog.ShowAsync(DialogService);
+        if (result.IsCancelled || result.IsFailure)
         {
-            _dropZoneContainerLoading = true;
-            await ImportService.ApplyAppStateAsync(importedData);
-            var faculties = await UniversityService.GetFacultiesWithProgramsAsync();
-
-            var programAbbreviation = await LocalStorageService.LoadProgramAbbreviation();
-            var specialization = await LocalStorageService.LoadProgramSpecialization();
-            if (!string.IsNullOrEmpty(programAbbreviation))
-            {
-                var program = faculties.Value
-                    .SelectMany(f => f.Programs)
-                    .FirstOrDefault(p =>
-                        p.Abbreviation == programAbbreviation &&
-                        p.Specialization == specialization);
-                if (program != null)
-                {
-                    await LoadData(program, true);
-                }
-            }
-
-            var studyYears = await LocalStorageService.LoadStudyYears();
-            _studyContext.Years = studyYears ?? _studyContext.Years;
-            _recognizedYear = await LocalStorageService.LoadRecognizedYear();
-            _dropZoneContainerLoading = false;
+            return;
         }
+
+        _dropZoneContainerLoading = true;
+        await ImportService.ApplyAppStateAsync(result.Value);
+        var faculties = await UniversityService.GetFacultiesWithProgramsAsync();
+
+        var programAbbreviation = await LocalStorageService.LoadProgramAbbreviation();
+        var specialization = await LocalStorageService.LoadProgramSpecialization();
+        if (!string.IsNullOrEmpty(programAbbreviation))
+        {
+            var program = faculties.Value
+                .SelectMany(f => f.Programs)
+                .FirstOrDefault(p =>
+                    p.Abbreviation == programAbbreviation &&
+                    p.Specialization == specialization);
+            if (program != null)
+            {
+                await LoadData(program, true);
+            }
+        }
+
+        var studyYears = await LocalStorageService.LoadStudyYears();
+        _studyContext.Years = studyYears ?? _studyContext.Years;
+        _recognizedYear = await LocalStorageService.LoadRecognizedYear();
+        _dropZoneContainerLoading = false;
     }
 
     private async Task FixZoneIndexesAsync(string semesterZone)

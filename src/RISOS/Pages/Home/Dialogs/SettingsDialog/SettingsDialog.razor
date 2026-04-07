@@ -9,12 +9,19 @@
 
 @inject LanguageService LanguageService
 @inject GitRepositoryInfoService GitRepositoryInfoService
+@inject NavigationManager NavigationManager
+@inject LocalStorageService LocalStorageService
 
 <RDialog TReturn="SettingsDialogModel"
          Title="@LanguageHelper.SettingsDialog_Title"
          SubmitIcon="@Icons.Material.Filled.Save"
-         SubmitText="@LanguageHelper.SettingsDialog_Save"
+         SubmitText="@LanguageHelper.Save"
          OnSubmit="@OnSubmit">
+    <HeaderRight>
+        <MudTooltip Text="@LanguageHelper.ClearStorage">
+            <MudIconButton Icon="@Icons.Material.Outlined.DeleteSweep" OnClick="@ClearData"/>
+        </MudTooltip>
+    </HeaderRight>
     <ChildContent>
         <ContentOrCircularLoading IsLoading="_loading">
             <MudStack Spacing="4" Class="pb-1">
@@ -137,4 +144,9 @@
         return await dialog.GetResultAsync<SettingsDialogModel>();
     }
 
+    private async Task ClearData()
+    {
+        await LocalStorageService.ClearAppStateAsync();
+        NavigationManager.NavigateTo(NavigationManager.Uri, forceLoad: true);
+    }
 }

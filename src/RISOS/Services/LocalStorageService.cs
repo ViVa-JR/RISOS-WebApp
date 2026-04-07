@@ -11,9 +11,9 @@ public class LocalStorageService(IJSRuntime js)
 {
     private const string UserTheme = "user-theme";
     private const string UserLanguage = "user-language";
+    
     private const string ProgramAbbreviation = "subject-id";
     private const string ProgramSpecialization = "subject-specialization";
-
     private const string Subjects = "user-subjects";
     private const string CustomSubjects = "custom-subjects";
     private const string CreditOverride = "credit-override";
@@ -356,5 +356,16 @@ public class LocalStorageService(IJSRuntime js)
             RecognizedYear = await LoadRecognizedYear()
         };
         return state;
+    }
+
+    public async Task ClearAppStateAsync()
+    {
+        await js.InvokeVoidAsync("localStorage.removeItem", ProgramAbbreviation);
+        await js.InvokeVoidAsync("localStorage.removeItem", ProgramSpecialization);
+        await js.InvokeVoidAsync("localStorage.removeItem", Subjects);
+        await js.InvokeVoidAsync("localStorage.removeItem", CustomSubjects);
+        await js.InvokeVoidAsync("localStorage.removeItem", CreditOverride);
+        await js.InvokeVoidAsync("localStorage.removeItem", StudyYears);
+        await js.InvokeVoidAsync("localStorage.removeItem", RecognizedYear);
     }
 }
