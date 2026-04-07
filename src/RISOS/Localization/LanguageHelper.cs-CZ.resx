@@ -522,4 +522,7 @@
   <data name="RetakeSnackbarFailure" xml:space="preserve">
       <value>Nepodařilo se přidat opakovaný předmět</value>
   </data>
+  <data name="ClearStorage" xml:space="preserve">
+      <value>Vymazat lokální data</value>
+  </data>
 </root>

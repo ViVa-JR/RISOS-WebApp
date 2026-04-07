@@ -522,4 +522,7 @@
     <data name="RetakeSnackbarFailure" xml:space="preserve">
         <value>Failed to add retaken subject</value>
     </data>
+    <data name="ClearStorage" xml:space="preserve">
+        <value>Clear local data</value>
+    </data>
 </root>
