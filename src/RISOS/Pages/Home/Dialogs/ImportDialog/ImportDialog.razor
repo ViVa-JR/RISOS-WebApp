@@ -14,7 +14,6 @@
          OnSubmit="@OnSubmit"
          OnValidateFunc="Validate"
          HeaderIcon="@Icons.Material.Filled.CloudUpload">
-
     <MudStack Style="width: 100%; min-width: 400px">
         <MudFileUpload T="IBrowserFile"
                        FilesChanged="@OnFilesChanged"
@@ -157,7 +156,7 @@
     {
         var dialog = await dialogService.ShowAsync<ImportDialog>(string.Empty, new DialogOptions
         {
-            CloseOnEscapeKey = true, 
+            CloseOnEscapeKey = true,
             MaxWidth = MaxWidth.Medium
         });
         return await dialog.GetResultAsync<AppState>();

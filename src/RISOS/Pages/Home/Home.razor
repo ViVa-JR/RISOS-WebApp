@@ -2,6 +2,7 @@
 
 @using RISOS.Enums
 @using RISOS.Extensions
+@using RISOS.Helpers
 @using RISOS.Localization
 @using RISOS.Mappers
 @using RISOS.Pages.Home.Components
@@ -9,6 +10,7 @@
 @using RISOS.Pages.Home.Models
 @using RISOS.Services
 @using RISOS.Pages.Home.Dialogs.ImportDialog
+@using RISOS.Pages.Home.Dialogs.ShareDialog
 
 @inject UniversityService UniversityService
 @inject IDialogService DialogService
@@ -17,6 +19,8 @@
 @inject LocalStorageService LocalStorageService
 @inject ExportService ExportService
 @inject ImportService ImportService
+@inject IJSRuntime Js
+@inject ISnackbar Snackbar
 
 <style>
     :root {
@@ -108,13 +112,19 @@
                 <MudIconButton
                     Icon="@Icons.Material.Filled.Download"
                     Style="color: var(--mud-palette-drawer-text)"
-                    OnClick="@(() => ExportService.HandleExportAsync())"/>
+                    OnClick="@ExportService.HandleExportAsync"/>
             </MudTooltip>
             <MudTooltip Text="@LanguageHelper.Import">
                 <MudIconButton
                     Icon="@Icons.Material.Filled.Upload"
                     Style="color: var(--mud-palette-drawer-text)"
                     OnClick="@OnImportClick"/>
+            </MudTooltip>
+            <MudTooltip Text="@LanguageHelper.Share">
+                <MudIconButton
+                    Icon="@Icons.Material.Filled.Share"
+                    Style="color: var(--mud-palette-drawer-text)"
+                    OnClick="@OnShareClick"/>
             </MudTooltip>
         </MudStack>
     </AlwaysVisible>
@@ -140,6 +150,31 @@
     private Dictionary<SubjectEntryKey, SubjectEntry> ElectiveSubjects => _subjects.Where(s => s.Value.Subject.Type == SubjectType.Elective && !s.Value.IsCustomSubject).ToDictionary();
     private List<SubjectEntry> _selectedSubjects = [];
     private bool Disabled => _selectedProgram is null;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var uri = new Uri(NavigationManager.Uri);
+
+        if (!string.IsNullOrEmpty(uri.Fragment) && uri.Fragment.Length > 1)
+        {
+            var encodedData = uri.Fragment[1..]; 
+
+            try
+            {
+                var appState = AppStateEncoder.Decode<AppState>(encodedData);
+                if (appState is not null)
+                {
+                    await ImportService.ApplyAppStateAsync(appState);
+                }
+                NavigationManager.NavigateTo(uri.GetLeftPart(UriPartial.Path), replace: true);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Failed to load state from URL: {ex.Message}");
+            }
+        }
+        await base.OnInitializedAsync();
+    }
 
     private async Task LoadData(StudyProgram studyProgram, bool fromStorage)
     {
@@ -184,9 +219,7 @@
             .OrderBy(x => x.Semester)
             .ThenBy(x => x.IndexInZone)
             .ToList();
-
-        Console.WriteLine(_selectedSubjects.Any(x => x.IsCustomSubject));
-
+        
         _isLoading = false;
         await InvokeAsync(StateHasChanged);
         _dropContainer.Refresh();
@@ -399,5 +432,10 @@
 
         var customSubjects = await LocalStorageService.LoadCustomSubjectsAsync();
         _selectedSubjects.AddRange(customSubjects);
+    }
+
+    private async Task OnShareClick()
+    {
+        await ShareDialog.ShowAsync(DialogService);
     }
 }

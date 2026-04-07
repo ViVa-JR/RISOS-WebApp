@@ -1,0 +1,76 @@
+@using RISOS.Common.Components
+@using RISOS.Extensions
+@using RISOS.Helpers
+@using RISOS.Localization
+@using RISOS.Services
+@using DialogResult = RISOS.Common.Models.DialogResult
+
+@inject LocalStorageService LocalStorageService
+@inject NavigationManager NavigationManager
+@inject IJSRuntime Js
+@inject ISnackbar Snackbar
+
+<RDialog TReturn="EmptyReturn"
+         Title="@LanguageHelper.Share"
+         SubmitText="@LanguageHelper.Close"
+         OnlyClosable
+         SubmitIcon="@Icons.Material.Filled.Close"
+         HeaderIcon="@Icons.Material.Filled.Share">
+    <MudStack Style="width: 100%; min-width: 400px" Spacing="4">
+
+        <MudAlert Severity="Severity.Warning">
+            @LanguageHelper.ShareWarning
+        </MudAlert>
+
+        <MudTextField T="string"
+                      Value="@_shareUrl"
+                      Label="@LanguageHelper.Link"
+                      Variant="Variant.Outlined"
+                      ReadOnly="true"
+                      Adornment="Adornment.End"
+                      AdornmentIcon="@(_isCopied ? Icons.Material.Filled.Check : Icons.Material.Filled.ContentCopy)"
+                      AdornmentColor="@(_isCopied ? Color.Success : Color.Primary)"
+                      OnAdornmentClick="CopyShareLink"
+                      AdornmentAriaLabel="@LanguageHelper.Copy"/>
+
+    </MudStack>
+</RDialog>
+
+@code {
+    private string _shareUrl = string.Empty;
+    private bool _isCopied;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var exportableState = await LocalStorageService.GetExportStateAsync();
+        var encodedData = AppStateEncoder.Encode(exportableState);
+        _shareUrl = $"{NavigationManager.BaseUri}#{encodedData}";
+        await base.OnInitializedAsync();
+    }
+
+    private async Task CopyShareLink()
+    {
+        try
+        {
+            await Js.InvokeVoidAsync("navigator.clipboard.writeText", _shareUrl);
+            _isCopied = true;
+            Snackbar.Add(LanguageHelper.ShareSuccess, Severity.Info);
+        }
+        catch (Exception)
+        {
+            Snackbar.Add(LanguageHelper.ShareFailure, Severity.Error);
+        }
+    }
+    
+    public static async Task<DialogResult> ShowAsync(IDialogService dialogService)
+    {
+        var dialog = await dialogService.ShowAsync<ShareDialog>(string.Empty, new DialogOptions
+        {
+            CloseOnEscapeKey = true,
+            MaxWidth = MaxWidth.Medium
+        });
+        return await dialog.GetResultAsync();
+    }
+
+    private record EmptyReturn;
+}

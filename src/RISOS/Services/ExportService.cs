@@ -1,20 +1,21 @@
-﻿using Microsoft.JSInterop;
-using RISOS.Services;
-using System.Text.Encodings.Web;
+﻿using System.Text.Encodings.Web;
 using System.Text.Json;
 using System.Text.Unicode;
+using Microsoft.JSInterop;
+
+namespace RISOS.Services;
 
 public class ExportService(IJSRuntime js, LocalStorageService localStorageService)
 {
-    public async Task DownloadJsonAsync<T>(T data, string fileName)
+    private static readonly JsonSerializerOptions Options = new()
     {
-        var options = new JsonSerializerOptions
-        {
-            WriteIndented = true,
-            Encoder = JavaScriptEncoder.Create(UnicodeRanges.All)
-        };
+        WriteIndented = true,
+        Encoder = JavaScriptEncoder.Create(UnicodeRanges.All)
+    };
 
-        var json = JsonSerializer.Serialize(data, options);
+    private async Task DownloadJsonAsync<T>(T data, string fileName)
+    {
+        var json = JsonSerializer.Serialize(data, Options);
 
         await js.InvokeVoidAsync("eval", $@"
             (function(name, content) {{
@@ -32,17 +33,7 @@ public class ExportService(IJSRuntime js, LocalStorageService localStorageServic
     public async Task HandleExportAsync()
     {
         var exportState = await localStorageService.GetExportStateAsync();
-
-
-        if (exportState != null)
-        {
-            string fileName = $"risos_backup_{DateTime.Now:yyyyMMdd}.json";
-            await this.DownloadJsonAsync(exportState, fileName);
-        }
-        else
-        {
-            var defaultState = new AppState();
-            await this.DownloadJsonAsync(defaultState, "risos_default.json");
-        }
+        var fileName = $"risos_backup_{DateTime.Now:yyyyMMdd}.json";
+        await this.DownloadJsonAsync(exportState, fileName);
     }
 }

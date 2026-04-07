@@ -190,7 +190,7 @@
         Subjects.Remove(dropItem.Item);
         var itemsInZone = Subjects.Where(x => x.Semester == dropItem.DropzoneIdentifier).ToList();
 
-        if (dropItem.IndexInZone >= itemsInZone.Count)
+        if (dropItem.IndexInZone < 0 || dropItem.IndexInZone >= itemsInZone.Count)
         {
             Subjects.Add(dropItem.Item);
         }
@@ -211,6 +211,7 @@
         }
 
         await SubjectsChanged.InvokeAsync(Subjects);
+
         foreach (var item in updatedZoneItems)
         {
             await LocalStorageService.UpdateSubjectAsync(item);
