@@ -860,5 +860,47 @@ namespace RISOS.Localization {
                 return ResourceManager.GetString("ClearStorage", resourceCulture);
             }
         }
+        
+        internal static string ShareSuccess {
+            get {
+                return ResourceManager.GetString("ShareSuccess", resourceCulture);
+            }
+        }
+        
+        internal static string Share {
+            get {
+                return ResourceManager.GetString("Share", resourceCulture);
+            }
+        }
+        
+        internal static string Close {
+            get {
+                return ResourceManager.GetString("Close", resourceCulture);
+            }
+        }
+        
+        internal static string ShareWarning {
+            get {
+                return ResourceManager.GetString("ShareWarning", resourceCulture);
+            }
+        }
+        
+        internal static string Copy {
+            get {
+                return ResourceManager.GetString("Copy", resourceCulture);
+            }
+        }
+        
+        internal static string ShareFailure {
+            get {
+                return ResourceManager.GetString("ShareFailure", resourceCulture);
+            }
+        }
+        
+        internal static string Link {
+            get {
+                return ResourceManager.GetString("Link", resourceCulture);
+            }
+        }
     }
 }

@@ -525,4 +525,25 @@
     <data name="ClearStorage" xml:space="preserve">
         <value>Clear local data</value>
     </data>
+    <data name="ShareSuccess" xml:space="preserve">
+        <value>Share link added to clipboard</value>
+    </data>
+    <data name="Share" xml:space="preserve">
+        <value>Share</value>
+    </data>
+    <data name="Close" xml:space="preserve">
+        <value>Close</value>
+    </data>
+    <data name="ShareWarning" xml:space="preserve">
+        <value>WARNING: Share link will override local appstate after openning</value>
+    </data>
+    <data name="Copy" xml:space="preserve">
+        <value>Copy to clipboard</value>
+    </data>
+    <data name="ShareFailure" xml:space="preserve">
+        <value>Failed to copy link. Try doing it manually</value>
+    </data>
+    <data name="Link" xml:space="preserve">
+        <value>Share Link</value>
+    </data>
 </root>

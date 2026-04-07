@@ -525,4 +525,25 @@
   <data name="ClearStorage" xml:space="preserve">
       <value>Vymazat lokální data</value>
   </data>
+  <data name="ShareSuccess" xml:space="preserve">
+      <value>Odkaz pro sdílení úspěšně zkopírován</value>
+  </data>
+  <data name="Share" xml:space="preserve">
+      <value>Sdílet</value>
+  </data>
+  <data name="Close" xml:space="preserve">
+      <value>Zavřít</value>
+  </data>
+  <data name="ShareWarning" xml:space="preserve">
+      <value>VAROVÁNÍ: Sdílený odkaz přepíše lokální data po jeho otevření</value>
+  </data>
+  <data name="Copy" xml:space="preserve">
+      <value>Zkopírovat</value>
+  </data>
+  <data name="ShareFailure" xml:space="preserve">
+      <value>Nepodařilo se zkopírovat odkaz. Zkuste to udělat manuálně</value>
+  </data>
+  <data name="Link" xml:space="preserve">
+      <value>Odkaz pro sdílení</value>
+  </data>
 </root>
