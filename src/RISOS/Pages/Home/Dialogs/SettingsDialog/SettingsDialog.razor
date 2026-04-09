@@ -11,6 +11,7 @@
 @inject GitRepositoryInfoService GitRepositoryInfoService
 @inject NavigationManager NavigationManager
 @inject LocalStorageService LocalStorageService
+@inject ThemeStateService ThemeService
 
 <RDialog TReturn="SettingsDialogModel"
          Title="@LanguageHelper.SettingsDialog_Title"
@@ -56,25 +57,81 @@
 
                 <MudStack Spacing="2">
                     <MudText Typo="Typo.subtitle2" Color="Color.Primary">
-                        <b>@LanguageHelper.SettingsDialog_AcademicSettings</b>
+                        <b>@LanguageHelper.Themes</b>
                     </MudText>
 
-                    <MudStack Spacing="2">
-                        <MudSwitch T="bool"
-                                   Value="_overrideCredits"
-                                   ValueChanged="OnOverrideToggled"
-                                   Color="Color.Primary"
-                                   Label="@LanguageHelper.SettingsDialog_OverrideCredits"/>
-                        <MudNumericField T="int?"
-                                         @bind-Value="_model.Credits"
-                                         Disabled="@(!_overrideCredits)"
-                                         Label="@LanguageHelper.SettingsDialog_RequiredCredits"
-                                         Variant="Variant.Outlined"
-                                         Min="0"
-                                         Adornment="Adornment.End"
-                                         AdornmentText="@LanguageHelper.Cr"/>
+                    <MudStack Row AlignItems="AlignItems.Center" Justify="Justify.SpaceBetween">
+                        <MudText Typo="Typo.body2">@LanguageHelper.SettingsDialog_DarkMode</MudText>
+                        <MudSwitch T="bool" 
+                                   Value="@ThemeService.IsDarkMode" 
+                                   ValueChanged="@(async (bool val) => await ThemeService.SetDarkMode(val))" 
+                                   Color="Color.Primary" />
                     </MudStack>
+
+                    <MudSelect T="ThemeType" @bind-Value="_model.SelectedTheme" 
+                               Label="@LanguageHelper.SettingsDialog_Palette" 
+                               Variant="Variant.Outlined" Dense AnchorOrigin="Origin.BottomCenter">
+    
+                        <MudSelectItem Value="ThemeType.Default">
+                            <div class="d-flex align-center gap-2">
+                                <MudIcon Icon="@Icons.Material.Filled.Palette" Size="Size.Small" Color="Color.Primary"/>
+                                @LanguageHelper.Theme_Default
+                            </div>
+                        </MudSelectItem>
+    
+                        <MudSelectItem Value="ThemeType.Deuteranopia">
+                            <div class="d-flex align-center gap-2">
+                                <MudIcon Icon="@Icons.Material.Filled.Visibility" Size="Size.Small" Style="color: #009E73;"/>
+                                @LanguageHelper.Theme_Deuteranopia
+                            </div>
+                        </MudSelectItem>
+
+                        <MudSelectItem Value="ThemeType.Protanopia">
+                            <div class="d-flex align-center gap-2">
+                                <MudIcon Icon="@Icons.Material.Filled.Visibility" Size="Size.Small" Style="color: #0072B2;"/>
+                                @LanguageHelper.Theme_Protanopia
+                            </div>
+                        </MudSelectItem>
+
+                        <MudSelectItem Value="ThemeType.Tritanopia">
+                            <div class="d-flex align-center gap-2">
+                                <MudIcon Icon="@Icons.Material.Filled.RemoveRedEye" Size="Size.Small" Style="color: #00ced1;"/>
+                                @LanguageHelper.Theme_Tritanopia
+                            </div>
+                        </MudSelectItem>
+
+                        <MudSelectItem Value="ThemeType.HighContrast">
+                            <div class="d-flex align-center gap-2">
+                                <MudIcon Icon="@Icons.Material.Filled.Contrast" Size="Size.Small" Color="Color.Default"/>
+                                @LanguageHelper.Theme_HighContrast
+                            </div>
+                        </MudSelectItem>
+                    </MudSelect>
+                    
                 </MudStack>
+                    
+                    <MudStack Spacing="2">
+                        <MudText Typo="Typo.subtitle2" Color="Color.Primary">
+                            <b>@LanguageHelper.SettingsDialog_AcademicSettings</b>
+                        </MudText>
+
+                        <MudStack Spacing="2">
+                            <MudSwitch T="bool"
+                                       Value="_overrideCredits"
+                                       ValueChanged="OnOverrideToggled"
+                                       Color="Color.Primary"
+                                       Label="@LanguageHelper.SettingsDialog_OverrideCredits"/>
+                            <MudNumericField T="int?"
+                                             @bind-Value="_model.Credits"
+                                             Disabled="@(!_overrideCredits)"
+                                             Label="@LanguageHelper.SettingsDialog_RequiredCredits"
+                                             Variant="Variant.Outlined"
+                                             Min="0"
+                                             Adornment="Adornment.End"
+                                             AdornmentText="@LanguageHelper.Cr"/>
+                        </MudStack>
+                    </MudStack>
+                
             </MudStack>
         </ContentOrCircularLoading>
     </ChildContent>
@@ -99,6 +156,7 @@
     protected override async Task OnInitializedAsync()
     {
         _model.Language = await LanguageService.GetAppLanguageAsync();
+        _model.SelectedTheme = ThemeService.CurrentThemeType ?? ThemeType.Default;
         _originalLanguage = _model.Language;
         _overrideCredits = StudyContext.CreditOverride.HasValue;
 
@@ -139,7 +197,8 @@
             { x => x.StudyContext, studyContext }
         }, new DialogOptions
         {
-            FullWidth = true
+            FullWidth = true,
+            MaxWidth = MaxWidth.Small
         });
         return await dialog.GetResultAsync<SettingsDialogModel>();
     }

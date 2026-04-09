@@ -21,6 +21,7 @@
 @inject ImportService ImportService
 @inject IJSRuntime Js
 @inject ISnackbar Snackbar
+@inject ThemeStateService ThemeStateService
 
 <style>
     :root {
@@ -28,8 +29,8 @@
     }
 
     .side-bar .mud-expand-panel {
-        background: var(--mud-palette-primary);
-        color: white;
+        background: var(--mud-palette-surface);
+        color: var(--mud-palette-text-primary);
     }
 
     .mud-drawer.mud-drawer-mini.mud-drawer-pos-left.mud-drawer--open ~ div:not(.mud-main-content), .mud-drawer.mud-drawer-persistent.mud-drawer-pos-left.mud-drawer--open ~ div:not(.mud-main-content) {
@@ -348,6 +349,7 @@
 
         _studyContext.CreditOverride = result.Value.Credits;
         await LocalStorageService.SaveCreditOverride(result.Value.Credits);
+        await ThemeStateService.SetThemeType(result.Value.SelectedTheme);
 
         var language = await LanguageService.GetAppLanguageAsync();
         if (result.Value.Language != language)
@@ -355,6 +357,7 @@
             await LanguageService.SetAppLanguageAsync(result.Value.Language);
             NavigationManager.NavigateTo(NavigationManager.Uri, forceLoad: true);
         }
+        StateHasChanged();
     }
 
     private async Task OnImportClick()

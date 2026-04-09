@@ -19,10 +19,31 @@ public class LocalStorageService(IJSRuntime js)
     private const string CreditOverride = "credit-override";
     private const string StudyYears = "study-years";
     private const string RecognizedYear = "recognized-years";
+    private const string ThemeTypeKey = "app_theme_type";
 
     public async Task SaveTheme(bool isDark)
     {
         await js.InvokeVoidAsync("localStorage.setItem", UserTheme, isDark ? "dark" : "light");
+    }
+    
+    public async Task SaveThemeType(ThemeType theme)
+    {
+        await js.InvokeVoidAsync("localStorage.setItem", ThemeTypeKey, theme.ToString());
+    }
+
+    public async Task<ThemeType> LoadThemeType()
+    {
+        try
+        {
+            var value = await js.InvokeAsync<string>("localStorage.getItem", ThemeTypeKey);
+            if (string.IsNullOrEmpty(value)) return ThemeType.Default;
+
+            return Enum.TryParse<ThemeType>(value, out var result) ? result : ThemeType.Default;
+        }
+        catch
+        {
+            return ThemeType.Default;
+        }
     }
 
     public async Task<bool> LoadTheme()
