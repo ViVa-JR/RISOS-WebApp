@@ -14,3 +14,4 @@ var host = builder.Build();
 await host.InitializeAppState();
 
 await host.RunAsync();
+

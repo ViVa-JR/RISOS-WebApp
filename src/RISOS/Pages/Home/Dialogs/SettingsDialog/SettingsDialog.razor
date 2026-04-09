@@ -11,6 +11,7 @@
 @inject GitRepositoryInfoService GitRepositoryInfoService
 @inject NavigationManager NavigationManager
 @inject LocalStorageService LocalStorageService
+@inject ThemeStateService ThemeService
 
 <RDialog TReturn="SettingsDialogModel"
          Title="@LanguageHelper.SettingsDialog_Title"
@@ -53,6 +54,55 @@
                         </MudAlert>
                     }
                 </MudStack>
+                
+                <MudDivider/>
+
+                <MudStack Spacing="2">
+                    <MudText Typo="Typo.subtitle2" Color="Color.Primary">
+                        <b>@LanguageHelper.Themes</b>
+                    </MudText>
+                    <MudSelect T="ThemeType" @bind-Value="_model.SelectedTheme"
+                               Label="@LanguageHelper.SettingsDialog_Palette"
+                               Variant="Variant.Outlined" Dense AnchorOrigin="Origin.BottomCenter">
+
+                        <MudSelectItem Value="ThemeType.Default">
+                            <div class="d-flex align-center gap-2">
+                                <MudIcon Icon="@Icons.Material.Filled.Palette" Size="Size.Small" Color="Color.Primary"/>
+                                @LanguageHelper.Theme_Default
+                            </div>
+                        </MudSelectItem>
+
+                        <MudSelectItem Value="ThemeType.Deuteranopia">
+                            <div class="d-flex align-center gap-2">
+                                <MudIcon Icon="@Icons.Material.Filled.Visibility" Size="Size.Small" Style="color: #009E73;"/>
+                                @LanguageHelper.Theme_Deuteranopia
+                            </div>
+                        </MudSelectItem>
+
+                        <MudSelectItem Value="ThemeType.Protanopia">
+                            <div class="d-flex align-center gap-2">
+                                <MudIcon Icon="@Icons.Material.Filled.Visibility" Size="Size.Small" Style="color: #0072B2;"/>
+                                @LanguageHelper.Theme_Protanopia
+                            </div>
+                        </MudSelectItem>
+
+                        <MudSelectItem Value="ThemeType.Tritanopia">
+                            <div class="d-flex align-center gap-2">
+                                <MudIcon Icon="@Icons.Material.Filled.RemoveRedEye" Size="Size.Small" Style="color: #00ced1;"/>
+                                @LanguageHelper.Theme_Tritanopia
+                            </div>
+                        </MudSelectItem>
+
+                        <MudSelectItem Value="ThemeType.HighContrast">
+                            <div class="d-flex align-center gap-2">
+                                <MudIcon Icon="@Icons.Material.Filled.Contrast" Size="Size.Small" Color="Color.Default"/>
+                                @LanguageHelper.Theme_HighContrast
+                            </div>
+                        </MudSelectItem>
+                    </MudSelect>
+                </MudStack>
+
+                <MudDivider/>
 
                 <MudStack Spacing="2">
                     <MudText Typo="Typo.subtitle2" Color="Color.Primary">
@@ -75,6 +125,30 @@
                                          AdornmentText="@LanguageHelper.Cr"/>
                     </MudStack>
                 </MudStack>
+
+                <MudDivider/>
+
+                <MudStack Spacing="2">
+                    <MudText Typo="Typo.subtitle2" Color="Color.Primary">
+                        <b>@LanguageHelper.Contact</b>
+                    </MudText>
+
+                    <MudStack Spacing="5" Row AlignItems="AlignItems.Center" Justify="Justify.Center">
+                        <MudButton Href="https://github.com/ViVa-JR/RISOS/issues/new" 
+                                   Target="_blank"
+                                   StartIcon="@Icons.Custom.Brands.GitHub" 
+                                   Variant="Variant.Text" 
+                                   Color="Color.Default">
+                            @LanguageHelper.ReportBug
+                        </MudButton>
+                        <MudButton Href="mailto:xsafar26@vutbr.cz" 
+                                   StartIcon="@Icons.Material.Filled.Email" 
+                                   Variant="Variant.Text" 
+                                   Color="Color.Default">
+                            @LanguageHelper.Email
+                        </MudButton>
+                    </MudStack>
+                </MudStack>
             </MudStack>
         </ContentOrCircularLoading>
     </ChildContent>
@@ -86,8 +160,8 @@
 </RDialog>
 
 @code {
-
-    [Parameter] public required StudyContext StudyContext { get; set; }
+    [Parameter]
+    public required StudyContext StudyContext { get; set; }
 
     private bool _loading = true;
     private SettingsDialogModel _model = new();
@@ -99,6 +173,7 @@
     protected override async Task OnInitializedAsync()
     {
         _model.Language = await LanguageService.GetAppLanguageAsync();
+        _model.SelectedTheme = ThemeService.CurrentThemeType ?? ThemeType.Default;
         _originalLanguage = _model.Language;
         _overrideCredits = StudyContext.CreditOverride.HasValue;
 
@@ -139,7 +214,8 @@
             { x => x.StudyContext, studyContext }
         }, new DialogOptions
         {
-            FullWidth = true
+            FullWidth = true,
+            MaxWidth = MaxWidth.Small
         });
         return await dialog.GetResultAsync<SettingsDialogModel>();
     }

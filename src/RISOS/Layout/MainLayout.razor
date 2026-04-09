@@ -5,17 +5,18 @@
 
 @inject ThemeStateService ThemeStateService
 
-<MudThemeProvider @ref="_mudThemeProvider" IsDarkMode="@ThemeStateService.IsDarkMode" IsDarkModeChanged="@ThemeStateService.SetDarkMode" Theme="@ThemeStateService.Theme"/>
+<MudThemeProvider
+    @ref="_mudThemeProvider"
+    IsDarkMode="@ThemeStateService.IsDarkMode"
+    Theme="@ThemeStateService.Theme"/>
 <MudPopoverProvider/>
 <MudDialogProvider/>
 <MudSnackbarProvider/>
 
 <MudLayout>
-    <CascadingValue TValue="MudThemeProvider" Value="@_mudThemeProvider">
-        <MudMainContent class="pt-5 px-5" Style="height: 100vh">
-            @Body
-        </MudMainContent>
-    </CascadingValue>
+    <MudMainContent class="pt-5 px-5" Style="height: 100vh">
+        @Body
+    </MudMainContent>
 </MudLayout>
 
 @code {
@@ -33,13 +34,12 @@
         {
             await _mudThemeProvider.WatchSystemDarkModeAsync(ThemeStateService.SetDarkMode);
         }
-        
+
         await base.OnAfterRenderAsync(firstRender);
     }
-    
+
     public void Dispose()
     {
         ThemeStateService.OnChange -= StateHasChanged;
     }
-
 }

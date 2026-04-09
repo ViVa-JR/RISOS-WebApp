@@ -902,5 +902,83 @@ namespace RISOS.Localization {
                 return ResourceManager.GetString("Link", resourceCulture);
             }
         }
+        
+        internal static string Themes {
+            get {
+                return ResourceManager.GetString("Themes", resourceCulture);
+            }
+        }
+        
+        internal static string SettingsDialog_DarkMode {
+            get {
+                return ResourceManager.GetString("SettingsDialog_DarkMode", resourceCulture);
+            }
+        }
+        
+        internal static string SettingsDialog_Palette {
+            get {
+                return ResourceManager.GetString("SettingsDialog_Palette", resourceCulture);
+            }
+        }
+        
+        internal static string Theme_Default {
+            get {
+                return ResourceManager.GetString("Theme_Default", resourceCulture);
+            }
+        }
+        
+        internal static string Theme_Colorblind {
+            get {
+                return ResourceManager.GetString("Theme_Colorblind", resourceCulture);
+            }
+        }
+        
+        internal static string Theme_Deuteranopia {
+            get {
+                return ResourceManager.GetString("Theme_Deuteranopia", resourceCulture);
+            }
+        }
+        
+        internal static string Theme_Protanopia {
+            get {
+                return ResourceManager.GetString("Theme_Protanopia", resourceCulture);
+            }
+        }
+        
+        internal static string Theme_Tritanopia {
+            get {
+                return ResourceManager.GetString("Theme_Tritanopia", resourceCulture);
+            }
+        }
+        
+        internal static string Theme_HighContrast {
+            get {
+                return ResourceManager.GetString("Theme_HighContrast", resourceCulture);
+            }
+        }
+        
+        internal static string Contact {
+            get {
+                return ResourceManager.GetString("Contact", resourceCulture);
+            }
+        }
+        
+        internal static string Email {
+            get {
+                return ResourceManager.GetString("Email", resourceCulture);
+            }
+        }
+        
+        internal static string ReportBug {
+            get {
+                return ResourceManager.GetString("ReportBug", resourceCulture);
+            }
+        }
+        
+        internal static string RequestFeature {
+            get {
+                return ResourceManager.GetString("RequestFeature", resourceCulture);
+            }
+        }
     }
 }
