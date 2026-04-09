@@ -573,4 +573,16 @@
     <data name="Theme_HighContrast" xml:space="preserve">
         <value>High Contrast</value>
     </data>
+    <data name="Contact" xml:space="preserve">
+        <value>Contact</value>
+    </data>
+    <data name="Email" xml:space="preserve">
+        <value>Contact via email</value>
+    </data>
+    <data name="ReportBug" xml:space="preserve">
+        <value>Report a bug</value>
+    </data>
+    <data name="RequestFeature" xml:space="preserve">
+        <value>Request a Feature</value>
+    </data>
 </root>

@@ -5,25 +5,18 @@
 
 @inject ThemeStateService ThemeStateService
 
-<MudThemeProvider 
-    @ref="_mudThemeProvider" 
-    IsDarkMode="@ThemeStateService.IsDarkMode" 
+<MudThemeProvider
+    @ref="_mudThemeProvider"
+    IsDarkMode="@ThemeStateService.IsDarkMode"
     Theme="@ThemeStateService.Theme"/>
 <MudPopoverProvider/>
 <MudDialogProvider/>
 <MudSnackbarProvider/>
 
 <MudLayout>
-    @if (ThemeStateService.IsInitialized)
-    {
-        <MudMainContent class="pt-5 px-5" Style="height: 100vh">
-            @Body
-        </MudMainContent>
-    }
-    else
-    {
-        <div style="background-color: #f8fafc; height: 100vh;"></div>
-    }
+    <MudMainContent class="pt-5 px-5" Style="height: 100vh">
+        @Body
+    </MudMainContent>
 </MudLayout>
 
 @code {
@@ -32,16 +25,6 @@
     protected override async Task OnInitializedAsync()
     {
         ThemeStateService.OnChange += StateHasChanged;
-        
-        try 
-        {
-            await ThemeStateService.InitializeAsync();
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine($"Chyba při načítání témat: {ex.Message}");
-        }
-        
         await base.OnInitializedAsync();
     }
 
@@ -51,13 +34,12 @@
         {
             await _mudThemeProvider.WatchSystemDarkModeAsync(ThemeStateService.SetDarkMode);
         }
-        
+
         await base.OnAfterRenderAsync(firstRender);
     }
-    
+
     public void Dispose()
     {
         ThemeStateService.OnChange -= StateHasChanged;
     }
-
 }

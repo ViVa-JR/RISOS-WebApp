@@ -54,31 +54,24 @@
                         </MudAlert>
                     }
                 </MudStack>
+                
+                <MudDivider/>
 
                 <MudStack Spacing="2">
                     <MudText Typo="Typo.subtitle2" Color="Color.Primary">
                         <b>@LanguageHelper.Themes</b>
                     </MudText>
-
-                    <MudStack Row AlignItems="AlignItems.Center" Justify="Justify.SpaceBetween">
-                        <MudText Typo="Typo.body2">@LanguageHelper.SettingsDialog_DarkMode</MudText>
-                        <MudSwitch T="bool" 
-                                   Value="@ThemeService.IsDarkMode" 
-                                   ValueChanged="@(async (bool val) => await ThemeService.SetDarkMode(val))" 
-                                   Color="Color.Primary" />
-                    </MudStack>
-
-                    <MudSelect T="ThemeType" @bind-Value="_model.SelectedTheme" 
-                               Label="@LanguageHelper.SettingsDialog_Palette" 
+                    <MudSelect T="ThemeType" @bind-Value="_model.SelectedTheme"
+                               Label="@LanguageHelper.SettingsDialog_Palette"
                                Variant="Variant.Outlined" Dense AnchorOrigin="Origin.BottomCenter">
-    
+
                         <MudSelectItem Value="ThemeType.Default">
                             <div class="d-flex align-center gap-2">
                                 <MudIcon Icon="@Icons.Material.Filled.Palette" Size="Size.Small" Color="Color.Primary"/>
                                 @LanguageHelper.Theme_Default
                             </div>
                         </MudSelectItem>
-    
+
                         <MudSelectItem Value="ThemeType.Deuteranopia">
                             <div class="d-flex align-center gap-2">
                                 <MudIcon Icon="@Icons.Material.Filled.Visibility" Size="Size.Small" Style="color: #009E73;"/>
@@ -107,31 +100,55 @@
                             </div>
                         </MudSelectItem>
                     </MudSelect>
-                    
                 </MudStack>
-                    
-                    <MudStack Spacing="2">
-                        <MudText Typo="Typo.subtitle2" Color="Color.Primary">
-                            <b>@LanguageHelper.SettingsDialog_AcademicSettings</b>
-                        </MudText>
 
-                        <MudStack Spacing="2">
-                            <MudSwitch T="bool"
-                                       Value="_overrideCredits"
-                                       ValueChanged="OnOverrideToggled"
-                                       Color="Color.Primary"
-                                       Label="@LanguageHelper.SettingsDialog_OverrideCredits"/>
-                            <MudNumericField T="int?"
-                                             @bind-Value="_model.Credits"
-                                             Disabled="@(!_overrideCredits)"
-                                             Label="@LanguageHelper.SettingsDialog_RequiredCredits"
-                                             Variant="Variant.Outlined"
-                                             Min="0"
-                                             Adornment="Adornment.End"
-                                             AdornmentText="@LanguageHelper.Cr"/>
-                        </MudStack>
+                <MudDivider/>
+
+                <MudStack Spacing="2">
+                    <MudText Typo="Typo.subtitle2" Color="Color.Primary">
+                        <b>@LanguageHelper.SettingsDialog_AcademicSettings</b>
+                    </MudText>
+
+                    <MudStack Spacing="2">
+                        <MudSwitch T="bool"
+                                   Value="_overrideCredits"
+                                   ValueChanged="OnOverrideToggled"
+                                   Color="Color.Primary"
+                                   Label="@LanguageHelper.SettingsDialog_OverrideCredits"/>
+                        <MudNumericField T="int?"
+                                         @bind-Value="_model.Credits"
+                                         Disabled="@(!_overrideCredits)"
+                                         Label="@LanguageHelper.SettingsDialog_RequiredCredits"
+                                         Variant="Variant.Outlined"
+                                         Min="0"
+                                         Adornment="Adornment.End"
+                                         AdornmentText="@LanguageHelper.Cr"/>
                     </MudStack>
-                
+                </MudStack>
+
+                <MudDivider/>
+
+                <MudStack Spacing="2">
+                    <MudText Typo="Typo.subtitle2" Color="Color.Primary">
+                        <b>@LanguageHelper.Contact</b>
+                    </MudText>
+
+                    <MudStack Spacing="5" Row AlignItems="AlignItems.Center" Justify="Justify.Center">
+                        <MudButton Href="https://github.com/ViVa-JR/RISOS/issues/new" 
+                                   Target="_blank"
+                                   StartIcon="@Icons.Custom.Brands.GitHub" 
+                                   Variant="Variant.Text" 
+                                   Color="Color.Default">
+                            @LanguageHelper.ReportBug
+                        </MudButton>
+                        <MudButton Href="mailto:xsafar26@vutbr.cz" 
+                                   StartIcon="@Icons.Material.Filled.Email" 
+                                   Variant="Variant.Text" 
+                                   Color="Color.Default">
+                            @LanguageHelper.Email
+                        </MudButton>
+                    </MudStack>
+                </MudStack>
             </MudStack>
         </ContentOrCircularLoading>
     </ChildContent>
@@ -143,8 +160,8 @@
 </RDialog>
 
 @code {
-
-    [Parameter] public required StudyContext StudyContext { get; set; }
+    [Parameter]
+    public required StudyContext StudyContext { get; set; }
 
     private bool _loading = true;
     private SettingsDialogModel _model = new();

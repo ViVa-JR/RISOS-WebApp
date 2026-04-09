@@ -1,5 +1,4 @@
 using MudBlazor;
-using RISOS.Pages.Home.Dialogs.SettingsDialog;
 using RISOS.Enums;
 
 namespace RISOS.Services;
@@ -14,15 +13,14 @@ public class ThemeStateService(LocalStorageService localStorageService)
     
     public MudTheme Theme => CurrentThemeType switch
     {
-        ThemeType.Deuteranopia => GetDeuteranopiaTheme(),
-        ThemeType.Protanopia => GetDeuteranopiaTheme(),
+        ThemeType.Deuteranopia or ThemeType.Protanopia => GetDeuteranopiaTheme(),
         ThemeType.Tritanopia => GetTritanopiaTheme(),
         ThemeType.HighContrast => GetHighContrastTheme(),
         ThemeType.Default => GetDefaultTheme(),
         _ => GetLoadingTheme() 
     };
 
-    private MudTheme GetLoadingTheme() => new() { 
+    private static MudTheme GetLoadingTheme() => new() { 
         PaletteLight = new PaletteLight { Primary = "#00000000" },
         PaletteDark = new PaletteDark { Primary = "#00000000" } 
     };
@@ -48,10 +46,8 @@ public class ThemeStateService(LocalStorageService localStorageService)
         await localStorageService.SaveThemeType(type);
         OnChange?.Invoke();
     }
-
     
-    
-    private MudTheme GetDefaultTheme() => new()
+    private static MudTheme GetDefaultTheme() => new()
     {
         PaletteLight = new PaletteLight
         {
@@ -87,7 +83,7 @@ public class ThemeStateService(LocalStorageService localStorageService)
         }
     };
     
-    private MudTheme GetDeuteranopiaTheme() => new()
+    private static MudTheme GetDeuteranopiaTheme() => new()
     {
         PaletteLight = new PaletteLight
         {
@@ -116,7 +112,7 @@ public class ThemeStateService(LocalStorageService localStorageService)
         }
     };
     
-    private MudTheme GetTritanopiaTheme() => new()
+    private static MudTheme GetTritanopiaTheme() => new()
     {
         PaletteLight = new PaletteLight {
             Primary = "#004852",
@@ -139,7 +135,7 @@ public class ThemeStateService(LocalStorageService localStorageService)
         }
     };
     
-    private MudTheme GetHighContrastTheme() => new()
+    private static MudTheme GetHighContrastTheme() => new()
     {
         PaletteLight = new PaletteLight {
             Primary = "#000000",            
