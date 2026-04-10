@@ -383,6 +383,7 @@
                     p.Specialization == specialization);
             if (program != null)
             {
+                _selectedProgram = program;
                 await LoadData(program, true);
             }
         }
