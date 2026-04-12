@@ -35,7 +35,6 @@
                 Absolute="true"
                 ZIndex="9999">
         <MudStack AlignItems="AlignItems.Center">
-
             <MudText Class="app-title">
                 RISØS
             </MudText>
@@ -84,14 +83,22 @@
 
             <ControlCenter @bind-RecognizedYear="RecognizedYear" YearsChanged="OnYearsChanged" TotalCredits="TotalCredits"/>
 
-            <div style="overflow: scroll">
+            <div id="main-scroll-container" style="overflow: scroll; position: relative;">
+
+                <div class="indicator-anchor top">
+                    <div class="scroll-indicator top">
+                        <MudIcon Icon="@Icons.Material.Filled.KeyboardDoubleArrowUp"/>
+                        <MudText Typo="Typo.caption">SCROLL UP</MudText>
+                    </div>
+                </div>
                 <MudStack Row Class="mb-3">
                     @foreach (var year in Enumerable.Range(StartYear, Years))
                     {
                         var winterSem = year * 2 - 1;
                         var summerSem = year * 2;
 
-                        <div class="rounded-lg pa-4 d-flex flex-column mt-4" style="position: relative; border: 2px dotted var(--mud-palette-lines-default); height: 100%; min-width: 336px; flex: 1;">
+                        <div class="rounded-lg pa-4 d-flex flex-column mt-4"
+                             style="position: relative; border: 2px dotted var(--mud-palette-lines-default); height: 100%; min-width: 336px; flex: 1;">
                             <div style="position: absolute; top: -16px; left: 15%; transform: translateX(-50%); background-color: var(--mud-palette-background); padding: 0 16px;">
                                 <MudText Typo="Typo.h6" Color="Color.Primary" Class="font-weight-bold">@year. @LanguageHelper.Years_One</MudText>
                             </div>
@@ -100,7 +107,8 @@
                                 <SemesterDropZone Semester="@winterSem" Credits="@GetSemesterCredits(winterSem)" SemesterSeason="SemesterSeason.Winter"/>
                                 <SemesterDropZone Semester="@summerSem" Credits="@GetSemesterCredits(summerSem)" SemesterSeason="SemesterSeason.Summer"/>
                             </MudStack>
-                            <MudStack AlignItems="AlignItems.Center" Row StretchItems="StretchItems.Start" Spacing="1" Class="pt-2" Style="border-top: solid 1px var(--mud-palette-background-gray)">
+                            <MudStack AlignItems="AlignItems.Center" Row StretchItems="StretchItems.Start" Spacing="1" Class="pt-2"
+                                      Style="border-top: solid 1px var(--mud-palette-background-gray)">
                                 <MudText Typo="Typo.subtitle2" Color="Color.Default">@LanguageHelper.YearTotal</MudText>
 
                                 @{
@@ -119,6 +127,13 @@
                         </div>
                     }
                 </MudStack>
+                
+                <div class="indicator-anchor bottom">
+                    <div class="scroll-indicator bottom">
+                        <MudText Typo="Typo.caption">SCROLL DOWN</MudText>
+                        <MudIcon Icon="@Icons.Material.Filled.KeyboardDoubleArrowDown"/>
+                    </div>
+                </div>
             </div>
         </ChildContent>
         <ItemRenderer>

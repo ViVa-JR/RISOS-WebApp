@@ -4,6 +4,7 @@
 @implements IDisposable
 
 @inject ThemeStateService ThemeStateService
+@inject IJSRuntime Js
 
 <MudThemeProvider
     @ref="_mudThemeProvider"
@@ -33,6 +34,7 @@
         if (firstRender)
         {
             await _mudThemeProvider.WatchSystemDarkModeAsync(ThemeStateService.SetDarkMode);
+            await Js.InvokeVoidAsync("initDragScroll");
         }
 
         await base.OnAfterRenderAsync(firstRender);
