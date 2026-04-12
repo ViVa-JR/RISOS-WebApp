@@ -11,6 +11,7 @@ user.config
 
 ## Publish output
 publish/
+publish*/
 
 ## Test results
 TestResults/
