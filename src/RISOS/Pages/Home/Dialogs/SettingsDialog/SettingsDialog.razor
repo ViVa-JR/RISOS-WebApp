@@ -141,7 +141,7 @@
                                    Color="Color.Default">
                             @LanguageHelper.ReportBug
                         </MudButton>
-                        <MudButton Href="mailto:xsafar26@vutbr.cz" 
+                        <MudButton Href="@EmailHref" 
                                    StartIcon="@Icons.Material.Filled.Email" 
                                    Variant="Variant.Text" 
                                    Color="Color.Default">
@@ -169,7 +169,7 @@
     private bool LanguageChanged => _model.Language != _originalLanguage;
     private AppLanguage _originalLanguage;
     private DateTime? _dateTime;
-
+    private static string EmailHref => $"mailto:xsafar26@vutbr.cz?subject={Uri.EscapeDataString(LanguageHelper.EmailSubject)}&body={Uri.EscapeDataString(LanguageHelper.EmailBody)}";
     protected override async Task OnInitializedAsync()
     {
         _model.Language = await LanguageService.GetAppLanguageAsync();

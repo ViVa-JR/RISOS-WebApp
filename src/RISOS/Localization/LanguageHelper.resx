@@ -579,6 +579,29 @@
     <data name="Email" xml:space="preserve">
         <value>Contact via email</value>
     </data>
+    <data name="EmailSubject" xml:space="preserve">
+        <value>RISOS - Report bug / Feature request</value>
+    </data>
+    <data name="EmailBody" xml:space="preserve">
+        <value><![CDATA[Please briefly describe the issue:
+
+- What happened:
+- What did you expect:
+- Steps to reproduce:
+
+Optional context:
+
+- Action:
+- Course type:
+- Study level/semester:
+
+Environment:
+
+- Device / OS / Browser:
+- App version:
+
+Additional notes / screenshots:]]></value>
+    </data>
     <data name="ReportBug" xml:space="preserve">
         <value>Report a bug</value>
     </data>

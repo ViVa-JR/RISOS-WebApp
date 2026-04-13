@@ -969,6 +969,18 @@ namespace RISOS.Localization {
             }
         }
         
+        internal static string EmailSubject {
+            get {
+                return ResourceManager.GetString("EmailSubject", resourceCulture);
+            }
+        }
+        
+        internal static string EmailBody {
+            get {
+                return ResourceManager.GetString("EmailBody", resourceCulture);
+            }
+        }
+        
         internal static string ReportBug {
             get {
                 return ResourceManager.GetString("ReportBug", resourceCulture);
