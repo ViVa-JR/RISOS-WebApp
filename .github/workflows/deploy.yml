@@ -24,14 +24,11 @@ jobs:
 
       - name: Sestavení projektu (dotnet publish)
         run: dotnet publish ./src/RISOS/RISOS.csproj -c Release -r linux-x64 --self-contained false -o ./publish-linux
-
-      - name: Kopírování na Server (SCP)
-        uses: appleboy/scp-action@v0.1.7
+      
+      - name: Příprava SSH klíče
+        uses: webfactory/ssh-agent@v0.9.0
         with:
-          host: ${{ secrets.HOST }}
-          username: ${{ secrets.USER }}
-          key: ${{ secrets.SSH_KEY }}
-          port: 22
-          source: "publish-linux/wwwroot/"
-          target: "WWW/risos/"
-          strip_components: 2
+          ssh-private-key: ${{ secrets.SSH_KEY }}
+      
+      - name: Kopírování na server (Přímé SCP)
+        run: scp -o StrictHostKeyChecking=no -r ./publish-linux/wwwroot/* ${{ secrets.USER }}@${{ secrets.HOST }}:~/WWW/risos/
