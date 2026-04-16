@@ -168,8 +168,8 @@
     <data name="Required" xml:space="preserve">
         <value>Required</value>
     </data>
-    <data name="RequiredWarning" xml:space="preserve">
-        <value>Unable to verify required credits, go to settings to adjust</value>
+    <data name="CreditsWarning" xml:space="preserve">
+        <value>Unable to verify required credits, click to adjust</value>
     </data>
     <data name="Duration" xml:space="preserve">
         <value>Study duration</value>

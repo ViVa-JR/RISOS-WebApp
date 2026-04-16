@@ -1,0 +1,45 @@
+@using RISOS.Common.Components
+@using RISOS.Common.Models
+@using RISOS.Extensions
+@using RISOS.Localization
+
+<RDialog TReturn="ReturnValue"
+         Title="@LanguageHelper.SettingsDialog_OverrideCredits"
+         SubmitIcon="@Icons.Material.Filled.Save"
+         SubmitText="@LanguageHelper.Save"
+         OnSubmit="@OnSubmit">
+    <ChildContent>
+        <MudNumericField T="int"
+                         @bind-Value="Credits"
+                         Label="@LanguageHelper.SettingsDialog_RequiredCredits"
+                         Variant="Variant.Outlined"
+                         Min="0"
+                         Adornment="Adornment.End"
+                         AdornmentText="@LanguageHelper.Cr"/>
+    </ChildContent>
+</RDialog>
+
+@code {
+    [Parameter]
+    public required int Credits { get; set; }
+
+    private Task<ReturnValue> OnSubmit()
+    {
+        return Task.FromResult(new ReturnValue(Credits));
+    }
+
+    public static async Task<DialogResult<ReturnValue>> ShowAsync(IDialogService dialogService, int credits)
+    {
+        var dialog = await dialogService.ShowAsync<CreditsDialog>(string.Empty, new DialogParameters<CreditsDialog>
+        {
+            { x => x.Credits, credits }
+        }, new DialogOptions
+        {
+            FullWidth = true,
+            MaxWidth = MaxWidth.Small
+        });
+        return await dialog.GetResultAsync<ReturnValue>();
+    }
+
+    public record ReturnValue(int Credits);
+}

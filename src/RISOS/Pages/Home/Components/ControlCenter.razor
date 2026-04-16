@@ -1,10 +1,13 @@
 @using RISOS.Extensions
 @using RISOS.Localization
 @using RISOS.Models
+@using RISOS.Pages.Home.Dialogs.CreditsDialog
+@using RISOS.Pages.Home.Dialogs.SettingsDialog
 @using RISOS.Pages.Home.Models
 @using RISOS.Services
 
 @inject LocalStorageService LocalStorageService
+@inject IDialogService DialogService
 
 <MudPaper Elevation="0" Class="pa-3 border-2 mud-border-lines-default rounded-lg">
     <MudStack Row AlignItems="AlignItems.Center" Justify="Justify.SpaceBetween">
@@ -48,8 +51,8 @@
                     
                     @if (StudyContext is { CreditsWarn: true, CreditOverride: null })
                     {
-                        <MudTooltip Text="@LanguageHelper.RequiredWarning">
-                            <MudIcon Icon="@Icons.Material.Filled.WarningAmber" Color="Color.Warning" Size="Size.Small"/>
+                        <MudTooltip Text="@LanguageHelper.CreditsWarning">
+                            <MudIconButton Icon="@Icons.Material.Filled.WarningAmber" Color="Color.Warning" Size="Size.Small" OnClick="@OnCreditWarningClick"/>
                         </MudTooltip>
                     }
                 </MudStack>
@@ -135,4 +138,15 @@
         await LocalStorageService.SaveStudyYears(StudyContext.Years);
     }
 
+    private async Task OnCreditWarningClick()
+    {
+        var result = await CreditsDialog.ShowAsync(DialogService, StudyContext.Credits);
+        if (result.IsCancelled || result.IsFailure)
+        {
+            return;
+        }
+
+        StudyContext.CreditOverride = result.Value.Credits;
+        await LocalStorageService.SaveCreditOverride(result.Value.Credits);
+    }
 }
