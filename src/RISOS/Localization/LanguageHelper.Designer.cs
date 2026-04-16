@@ -147,9 +147,9 @@ namespace RISOS.Localization {
             }
         }
         
-        internal static string RequiredWarning {
+        internal static string CreditsWarning {
             get {
-                return ResourceManager.GetString("RequiredWarning", resourceCulture);
+                return ResourceManager.GetString("CreditsWarning", resourceCulture);
             }
         }
         
