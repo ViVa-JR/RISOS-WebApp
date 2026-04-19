@@ -1,6 +1,5 @@
-@using RISOS.Services
-
 @inherits LayoutComponentBase
+@using RISOS.Services
 @implements IDisposable
 
 @inject ThemeStateService ThemeStateService
@@ -40,8 +39,5 @@
         await base.OnAfterRenderAsync(firstRender);
     }
 
-    public void Dispose()
-    {
-        ThemeStateService.OnChange -= StateHasChanged;
-    }
+    public void Dispose() => ThemeStateService.OnChange -= StateHasChanged;
 }

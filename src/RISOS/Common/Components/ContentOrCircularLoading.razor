@@ -10,11 +10,10 @@ else
 }
 
 @code {
-
     [Parameter]
     public bool IsLoading { get; set; }
 
-    [Parameter, EditorRequired]
+    [Parameter]
+    [EditorRequired]
     public required RenderFragment ChildContent { get; set; }
-
 }

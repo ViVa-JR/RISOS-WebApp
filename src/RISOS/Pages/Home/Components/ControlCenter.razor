@@ -3,7 +3,6 @@
 @using RISOS.Models
 @using RISOS.Pages.Home.Models
 @using RISOS.Services
-
 @inject LocalStorageService LocalStorageService
 
 <MudPaper Elevation="0" Class="pa-3 border-2 mud-border-lines-default rounded-lg">
@@ -45,19 +44,23 @@
                             @StudyContext.Credits @LanguageHelper.Cr
                         </MudText>
                     </MudTooltip>
-                    
+
                     @if (StudyContext is { CreditsWarn: true, CreditOverride: null })
                     {
                         <MudTooltip Text="@LanguageHelper.RequiredWarning">
-                            <MudIcon Icon="@Icons.Material.Filled.WarningAmber" Color="Color.Warning" Size="Size.Small"/>
+                            <MudIcon Icon="@Icons.Material.Filled.WarningAmber" Color="Color.Warning"
+                                     Size="Size.Small"/>
                         </MudTooltip>
                     }
                 </MudStack>
             </MudStack>
 
-            <div class="w-100 rounded-pill d-flex" style="height: 6px; background-color: var(--mud-palette-lines-default); overflow: hidden;">
-                <div style="width: @(CompletedProgress)%; background-color: var(--mud-palette-success); transition: width 0.3s ease;"></div>
-                <div style="width: @(RegisteredProgress)%; background-color: var(--mud-palette-info); transition: width 0.3s ease;"></div>
+            <div class="w-100 rounded-pill d-flex"
+                 style="height: 6px; background-color: var(--mud-palette-lines-default); overflow: hidden;">
+                <div
+                    style="width: @(CompletedProgress)%; background-color: var(--mud-palette-success); transition: width 0.3s ease;"></div>
+                <div
+                    style="width: @(RegisteredProgress)%; background-color: var(--mud-palette-info); transition: width 0.3s ease;"></div>
             </div>
 
         </MudStack>
@@ -65,13 +68,16 @@
         <MudStack Row AlignItems="AlignItems.Center" Spacing="3">
 
             <div class="text-center">
-                <MudText Typo="Typo.caption" Color="Color.Secondary" Style="display: block; margin-bottom: -4px;">@LanguageHelper.Duration</MudText>
-                <MudText Typo="Typo.subtitle2" Class="font-weight-bold">@StudyContext.Years @LanguageHelperExtensions.Years(StudyContext.Years)</MudText>
+                <MudText Typo="Typo.caption" Color="Color.Secondary"
+                         Style="display: block; margin-bottom: -4px;">@LanguageHelper.Duration</MudText>
+                <MudText Typo="Typo.subtitle2"
+                         Class="font-weight-bold">@StudyContext.Years @LanguageHelperExtensions.Years(StudyContext.Years)</MudText>
             </div>
 
             <MudTooltip Text="@LanguageHelper.AdjustYears">
                 <MudButtonGroup Variant="Variant.Outlined" Color="Color.Primary" Size="Size.Small">
-                    <MudIconButton Icon="@Icons.Material.Filled.Remove" Color="Color.Error" OnClick="@DecreaseYears" Disabled="@(StudyContext.Years <= 1)"/>
+                    <MudIconButton Icon="@Icons.Material.Filled.Remove" Color="Color.Error" OnClick="@DecreaseYears"
+                                   Disabled="@(StudyContext.Years <= 1)"/>
                     <MudIconButton Icon="@Icons.Material.Filled.Add" Color="Color.Success" OnClick="@IncreaseYears"/>
                 </MudButtonGroup>
             </MudTooltip>
@@ -84,8 +90,9 @@
 @code {
     [CascadingParameter]
     public required StudyContext StudyContext { get; set; }
-    
-    [Parameter, EditorRequired]
+
+    [Parameter]
+    [EditorRequired]
     public required Credits TotalCredits { get; set; }
 
     [Parameter]
@@ -134,5 +141,4 @@
         await YearsChanged.InvokeAsync(++StudyContext.Years);
         await LocalStorageService.SaveStudyYears(StudyContext.Years);
     }
-
 }

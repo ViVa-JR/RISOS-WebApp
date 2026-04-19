@@ -5,7 +5,6 @@
 @using RISOS.Pages.Home.Dialogs.AddCustomSubjectDialog
 @using RISOS.Pages.Home.Models
 @using RISOS.Services
-
 @inject IDialogService DialogService
 @inject ISnackbar Snackbar
 @inject LocalStorageService LocalStorageService
@@ -42,15 +41,18 @@
         </MudStack>
     </MudOverlay>
 
-    <MudDropContainer T="SubjectEntry" @ref="_dropContainer" Items="@Subjects" ItemsSelector="@Selector" ItemDropped="@ItemUpdated"
+    <MudDropContainer T="SubjectEntry" @ref="_dropContainer" Items="@Subjects" ItemsSelector="@Selector"
+                      ItemDropped="@ItemUpdated"
                       Class="d-flex flex-column gap-3 mb-2"
                       Style="height: calc(100vh - 20px)"
                       ApplyDropClassesOnDragStarted
                       CanDropClass="mud-alert-text-success mud-border-success"
                       NoDropClass="mud-alert-text-error mud-border-error">
         <ChildContent>
-            <div class="rounded-lg border-2 border-dashed mud-border-lines-default mud-background-gray w-100 d-flex flex-column">
-                <MudStack Row Spacing="3" StretchItems="StretchItems.Start" Class="px-4 pt-4 pb-2" AlignItems="AlignItems.Center">
+            <div
+                class="rounded-lg border-2 border-dashed mud-border-lines-default mud-background-gray w-100 d-flex flex-column">
+                <MudStack Row Spacing="3" StretchItems="StretchItems.Start" Class="px-4 pt-4 pb-2"
+                          AlignItems="AlignItems.Center">
                     <MudStack Spacing="1">
                         <MudText Typo="Typo.h6">@LanguageHelper.UnassignedSubjects</MudText>
                     </MudStack>
@@ -58,7 +60,8 @@
                         @foreach (var type in Enum.GetValues<SubjectType>())
                         {
                             <MudStack Row Spacing="1" Wrap="Wrap.NoWrap">
-                                <MudIcon Size="Size.Small" Color="@type.ToColor()" Icon="@Icons.Material.Filled.Circle"/>
+                                <MudIcon Size="Size.Small" Color="@type.ToColor()"
+                                         Icon="@Icons.Material.Filled.Circle"/>
                                 <MudText Typo="Typo.caption">@type.ToLabel()</MudText>
                             </MudStack>
                         }
@@ -81,7 +84,8 @@
 
             </div>
 
-            <ControlCenter @bind-RecognizedYear="RecognizedYear" YearsChanged="OnYearsChanged" TotalCredits="TotalCredits"/>
+            <ControlCenter @bind-RecognizedYear="RecognizedYear" YearsChanged="OnYearsChanged"
+                           TotalCredits="TotalCredits"/>
 
             <div id="main-scroll-container" style="overflow: scroll; position: relative;">
 
@@ -99,15 +103,20 @@
 
                         <div class="rounded-lg pa-4 d-flex flex-column mt-4"
                              style="position: relative; border: 2px dotted var(--mud-palette-lines-default); height: 100%; min-width: 336px; flex: 1;">
-                            <div style="position: absolute; top: -16px; left: 15%; transform: translateX(-50%); background-color: var(--mud-palette-background); padding: 0 16px;">
-                                <MudText Typo="Typo.h6" Color="Color.Primary" Class="font-weight-bold">@year. @LanguageHelper.Years_One</MudText>
+                            <div
+                                style="position: absolute; top: -16px; left: 15%; transform: translateX(-50%); background-color: var(--mud-palette-background); padding: 0 16px;">
+                                <MudText Typo="Typo.h6" Color="Color.Primary"
+                                         Class="font-weight-bold">@year. @LanguageHelper.Years_One</MudText>
                             </div>
 
                             <MudStack Class="flex-grow-1">
-                                <SemesterDropZone Semester="@winterSem" Credits="@GetSemesterCredits(winterSem)" SemesterSeason="SemesterSeason.Winter"/>
-                                <SemesterDropZone Semester="@summerSem" Credits="@GetSemesterCredits(summerSem)" SemesterSeason="SemesterSeason.Summer"/>
+                                <SemesterDropZone Semester="@winterSem" Credits="@GetSemesterCredits(winterSem)"
+                                                  SemesterSeason="SemesterSeason.Winter"/>
+                                <SemesterDropZone Semester="@summerSem" Credits="@GetSemesterCredits(summerSem)"
+                                                  SemesterSeason="SemesterSeason.Summer"/>
                             </MudStack>
-                            <MudStack AlignItems="AlignItems.Center" Row StretchItems="StretchItems.Start" Spacing="1" Class="pt-2"
+                            <MudStack AlignItems="AlignItems.Center" Row StretchItems="StretchItems.Start" Spacing="1"
+                                      Class="pt-2"
                                       Style="border-top: solid 1px var(--mud-palette-background-gray)">
                                 <MudText Typo="Typo.subtitle2" Color="Color.Default">@LanguageHelper.YearTotal</MudText>
 
@@ -127,7 +136,7 @@
                         </div>
                     }
                 </MudStack>
-                
+
                 <div class="indicator-anchor bottom">
                     <div class="scroll-indicator bottom">
                         <MudText Typo="Typo.caption">SCROLL DOWN</MudText>
@@ -181,10 +190,7 @@
 
     private Credits TotalCredits => GetTotalCredits();
 
-    private static bool Selector(SubjectEntry item, string dropzone)
-    {
-        return item.Semester == dropzone;
-    }
+    private static bool Selector(SubjectEntry item, string dropzone) => item.Semester == dropzone;
 
     private async Task EntryChanged(SubjectEntry entry)
     {
@@ -240,8 +246,8 @@
             .ToArray();
 
         return new Credits(
-            Registered: semesterSubjects.Sum(s => s.Subject.Credits),
-            Completed: semesterSubjects.Where(s => s.Completed == true).Sum(s => s.Subject.Credits)
+            semesterSubjects.Sum(s => s.Subject.Credits),
+            semesterSubjects.Where(s => s.Completed == true).Sum(s => s.Subject.Credits)
         );
     }
 
@@ -258,8 +264,8 @@
         var allSubjects = Subjects.Where(x => x.Semester != SubjectEntry.Unassigned).ToArray();
 
         return new Credits(
-            Registered: allSubjects.Where(x => x.Completed != false).Sum(s => s.Subject.Credits),
-            Completed: allSubjects.Where(s => s.Completed == true).Sum(s => s.Subject.Credits)
+            allSubjects.Where(x => x.Completed != false).Sum(s => s.Subject.Credits),
+            allSubjects.Where(s => s.Completed == true).Sum(s => s.Subject.Credits)
         );
     }
 

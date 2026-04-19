@@ -3,7 +3,6 @@
 @using RISOS.Localization
 @using RISOS.Models
 @using RISOS.Pages.Home.Models
-
 @inject IJSRuntime Js
 
 <script>
@@ -100,14 +99,17 @@
                  CanDrop="CanDrop"
                  AllowReorder>
         <ChildContent>
-            <MudStack Row Spacing="1" AlignItems="AlignItems.Center" Class="pa-2 border-b mud-border-lines-default mud-background-gray rounded-t-lg">
+            <MudStack Row Spacing="1" AlignItems="AlignItems.Center"
+                      Class="pa-2 border-b mud-border-lines-default mud-background-gray rounded-t-lg">
                 <MudText Typo="Typo.subtitle1" Class="font-weight-bold">@Semester. @LanguageHelper.Semester •</MudText>
-                <MudChip T="SemesterSeason" Value="@SemesterSeason" Text="@SemesterSeason.ToLabel()" Size="Size.Small" Variant="Variant.Text"
+                <MudChip T="SemesterSeason" Value="@SemesterSeason" Text="@SemesterSeason.ToLabel()" Size="Size.Small"
+                         Variant="Variant.Text"
                          Color="@SemesterSeason.ToColor()"/>
             </MudStack>
         </ChildContent>
     </MudDropZone>
-    <MudStack AlignItems="AlignItems.Center" Row Justify="Justify.FlexEnd" Spacing="1" Class="border-2 border-t-0 border-dashed mud-border-lines-default rounded-b-lg pa-2">
+    <MudStack AlignItems="AlignItems.Center" Row Justify="Justify.FlexEnd" Spacing="1"
+              Class="border-2 border-t-0 border-dashed mud-border-lines-default rounded-b-lg pa-2">
         @if (Credits.Completed > 0)
         {
             <MudText Typo="Typo.body1" Color="Color.Success">@Credits.Completed</MudText>
@@ -120,7 +122,8 @@
 </MudStack>
 
 @code {
-    [Parameter, EditorRequired]
+    [Parameter]
+    [EditorRequired]
     public required int Semester { get; set; }
 
     [Parameter]
@@ -132,9 +135,8 @@
     private bool IsOddSemester => Semester % 2 != 0;
     private string CssVariableName => IsOddSemester ? "--dropzone-height-odd" : "--dropzone-height-even";
 
-    public bool CanDrop(SubjectEntry entry)
-        => Semester < 1 || ((entry.Subject.SemesterSeason == SemesterSeason || entry.Subject.SemesterSeason == SemesterSeason.Any)
-                            && entry.Subject.MinSemester <= Semester);
+    public bool CanDrop(SubjectEntry entry) => Semester < 1 || ((entry.Subject.SemesterSeason == SemesterSeason || entry.Subject.SemesterSeason == SemesterSeason.Any)
+                                                                && entry.Subject.MinSemester <= Semester);
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {

@@ -1,8 +1,8 @@
+@using System.Globalization
 @using MudExtensions
 @using RISOS.Localization
 @using RISOS.Pages.Home.Models
 @using RISOS.Services
-
 @inject UniversityService UniversityService
 @inject LocalStorageService LocalStorageService
 
@@ -23,7 +23,7 @@
         max-height: calc(var(--side-bar-content-height) - @(FixedPixels)px) !important;
         overflow-y: scroll;
     }
-    
+
     .mud-input-clear-button {
         color: var(--mud-palette-text-primary)
     }
@@ -35,7 +35,8 @@
 </style>
 
 <MudStack Spacing="0" Style="box-shadow: var(--mud-elevation-1);">
-    <div class="pa-3" style="border-bottom: 1px solid var(--mud-palette-lines-default); background-color: var(--mud-palette-surface); border-radius: 4px 4px 0 0;">
+    <div class="pa-3"
+         style="border-bottom: 1px solid var(--mud-palette-lines-default); background-color: var(--mud-palette-surface); border-radius: 4px 4px 0 0;">
         <MudTextField T="string"
                       Value="_searchString"
                       ValueChanged="OnSearchStringChanged"
@@ -50,7 +51,8 @@
     </div>
     @if (IsLoading)
     {
-        <MudProgressLinear Color="Color.Secondary" Indeterminate="true" Size="Size.Small" Style="background: var(--mud-palette-surface)"/>
+        <MudProgressLinear Color="Color.Secondary" Indeterminate="true" Size="Size.Small"
+                           Style="background: var(--mud-palette-surface)"/>
     }
     <MudListExtended T="StudyProgram"
                      Clickable="true"
@@ -66,7 +68,9 @@
                                       Style="background-color: var(--mud-palette-background-gray); border-bottom: 1px solid var(--mud-palette-lines-default); z-index: 2; cursor: pointer;"
                                       @onclick="() => ToggleFacultyExpansion(faculty)">
                 <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="1" Style="width: 100%; padding: 8px">
-                    <MudIcon Icon="@(faculty.IsExpanded ? Icons.Material.Filled.ExpandLess : Icons.Material.Filled.ExpandMore)" Size="Size.Small" Color="Color.Primary"/>
+                    <MudIcon
+                        Icon="@(faculty.IsExpanded ? Icons.Material.Filled.ExpandLess : Icons.Material.Filled.ExpandMore)"
+                        Size="Size.Small" Color="Color.Primary"/>
                     <MudTooltip Text="@faculty.Title" RootStyle="flex-grow: 1; display: flex;">
                         <MudText Typo="Typo.subtitle2" Color="Color.Primary">
                             <b>@faculty.Abbreviation</b>
@@ -104,6 +108,7 @@
     public bool Loading { get; set; }
 
     private const int FixedPixels = 310;
+    const CompareOptions CompareOptions = System.Globalization.CompareOptions.IgnoreCase | System.Globalization.CompareOptions.IgnoreNonSpace;
 
     private IEnumerable<Faculty> Faculties => _filteredFaculties ?? _faculties;
     private bool IsLoading => _isSearching || _initialLoading || Loading;
@@ -128,8 +133,8 @@
         {
             var program = _faculties
                 .SelectMany(f => f.Programs)
-                .FirstOrDefault(p => 
-                    p.Abbreviation == programAbbreviation && 
+                .FirstOrDefault(p =>
+                    p.Abbreviation == programAbbreviation &&
                     p.Specialization == specialization);
             if (program != null)
             {
@@ -148,10 +153,7 @@
         await SelectedProgramChanged.InvokeAsync(SelectedProgram);
     }
 
-    private void ToggleFacultyExpansion(Faculty faculty)
-    {
-        faculty.IsExpanded = !faculty.IsExpanded;
-    }
+    private void ToggleFacultyExpansion(Faculty faculty) => faculty.IsExpanded = !faculty.IsExpanded;
 
     private async Task OnSearchStringChanged(string newValue)
     {
@@ -167,21 +169,32 @@
                 return _faculties.ToList();
             }
 
+            var compareInfo = CultureInfo.InvariantCulture.CompareInfo;
+
             return _faculties
-                .Select(f => f with
+                .Select(f =>
                 {
-                    Programs = f.Programs.Where(p =>
-                        p.Title.Contains(_searchString, StringComparison.OrdinalIgnoreCase) ||
-                        p.Abbreviation.Contains(_searchString, StringComparison.OrdinalIgnoreCase) ||
-                        f.Title.Contains(_searchString, StringComparison.OrdinalIgnoreCase) ||
-                        f.Abbreviation.Contains(_searchString, StringComparison.OrdinalIgnoreCase) ||
-                        (p.Specialization != null && p.Specialization.Contains(_searchString, StringComparison.OrdinalIgnoreCase))
-                    ).ToList(),
-                    IsExpanded = true
+                    var facultyMatches =
+                        compareInfo.IndexOf(f.Title, _searchString, CompareOptions) >= 0 ||
+                        compareInfo.IndexOf(f.Abbreviation, _searchString, CompareOptions) >= 0;
+
+                    var matchingPrograms = facultyMatches
+                        ? f.Programs.ToList()
+                        : f.Programs.Where(p =>
+                            (!string.IsNullOrWhiteSpace(p.Title) && compareInfo.IndexOf(p.Title, _searchString, CompareOptions) >= 0) ||
+                            (!string.IsNullOrWhiteSpace(p.Abbreviation) && compareInfo.IndexOf(p.Abbreviation, _searchString, CompareOptions) >= 0) ||
+                            (!string.IsNullOrWhiteSpace(p.Specialization) && compareInfo.IndexOf(p.Specialization, _searchString, CompareOptions) >= 0)
+                        ).ToList();
+
+                    return f with
+                    {
+                        Programs = matchingPrograms,
+                        IsExpanded = true
+                    };
                 })
                 .Where(f => f.Programs.Any())
                 .ToList();
-            });
+        });
 
         _isSearching = false;
     }
