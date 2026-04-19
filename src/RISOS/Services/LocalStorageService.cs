@@ -1,9 +1,9 @@
+using System.Text.Json;
 using Microsoft.JSInterop;
 using RISOS.Enums;
 using RISOS.Extensions;
 using RISOS.Mappers;
 using RISOS.Pages.Home.Models;
-using System.Text.Json;
 
 namespace RISOS.Services;
 
@@ -11,7 +11,7 @@ public class LocalStorageService(IJSRuntime js)
 {
     private const string UserTheme = "user-theme";
     private const string UserLanguage = "user-language";
-    
+
     private const string ProgramAbbreviation = "subject-id";
     private const string ProgramSpecialization = "subject-specialization";
     private const string Subjects = "user-subjects";
@@ -21,22 +21,19 @@ public class LocalStorageService(IJSRuntime js)
     private const string RecognizedYear = "recognized-years";
     private const string ThemeTypeKey = "app_theme_type";
 
-    public async Task SaveTheme(bool isDark)
-    {
-        await js.InvokeVoidAsync("localStorage.setItem", UserTheme, isDark ? "dark" : "light");
-    }
-    
-    public async Task SaveThemeType(ThemeType theme)
-    {
-        await js.InvokeVoidAsync("localStorage.setItem", ThemeTypeKey, theme.ToString());
-    }
+    public async Task SaveTheme(bool isDark) => await js.InvokeVoidAsync("localStorage.setItem", UserTheme, isDark ? "dark" : "light");
+
+    public async Task SaveThemeType(ThemeType theme) => await js.InvokeVoidAsync("localStorage.setItem", ThemeTypeKey, theme.ToString());
 
     public async Task<ThemeType> LoadThemeType()
     {
         try
         {
             var value = await js.InvokeAsync<string>("localStorage.getItem", ThemeTypeKey);
-            if (string.IsNullOrEmpty(value)) return ThemeType.Default;
+            if (string.IsNullOrEmpty(value))
+            {
+                return ThemeType.Default;
+            }
 
             return Enum.TryParse<ThemeType>(value, out var result) ? result : ThemeType.Default;
         }
@@ -128,7 +125,7 @@ public class LocalStorageService(IJSRuntime js)
         try
         {
             var value = await js.InvokeAsync<string>("localStorage.getItem", CreditOverride);
-            if (int.TryParse(value, out int result))
+            if (int.TryParse(value, out var result))
             {
                 return result;
             }
@@ -159,7 +156,7 @@ public class LocalStorageService(IJSRuntime js)
         try
         {
             var value = await js.InvokeAsync<string>("localStorage.getItem", StudyYears);
-            if (int.TryParse(value, out int result))
+            if (int.TryParse(value, out var result))
             {
                 return result;
             }
@@ -173,10 +170,7 @@ public class LocalStorageService(IJSRuntime js)
         }
     }
 
-    public async Task SaveRecognizedYear(bool recognizedYear)
-    {
-        await js.InvokeVoidAsync("localStorage.setItem", RecognizedYear, recognizedYear.ToString());
-    }
+    public async Task SaveRecognizedYear(bool recognizedYear) => await js.InvokeVoidAsync("localStorage.setItem", RecognizedYear, recognizedYear.ToString());
 
     public async Task<bool> LoadRecognizedYear()
     {
@@ -345,10 +339,7 @@ public class LocalStorageService(IJSRuntime js)
         }
     }
 
-    public async Task SaveLanguage(string language)
-    {
-        await js.InvokeVoidAsync("localStorage.setItem", UserLanguage, language);
-    }
+    public async Task SaveLanguage(string language) => await js.InvokeVoidAsync("localStorage.setItem", UserLanguage, language);
 
     public async Task<string> LoadLanguage()
     {

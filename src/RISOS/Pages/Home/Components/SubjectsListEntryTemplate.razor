@@ -1,6 +1,6 @@
-@typeparam T
 @using RISOS.Localization
 @using RISOS.Pages.Home.Models
+@typeparam T
 
 <style>
     .mud-icon-button:focus-within:not(:hover) {
@@ -8,43 +8,51 @@
     }
 </style>
 
-<MudListItem @key="@Row.Subject!.Subject.Id" T="SubjectEntry" Value="@Row.Subject" OnClick="@(async () => await SelectedChanged(Row.Subject!))" Style="background-color: var(--mud-palette-surface) !important; padding: 0 !important; border-bottom: 1px solid var(--mud-palette-lines-default);">
+<MudListItem @key="@Row.Subject!.Subject.Id" T="SubjectEntry" Value="@Row.Subject"
+             OnClick="@(async () => await SelectedChanged(Row.Subject!))"
+             Style="background-color: var(--mud-palette-surface) !important; padding: 0 !important; border-bottom: 1px solid var(--mud-palette-lines-default);">
     <div class="d-flex align-center gap-3 px-2 w-100">
         <div class="d-flex align-center gap-2 w-100" style="min-width: 0;" title="@Row.Subject!.Subject.Name">
             @if (!ReadOnly)
             {
-                <MudCheckBox T="bool" Value="@Row.Subject.Selected" ValueChanged="@(async () => await SelectedChanged(Row.Subject))" Color="Color.Primary" Size="Size.Small" Ripple="false"/>
+                <MudCheckBox T="bool" Value="@Row.Subject.Selected"
+                             ValueChanged="@(async () => await SelectedChanged(Row.Subject))" Color="Color.Primary"
+                             Size="Size.Small" Ripple="false"/>
             }
             <MudText Typo="Typo.body2" Color="Color.Primary" Class="flex-1">
                 <b>@Row.Subject.Subject.ShortName</b>
             </MudText>
 
-            <MudChip T="string" Size="Size.Small" Color="Color.Primary" Variant="Variant.Outlined" Class="ma-0 flex-shrink-0">
+            <MudChip T="string" Size="Size.Small" Color="Color.Primary" Variant="Variant.Outlined"
+                     Class="ma-0 flex-shrink-0">
                 @Row.Subject.Subject.Credits cr
             </MudChip>
         </div>
         <MudLink Href="@Row.Subject.Subject.Url" Target="_blank">
-            <MudIconButton Size="Size.Small" Icon="@Icons.Material.Outlined.Info" Color="Color.Info" Class="flex-shrink-0" title="@LanguageHelper.ShowCourseInfo"/>
+            <MudIconButton Size="Size.Small" Icon="@Icons.Material.Outlined.Info" Color="Color.Info"
+                           Class="flex-shrink-0" title="@LanguageHelper.ShowCourseInfo"/>
         </MudLink>
     </div>
 </MudListItem>
 
 @code {
-    [Parameter, EditorRequired]
+    [Parameter]
+    [EditorRequired]
     public required SubjectsList<T>.VirtualRow Row { get; set; }
-    
+
     [Parameter]
     public bool ReadOnly { get; set; }
 
     [Parameter]
     public EventCallback<SubjectEntry> SubjectChanged { get; set; }
-    
+
     private async Task SelectedChanged(SubjectEntry subject)
     {
         if (ReadOnly)
         {
             return;
         }
+
         subject.Selected = !subject.Selected;
         await SubjectChanged.InvokeAsync(subject);
         await InvokeAsync(StateHasChanged);

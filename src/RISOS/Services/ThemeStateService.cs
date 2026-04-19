@@ -6,25 +6,27 @@ namespace RISOS.Services;
 public class ThemeStateService(LocalStorageService localStorageService)
 {
     public bool IsDarkMode { get; private set; } = true;
-    
-    public ThemeType? CurrentThemeType { get; private set; } = null;
-    public bool IsInitialized { get; private set; } = false;
-    public event Action? OnChange;
-    
+
+    public ThemeType? CurrentThemeType { get; private set; }
+    public bool IsInitialized { get; private set; }
+
     public MudTheme Theme => CurrentThemeType switch
     {
         ThemeType.Deuteranopia or ThemeType.Protanopia => GetDeuteranopiaTheme(),
         ThemeType.Tritanopia => GetTritanopiaTheme(),
         ThemeType.HighContrast => GetHighContrastTheme(),
         ThemeType.Default => GetDefaultTheme(),
-        _ => GetLoadingTheme() 
+        _ => GetLoadingTheme()
     };
 
-    private static MudTheme GetLoadingTheme() => new() { 
+    public event Action? OnChange;
+
+    private static MudTheme GetLoadingTheme() => new()
+    {
         PaletteLight = new PaletteLight { Primary = "#00000000" },
-        PaletteDark = new PaletteDark { Primary = "#00000000" } 
+        PaletteDark = new PaletteDark { Primary = "#00000000" }
     };
-    
+
     public async Task InitializeAsync()
     {
         IsDarkMode = await localStorageService.LoadTheme();
@@ -32,27 +34,27 @@ public class ThemeStateService(LocalStorageService localStorageService)
         IsInitialized = true;
         OnChange?.Invoke();
     }
-    
+
     public async Task SetDarkMode(bool isDark)
     {
         IsDarkMode = isDark;
         await localStorageService.SaveTheme(isDark);
         OnChange?.Invoke();
     }
-    
+
     public async Task SetThemeType(ThemeType type)
     {
         CurrentThemeType = type;
         await localStorageService.SaveThemeType(type);
         OnChange?.Invoke();
     }
-    
+
     private static MudTheme GetDefaultTheme() => new()
     {
         PaletteLight = new PaletteLight
         {
             Primary = "#134E4A",
-            PrimaryContrastText = "#FFFFFF", 
+            PrimaryContrastText = "#FFFFFF",
             Secondary = "#10B981",
             SecondaryContrastText = "#FFFFFF",
             Tertiary = "#f43f5e",
@@ -66,7 +68,7 @@ public class ThemeStateService(LocalStorageService localStorageService)
             DrawerIcon = "#FFFFFF",
             TextPrimary = "#1e293b",
             TextSecondary = "#64748b",
-            ActionDefault = "#1e293b", 
+            ActionDefault = "#1e293b",
             Success = "#16A34A",
             Warning = "#ff8d37",
             Error = "#DC2626",
@@ -83,10 +85,10 @@ public class ThemeStateService(LocalStorageService localStorageService)
             TextPrimary = "#FFFFFFEF",
             ActionDefault = "#FFFFFFEF",
             Secondary = "#19bbd5",
-            Tertiary = "#FF204E",
+            Tertiary = "#FF204E"
         }
     };
-    
+
     private static MudTheme GetDeuteranopiaTheme() => new()
     {
         PaletteLight = new PaletteLight
@@ -104,7 +106,7 @@ public class ThemeStateService(LocalStorageService localStorageService)
             DrawerText = "#0072B2",
             DrawerIcon = "#0072B2",
             Success = "#009E73",
-            ActionDefault = "#1A1A1A", 
+            ActionDefault = "#1A1A1A",
             Divider = "#E2E8F0",
             Error = "#D55E00"
         },
@@ -121,28 +123,30 @@ public class ThemeStateService(LocalStorageService localStorageService)
             ActionDefault = "#F8FAFC"
         }
     };
-    
+
     private static MudTheme GetTritanopiaTheme() => new()
     {
-        PaletteLight = new PaletteLight {
+        PaletteLight = new PaletteLight
+        {
             Primary = "#004852",
             PrimaryContrastText = "#FFFFFF",
             Secondary = "#F4002D",
             SecondaryContrastText = "#FFFFFF",
             Background = "#F8FAFC",
             Surface = "#FFFFFF",
-            TextPrimary = "#1A1A1A", 
+            TextPrimary = "#1A1A1A",
             AppbarBackground = "#004852",
             DrawerBackground = "#FFFFFF",
             DrawerText = "#004852",
             DrawerIcon = "#004852",
-            ActionDefault = "#1A1A1A", 
+            ActionDefault = "#1A1A1A",
             Success = "#00F6FF",
             Error = "#FF3000"
         },
-        PaletteDark = new PaletteDark {
+        PaletteDark = new PaletteDark
+        {
             Primary = "#00CED1",
-            PrimaryContrastText = "#000000", 
+            PrimaryContrastText = "#000000",
             Secondary = "#FF4500",
             SecondaryContrastText = "#FFFFFF",
             Background = "#0A191B",
@@ -151,40 +155,42 @@ public class ThemeStateService(LocalStorageService localStorageService)
             ActionDefault = "#F0F9FA"
         }
     };
-    
+
     private static MudTheme GetHighContrastTheme() => new()
     {
-        PaletteLight = new PaletteLight {
-            Primary = "#000000",            
-            PrimaryContrastText = "#FFFFFF", 
-            Secondary = "#1A1A1A", 
+        PaletteLight = new PaletteLight
+        {
+            Primary = "#000000",
+            PrimaryContrastText = "#FFFFFF",
+            Secondary = "#1A1A1A",
             SecondaryContrastText = "#FFFFFF",
-            Success = "#006400",             
-            Error = "#B22222",               
+            Success = "#006400",
+            Error = "#B22222",
             Info = "#0000FF",
             Warning = "#FF8C00",
             AppbarBackground = "#000000",
-            AppbarText = "#FFFFFF",          
-            Background = "#FFFFFF",          
+            AppbarText = "#FFFFFF",
+            Background = "#FFFFFF",
             Surface = "#F0F0F0",
-            TextPrimary = "#000000",       
+            TextPrimary = "#000000",
             TextSecondary = "#212121",
             DrawerBackground = "#FFFFFF",
             DrawerText = "#000000",
             DrawerIcon = "#000000",
             ActionDefault = "#000000"
         },
-        PaletteDark = new PaletteDark {
-            Primary = "#FFFF00",              
-            PrimaryContrastText = "#000000", 
-            Secondary = "#00FFFF",          
+        PaletteDark = new PaletteDark
+        {
+            Primary = "#FFFF00",
+            PrimaryContrastText = "#000000",
+            Secondary = "#00FFFF",
             SecondaryContrastText = "#000000",
-            Success = "#00FF00",             
-            Error = "#FF0000",               
-            Background = "#000000",           
+            Success = "#00FF00",
+            Error = "#FF0000",
+            Background = "#000000",
             Surface = "#121212",
-            TextPrimary = "#FFFFFF",          
-            TextSecondary = "#FFFF00",        
+            TextPrimary = "#FFFFFF",
+            TextSecondary = "#FFFF00",
             AppbarBackground = "#000000",
             AppbarText = "#FFFF00",
             DrawerBackground = "#000000",
@@ -192,5 +198,4 @@ public class ThemeStateService(LocalStorageService localStorageService)
             ActionDefault = "#FFFF00"
         }
     };
-
 }

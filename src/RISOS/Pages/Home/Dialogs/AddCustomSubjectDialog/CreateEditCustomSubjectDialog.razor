@@ -3,9 +3,7 @@
 @using RISOS.Enums
 @using RISOS.Extensions
 @using RISOS.Localization
-@using RISOS.Models
 @using RISOS.Pages.Home.Models
-
 <RDialog TReturn="SubjectEntry"
          Title="@LanguageHelper.AddCustomSubject"
          SubmitText="@(Entry is null ? LanguageHelper.Add : LanguageHelper.Save)"
@@ -18,11 +16,14 @@
             </MudText>
         </MudItem>
         <MudItem xs="12" md="8">
-            <MudTextField @bind-Value="_model.Name" Label="@LanguageHelper.Name" Required="true" RequiredError="@($"{LanguageHelper.Name} {LanguageHelper.IsRequired_y}")" Variant="Variant.Outlined"
+            <MudTextField @bind-Value="_model.Name" Label="@LanguageHelper.Name" Required="true"
+                          RequiredError="@($"{LanguageHelper.Name} {LanguageHelper.IsRequired_y}")"
+                          Variant="Variant.Outlined"
                           Placeholder="@LanguageHelper.IMA"/>
         </MudItem>
         <MudItem xs="12" md="4">
-            <MudTextField @bind-Value="_model.ShortName" Label="@LanguageHelper.Abbreviation" Required="true" RequiredError="@($"{LanguageHelper.Abbreviation} {LanguageHelper.IsRequired_a}")"
+            <MudTextField @bind-Value="_model.ShortName" Label="@LanguageHelper.Abbreviation" Required="true"
+                          RequiredError="@($"{LanguageHelper.Abbreviation} {LanguageHelper.IsRequired_a}")"
                           MaxLength="10" Variant="Variant.Outlined"
                           Placeholder="@LanguageHelper.IMAAbbreviation" Class="hlinena-rapuje"/>
         </MudItem>
@@ -33,18 +34,22 @@
             </MudText>
         </MudItem>
         <MudItem xs="12" sm="6">
-            <MudNumericField @bind-Value="_model.Credits" Label="@LanguageHelper.Credits_y" Min="0" Required="true" Variant="Variant.Outlined" Adornment="Adornment.End" AdornmentText="cr"/>
+            <MudNumericField @bind-Value="_model.Credits" Label="@LanguageHelper.Credits_y" Min="0" Required="true"
+                             Variant="Variant.Outlined" Adornment="Adornment.End" AdornmentText="cr"/>
         </MudItem>
         <MudItem xs="12" sm="6">
-            <MudNumericField @bind-Value="_model.MinSemester" Label="@LanguageHelper.MinimumSemester" Min="1" Required="true" Variant="Variant.Outlined"
+            <MudNumericField @bind-Value="_model.MinSemester" Label="@LanguageHelper.MinimumSemester" Min="1"
+                             Required="true" Variant="Variant.Outlined"
                              HelperText="@LanguageHelper.MinSemesterHelperText"/>
         </MudItem>
 
         <MudItem xs="12">
-            <MudText Typo="Typo.subtitle2" Color="Color.Primary" Class="mt-2 font-weight-bold mb-n2">@LanguageHelper.Classification</MudText>
+            <MudText Typo="Typo.subtitle2" Color="Color.Primary"
+                     Class="mt-2 font-weight-bold mb-n2">@LanguageHelper.Classification</MudText>
         </MudItem>
         <MudItem xs="12" sm="6">
-            <MudSelect T="SubjectType" Label="@LanguageHelper.SubjectType" @bind-Value="@_model.Type" @bind-Value:after="OnTypeChanged" Required="true" Variant="Variant.Outlined"
+            <MudSelect T="SubjectType" Label="@LanguageHelper.SubjectType" @bind-Value="@_model.Type"
+                       @bind-Value:after="OnTypeChanged" Required="true" Variant="Variant.Outlined"
                        AnchorOrigin="Origin.BottomCenter">
                 @foreach (var type in Enum.GetValues<SubjectType>())
                 {
@@ -63,7 +68,8 @@
                           Placeholder="@(_model.Type == SubjectType.CompulsoryElective ? "e.g. PV, A, B" : LanguageHelper.NotApplicable)"/>
         </MudItem>
         <MudItem xs="12" sm="8">
-            <MudSelect T="CompletionType" Label="@LanguageHelper.CompletionType" @bind-Value="_model.CompletionType" Required="true" Variant="Variant.Outlined" AnchorOrigin="Origin.BottomCenter">
+            <MudSelect T="CompletionType" Label="@LanguageHelper.CompletionType" @bind-Value="_model.CompletionType"
+                       Required="true" Variant="Variant.Outlined" AnchorOrigin="Origin.BottomCenter">
                 @foreach (var comp in Enum.GetValues<CompletionType>())
                 {
                     <MudSelectItem Value="@comp">@comp.GetDescription()</MudSelectItem>
@@ -71,7 +77,8 @@
             </MudSelect>
         </MudItem>
         <MudItem xs="12" sm="4">
-            <MudSelect T="SemesterSeason" Label="@LanguageHelper.SemesterSeason" @bind-Value="_model.SemesterSeason" Required="true" Variant="Variant.Outlined" AnchorOrigin="Origin.BottomCenter">
+            <MudSelect T="SemesterSeason" Label="@LanguageHelper.SemesterSeason" @bind-Value="_model.SemesterSeason"
+                       Required="true" Variant="Variant.Outlined" AnchorOrigin="Origin.BottomCenter">
                 @foreach (var season in Enum.GetValues<SemesterSeason>())
                 {
                     <MudSelectItem Value="@season">@season.ToLabel()</MudSelectItem>
@@ -105,10 +112,7 @@
         await _groupIdField.ResetValidationAsync();
     }
 
-    private Task<SubjectEntry> OnSubmit()
-    {
-        return Task.FromResult(_model.ToSubjectEntry(true));
-    }
+    private Task<SubjectEntry> OnSubmit() => Task.FromResult(_model.ToSubjectEntry(true));
 
     public static async Task<DialogResult<SubjectEntry>> ShowAsync(IDialogService dialogService, SubjectEntry? entry = null)
     {

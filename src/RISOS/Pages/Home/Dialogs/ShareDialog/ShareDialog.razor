@@ -61,7 +61,7 @@
             Snackbar.Add(LanguageHelper.ShareFailure, Severity.Error);
         }
     }
-    
+
     public static async Task<DialogResult> ShowAsync(IDialogService dialogService)
     {
         var dialog = await dialogService.ShowAsync<ShareDialog>(string.Empty, new DialogOptions

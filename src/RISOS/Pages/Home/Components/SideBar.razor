@@ -1,5 +1,4 @@
 @using RISOS.Services
-
 @inject ThemeStateService ThemeStateService
 @inject IJSRuntime Js
 
@@ -69,7 +68,8 @@
     }
 </style>
 
-<MudDrawer @bind-Open="_drawerOpen" Elevation="1" Breakpoint="Breakpoint.Sm" Variant="@DrawerVariant.Mini" Class="@($"mt-n5 {Class}")" Width="260px">
+<MudDrawer @bind-Open="_drawerOpen" Elevation="1" Breakpoint="Breakpoint.Sm" Variant="@DrawerVariant.Mini"
+           Class="@($"mt-n5 {Class}")" Width="260px">
     <MudStack Row="@_drawerOpen"
               AlignItems="AlignItems.Center"
               Justify="@(_drawerOpen ? Justify.SpaceBetween : Justify.FlexStart)"
@@ -97,7 +97,8 @@
 
     @if (_drawerOpen && OpenedDrawerContent is not null)
     {
-        <div id="side-bar-content" class="pa-2 d-flex flex-column" style="overflow-y: auto; overflow-x: hidden; max-height: calc(100vh - 56px)">
+        <div id="side-bar-content" class="pa-2 d-flex flex-column"
+             style="overflow-y: auto; overflow-x: hidden; max-height: calc(100vh - 56px)">
             @OpenedDrawerContent
         </div>
     }
@@ -109,7 +110,6 @@
 </MudDrawer>
 
 @code {
-
     [Parameter]
     public RenderFragment? OpenedDrawerContent { get; set; }
 
@@ -129,10 +129,7 @@
         await base.OnAfterRenderAsync(firstRender);
     }
 
-    protected override async Task OnInitializedAsync()
-    {
-        await base.OnInitializedAsync();
-    }
+    protected override async Task OnInitializedAsync() => await base.OnInitializedAsync();
 
     private bool _drawerOpen = true;
 

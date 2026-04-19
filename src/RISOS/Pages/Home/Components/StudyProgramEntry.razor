@@ -1,7 +1,6 @@
 @using MudExtensions
 @using RISOS.Localization
 @using RISOS.Pages.Home.Models
-
 <style>
     .study-program-selector-list .mud-list-item-extended:hover {
         opacity: 0.9;
@@ -22,7 +21,7 @@
     .label {
         color: var(--mud-palette-text-primary);
     }
-    
+
     .study-program-item {
         background-color: var(--mud-palette-surface) !important;
         padding-right: 0 !important;
@@ -55,12 +54,15 @@
                 </MudText>
             }
             <MudLink Href="@Program.Url" Target="_blank">
-                <MudIconButton Size="Size.Small" Icon="@Icons.Material.Outlined.Info" Color="Color.Info" Class="flex-shrink-0" title="@LanguageHelper.ShowProgramInfo"/>
+                <MudIconButton Size="Size.Small" Icon="@Icons.Material.Outlined.Info" Color="Color.Info"
+                               Class="flex-shrink-0" title="@LanguageHelper.ShowProgramInfo"/>
             </MudLink>
         </MudStack>
     </MudTooltip>
 </MudListItemExtended>
 
 @code {
-    [Parameter, EditorRequired] public required StudyProgram Program { get; set; }
+    [Parameter]
+    [EditorRequired]
+    public required StudyProgram Program { get; set; }
 }

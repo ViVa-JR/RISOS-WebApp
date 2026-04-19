@@ -1,16 +1,12 @@
 using RISOS.Common.Models;
 using RISOS.Dto;
 using RISOS.Enums;
-using RISOS.Models;
 
 namespace RISOS.Mappers;
 
 public static class SubjectMapper
 {
-    public static List<Subject> ToSubjects(List<SubjectDto>? dtos)
-    {
-        return dtos?.Select(ToSubject).ToList() ?? [];
-    }
+    public static List<Subject> ToSubjects(List<SubjectDto>? dtos) => dtos?.Select(ToSubject).ToList() ?? [];
 
     private static Subject ToSubject(SubjectDto dto)
     {
@@ -20,37 +16,34 @@ public static class SubjectMapper
         var semesterSeason = MapSemesterSeason(dto.Semesters);
         var completionType = MapCompletionType(dto.CompletionType);
 
-        int minSemester = 0;
+        var minSemester = 0;
         if (year > 0)
         {
             minSemester = (year - 1) * 2 + (semesterSeason == SemesterSeason.Winter ? 1 : 2);
         }
 
         var id = dto.Url.Split("/").LastOrDefault() ?? "" + dto.Name + dto.Code;
-        
+
         return new Subject(
-            id: id,
-            name: dto.Name,
-            shortName: dto.Code,
-            credits: credits,
-            minSemester: minSemester,
-            type: subjectType,
-            semesterSeason: semesterSeason,
-            completionType: completionType,
+            id,
+            dto.Name,
+            dto.Code,
+            credits,
+            minSemester,
+            subjectType,
+            semesterSeason,
+            completionType,
             url: dto.Url,
             groupId: dto.GroupId
         );
     }
 
-    private static SubjectType MapSubjectType(string obligation)
+    private static SubjectType MapSubjectType(string obligation) => obligation.ToLowerInvariant() switch
     {
-        return obligation.ToLowerInvariant() switch
-        {
-            "p" or "povinný" or "compulsory" => SubjectType.Compulsory,
-            "pv" or "povinně volitelný" or "compulsory-optional" => SubjectType.CompulsoryElective,
-            _ => SubjectType.Elective
-        };
-    }
+        "p" or "povinný" or "compulsory" => SubjectType.Compulsory,
+        "pv" or "povinně volitelný" or "compulsory-optional" => SubjectType.CompulsoryElective,
+        _ => SubjectType.Elective
+    };
 
     private static SemesterSeason MapSemesterSeason(List<string> semesters)
     {
@@ -71,34 +64,31 @@ public static class SubjectMapper
         };
     }
 
-    private static CompletionType MapCompletionType(string completionType)
+    private static CompletionType MapCompletionType(string completionType) => completionType.ToUpperInvariant() switch
     {
-        return completionType.ToUpperInvariant() switch
-        {
-            "Z" => CompletionType.Cr,
-            "KZ" => CompletionType.GCr,
-            "Z+ZK" or "ZZK" => CompletionType.CrEx,
-            "ZK" => CompletionType.Ex,
-            "KL" => CompletionType.Col,
-            "KP" => CompletionType.Kp,
-            "REC" => CompletionType.Rec,
-            "SZZ" => CompletionType.Szz,
-            "RZ" => CompletionType.RCr,
-            "RKZ" => CompletionType.RgCr,
-            "RZ+ZK" or "RZZK" => CompletionType.RCrEx,
-            "RZK" => CompletionType.REx,
-            "HS" => CompletionType.Hs,
-            "HDS" => CompletionType.Hds,
-            "UPZA" => CompletionType.UpZa,
-            "RVOL" => CompletionType.RVol,
-            "Z-FSP" => CompletionType.CrFsp,
-            "DRZK" => CompletionType.DrEx,
-            "REC+Z" => CompletionType.RecCr,
-            "ZK-DD" => CompletionType.ExDd,
-            "SPZK" => CompletionType.SpEx,
-            "SPZ+ZK" => CompletionType.SpCrEx,
-            "RKL" => CompletionType.RCol,
-            _ => CompletionType.Cr
-        };
-    }
+        "Z" => CompletionType.Cr,
+        "KZ" => CompletionType.GCr,
+        "Z+ZK" or "ZZK" => CompletionType.CrEx,
+        "ZK" => CompletionType.Ex,
+        "KL" => CompletionType.Col,
+        "KP" => CompletionType.Kp,
+        "REC" => CompletionType.Rec,
+        "SZZ" => CompletionType.Szz,
+        "RZ" => CompletionType.RCr,
+        "RKZ" => CompletionType.RgCr,
+        "RZ+ZK" or "RZZK" => CompletionType.RCrEx,
+        "RZK" => CompletionType.REx,
+        "HS" => CompletionType.Hs,
+        "HDS" => CompletionType.Hds,
+        "UPZA" => CompletionType.UpZa,
+        "RVOL" => CompletionType.RVol,
+        "Z-FSP" => CompletionType.CrFsp,
+        "DRZK" => CompletionType.DrEx,
+        "REC+Z" => CompletionType.RecCr,
+        "ZK-DD" => CompletionType.ExDd,
+        "SPZK" => CompletionType.SpEx,
+        "SPZ+ZK" => CompletionType.SpCrEx,
+        "RKL" => CompletionType.RCol,
+        _ => CompletionType.Cr
+    };
 }

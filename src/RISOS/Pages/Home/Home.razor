@@ -1,16 +1,15 @@
 ﻿@page "/"
-
 @using RISOS.Enums
 @using RISOS.Extensions
 @using RISOS.Helpers
 @using RISOS.Localization
 @using RISOS.Mappers
 @using RISOS.Pages.Home.Components
+@using RISOS.Pages.Home.Dialogs.ImportDialog
 @using RISOS.Pages.Home.Dialogs.SettingsDialog
+@using RISOS.Pages.Home.Dialogs.ShareDialog
 @using RISOS.Pages.Home.Models
 @using RISOS.Services
-@using RISOS.Pages.Home.Dialogs.ImportDialog
-@using RISOS.Pages.Home.Dialogs.ShareDialog
 
 @inject UniversityService UniversityService
 @inject IDialogService DialogService
@@ -82,7 +81,8 @@
     <OpenedDrawerContent>
         <MudExpansionPanels Elevation="3" Style="height: calc(100vh - 128px); overflow: hidden">
             <MudExpansionPanel Text="@LanguageHelper.StudyProgram" Gutters="false">
-                <StudyProgramSelector SelectedProgram="@_selectedProgram" SelectedProgramChanged="@OnSelectedProgramsChanged" Loading="@_isLoading"/>
+                <StudyProgramSelector SelectedProgram="@_selectedProgram"
+                                      SelectedProgramChanged="@OnSelectedProgramsChanged" Loading="@_isLoading"/>
             </MudExpansionPanel>
             <SubjectsPanel TGroupKey="int"
                            HeaderTemplate="@(x => $"{x}. {LanguageHelper.Semester}")"
@@ -115,9 +115,11 @@
         </MudExpansionPanels>
     </OpenedDrawerContent>
     <AlwaysVisible>
-        <MudStack Row Justify="Justify.Center" Spacing="2" AlignItems="AlignItems.Center" Wrap="Wrap.Wrap" Class="px-2 pb-2" Style="width: 100%">
+        <MudStack Row Justify="Justify.Center" Spacing="2" AlignItems="AlignItems.Center" Wrap="Wrap.Wrap"
+                  Class="px-2 pb-2" Style="width: 100%">
             <MudTooltip Text="@LanguageHelper.Settings">
-                <MudIconButton Icon="@Icons.Material.Filled.Settings" Style="color: var(--mud-palette-drawer-text)" OnClick="@OnSettingsClick"/>
+                <MudIconButton Icon="@Icons.Material.Filled.Settings" Style="color: var(--mud-palette-drawer-text)"
+                               OnClick="@OnSettingsClick"/>
             </MudTooltip>
             <MudTooltip Text="@LanguageHelper.Export">
                 <MudIconButton
@@ -142,7 +144,8 @@
 </SideBar>
 
 <CascadingValue Value="_studyContext">
-    <StudiumDropContainer @ref="_dropContainer" Subjects="_selectedSubjects" OnRemove="OnRemove" RecognizedYear="_recognizedYear" LocalStorageLoading="_dropZoneContainerLoading"/>
+    <StudiumDropContainer @ref="_dropContainer" Subjects="_selectedSubjects" OnRemove="OnRemove"
+                          RecognizedYear="_recognizedYear" LocalStorageLoading="_dropZoneContainerLoading"/>
 </CascadingValue>
 
 @code {
@@ -168,7 +171,7 @@
 
         if (!string.IsNullOrEmpty(uri.Fragment) && uri.Fragment.Length > 1)
         {
-            var encodedData = uri.Fragment[1..]; 
+            var encodedData = uri.Fragment[1..];
 
             try
             {
@@ -177,6 +180,7 @@
                 {
                     await ImportService.ApplyAppStateAsync(appState);
                 }
+
                 NavigationManager.NavigateTo(uri.GetLeftPart(UriPartial.Path), replace: true);
             }
             catch (Exception ex)
@@ -184,6 +188,7 @@
                 Console.WriteLine($"Failed to load state from URL: {ex.Message}");
             }
         }
+
         await base.OnInitializedAsync();
     }
 
@@ -230,7 +235,7 @@
             .OrderBy(x => x.Semester)
             .ThenBy(x => x.IndexInZone)
             .ToList();
-        
+
         _isLoading = false;
         await InvokeAsync(StateHasChanged);
         _dropContainer.Refresh();
@@ -365,8 +370,9 @@
         if (result.Value.Language != language)
         {
             await LanguageService.SetAppLanguageAsync(result.Value.Language);
-            NavigationManager.NavigateTo(NavigationManager.Uri, forceLoad: true);
+            NavigationManager.NavigateTo(NavigationManager.Uri, true);
         }
+
         StateHasChanged();
     }
 
@@ -448,8 +454,5 @@
         _selectedSubjects.AddRange(customSubjects);
     }
 
-    private async Task OnShareClick()
-    {
-        await ShareDialog.ShowAsync(DialogService);
-    }
+    private async Task OnShareClick() => await ShareDialog.ShowAsync(DialogService);
 }

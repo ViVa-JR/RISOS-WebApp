@@ -2,7 +2,6 @@
 @using RISOS.Common.Models
 @using RISOS.Extensions
 @using RISOS.Localization
-
 <RDialog TReturn="ReturnValue"
          Title="@LanguageHelper.SettingsDialog_OverrideCredits"
          SubmitIcon="@Icons.Material.Filled.Save"
@@ -23,10 +22,7 @@
     [Parameter]
     public required int Credits { get; set; }
 
-    private Task<ReturnValue> OnSubmit()
-    {
-        return Task.FromResult(new ReturnValue(Credits));
-    }
+    private Task<ReturnValue> OnSubmit() => Task.FromResult(new ReturnValue(Credits));
 
     public static async Task<DialogResult<ReturnValue>> ShowAsync(IDialogService dialogService, int credits)
     {

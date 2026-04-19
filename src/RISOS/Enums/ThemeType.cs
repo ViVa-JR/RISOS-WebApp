@@ -4,7 +4,7 @@ public enum ThemeType
 {
     Default,
     Deuteranopia,
-    Protanopia,  
+    Protanopia,
     Tritanopia,
     HighContrast
 }

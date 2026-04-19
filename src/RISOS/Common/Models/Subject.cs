@@ -21,7 +21,7 @@ public class Subject(
     public int Credits { get; } = credits;
     public int MinSemester { get; } = minSemester;
     public CompletionType CompletionType { get; set; } = completionType;
-    
+
     public SemesterSeason SemesterSeason { get; } = semesterSeason;
     public SubjectType Type { get; } = type;
     public string? GroupId { get; } = groupId;
