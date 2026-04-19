@@ -174,8 +174,8 @@
     <data name="Required" xml:space="preserve">
     <value>Požadované</value>
   </data>
-    <data name="RequiredWarning" xml:space="preserve">
-    <value>Nepodařilo se ověřit požadované kredity. Pro úpravu přejděte do nastavení.</value>
+    <data name="CreditsWarning" xml:space="preserve">
+    <value>Nepodařilo se ověřit požadované kredity. Po kliknutí můžete upravit</value>
   </data>
     <data name="Duration" xml:space="preserve">
     <value>Doba studia</value>

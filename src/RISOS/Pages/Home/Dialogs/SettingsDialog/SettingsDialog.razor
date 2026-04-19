@@ -180,6 +180,7 @@
     {
         _model.Language = await LanguageService.GetAppLanguageAsync();
         _model.SelectedTheme = ThemeService.CurrentThemeType ?? ThemeType.Default;
+        _model.Credits = StudyContext.CreditOverride;
         _originalLanguage = _model.Language;
         _overrideCredits = StudyContext.CreditOverride.HasValue;
 

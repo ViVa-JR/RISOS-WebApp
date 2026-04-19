@@ -54,8 +54,11 @@ public class ThemeStateService(LocalStorageService localStorageService)
         PaletteLight = new PaletteLight
         {
             Primary = "#134E4A",
+            PrimaryContrastText = "#FFFFFF",
             Secondary = "#10B981",
+            SecondaryContrastText = "#FFFFFF",
             Tertiary = "#f43f5e",
+            TertiaryContrastText = "#FFFFFF",
             Background = "#F8FAFC",
             BackgroundGray = "#e4f5e8",
             Surface = "#FFFFFF",
@@ -65,6 +68,7 @@ public class ThemeStateService(LocalStorageService localStorageService)
             DrawerIcon = "#FFFFFF",
             TextPrimary = "#1e293b",
             TextSecondary = "#64748b",
+            ActionDefault = "#1e293b",
             Success = "#16A34A",
             Warning = "#ff8d37",
             Error = "#DC2626",
@@ -90,7 +94,9 @@ public class ThemeStateService(LocalStorageService localStorageService)
         PaletteLight = new PaletteLight
         {
             Primary = "#0072B2",
+            PrimaryContrastText = "#FFFFFF",
             Secondary = "#E69F00",
+            SecondaryContrastText = "#000000",
             Background = "#F8FAFC",
             Surface = "#FFFFFF",
             TextPrimary = "#1A1A1A",
@@ -98,19 +104,23 @@ public class ThemeStateService(LocalStorageService localStorageService)
             AppbarBackground = "#0072B2",
             DrawerBackground = "#FFFFFF",
             DrawerText = "#0072B2",
+            DrawerIcon = "#0072B2",
             Success = "#009E73",
-            ActionDefault = "#424242",
+            ActionDefault = "#1A1A1A",
             Divider = "#E2E8F0",
             Error = "#D55E00"
         },
         PaletteDark = new PaletteDark
         {
             Primary = "#56B4E9",
+            PrimaryContrastText = "#000000",
             Secondary = "#F0E442",
+            SecondaryContrastText = "#000000",
             Background = "#0F172A",
             Surface = "#1E293B",
             TextPrimary = "#F8FAFC",
-            TextSecondary = "#94A3B8"
+            TextSecondary = "#94A3B8",
+            ActionDefault = "#F8FAFC"
         }
     };
 
@@ -119,23 +129,30 @@ public class ThemeStateService(LocalStorageService localStorageService)
         PaletteLight = new PaletteLight
         {
             Primary = "#004852",
+            PrimaryContrastText = "#FFFFFF",
             Secondary = "#F4002D",
+            SecondaryContrastText = "#FFFFFF",
             Background = "#F8FAFC",
             Surface = "#FFFFFF",
             TextPrimary = "#1A1A1A",
             AppbarBackground = "#004852",
             DrawerBackground = "#FFFFFF",
             DrawerText = "#004852",
+            DrawerIcon = "#004852",
+            ActionDefault = "#1A1A1A",
             Success = "#00F6FF",
             Error = "#FF3000"
         },
         PaletteDark = new PaletteDark
         {
             Primary = "#00CED1",
+            PrimaryContrastText = "#000000",
             Secondary = "#FF4500",
+            SecondaryContrastText = "#FFFFFF",
             Background = "#0A191B",
             Surface = "#152A2D",
-            TextPrimary = "#F0F9FA"
+            TextPrimary = "#F0F9FA",
+            ActionDefault = "#F0F9FA"
         }
     };
 
@@ -144,7 +161,9 @@ public class ThemeStateService(LocalStorageService localStorageService)
         PaletteLight = new PaletteLight
         {
             Primary = "#000000",
+            PrimaryContrastText = "#FFFFFF",
             Secondary = "#1A1A1A",
+            SecondaryContrastText = "#FFFFFF",
             Success = "#006400",
             Error = "#B22222",
             Info = "#0000FF",
@@ -157,12 +176,15 @@ public class ThemeStateService(LocalStorageService localStorageService)
             TextSecondary = "#212121",
             DrawerBackground = "#FFFFFF",
             DrawerText = "#000000",
-            DrawerIcon = "#000000"
+            DrawerIcon = "#000000",
+            ActionDefault = "#000000"
         },
         PaletteDark = new PaletteDark
         {
             Primary = "#FFFF00",
+            PrimaryContrastText = "#000000",
             Secondary = "#00FFFF",
+            SecondaryContrastText = "#000000",
             Success = "#00FF00",
             Error = "#FF0000",
             Background = "#000000",
