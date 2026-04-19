@@ -16,22 +16,26 @@ window.initDragScroll = () => {
     const scrollContainer = document.getElementById('main-scroll-container');
     if (!scrollContainer) return;
 
+    const endDrag = () => {
+        if (scrollContainer.classList.contains('is-dragging')) {
+            scrollContainer.classList.remove('is-dragging');
+            verticalScrollSpeed = 0;
+        }
+    };
+
     document.addEventListener('dragstart', (e) => {
         if (e.target.closest('.mud-drop-item')) {
             scrollContainer.classList.add('is-dragging');
         }
     });
 
-    document.addEventListener('dragend', () => {
-        scrollContainer.classList.remove('is-dragging');
-        verticalScrollSpeed = 0;
-    });
+    document.addEventListener('dragend', endDrag, true);
+    document.addEventListener('drop', endDrag, true);
+    document.addEventListener('mouseup', endDrag, true);
 
     scrollContainer.addEventListener('dragover', (e) => {
-        // 1. MUST HAVE: Tells the browser the entire scrolling area is a valid drag zone
         e.preventDefault();
 
-        // 2. MUST HAVE: Forces the cursor to stay as the 'move/grabbing' hand
         if (e.dataTransfer) {
             e.dataTransfer.dropEffect = 'move';
         }
