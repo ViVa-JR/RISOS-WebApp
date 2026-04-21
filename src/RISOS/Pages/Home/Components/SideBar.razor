@@ -74,7 +74,7 @@
 </style>
 
 <MudDrawer @bind-Open="_drawerOpen" Elevation="1" Breakpoint="Breakpoint.Sm" Variant="@(IsReadOnly ? DrawerVariant.Temporary : DrawerVariant.Mini)"
-           Class="@($"mt-n5 {(IsReadOnly ? "hidden " : string.Empty)}{Class}")" Width="260px">
+           Class="@($"mt-n5 {(IsReadOnly ? "hidden " : string.Empty)}{Class}")" Width="260px" Overlay="false">
     <MudStack Row="@_drawerOpen"
               AlignItems="AlignItems.Center"
               Justify="@(_drawerOpen ? Justify.SpaceBetween : Justify.FlexStart)"
@@ -125,15 +125,6 @@
 
     [Parameter]
     public string Class { get; set; } = string.Empty;
-
-    protected override void OnParametersSet()
-    {
-        if (IsReadOnly)
-        {
-            _drawerOpen = false;
-        }
-        base.OnParametersSet();
-    }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
