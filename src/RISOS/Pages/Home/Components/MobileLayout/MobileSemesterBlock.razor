@@ -13,11 +13,12 @@
     <div class="pa-2 d-flex flex-column gap-2 mud-background-surface flex-1">
         @foreach (var entry in Subjects)
         {
-            <MobileSubjectCard Entry="entry" />
+            <MobileSubjectCard Entry="entry"/>
         }
     </div>
 
-    <MudStack AlignItems="AlignItems.Center" Row Justify="Justify.FlexEnd" Spacing="1" Class="border-dashed mud-border-lines-default pa-2 mud-background-surface rounded-b-lg" Style="border-top-width: 2px">
+    <MudStack AlignItems="AlignItems.Center" Row Justify="Justify.FlexEnd" Spacing="1" Class="border-dashed mud-border-lines-default pa-2 mud-background-surface rounded-b-lg"
+              Style="border-top-width: 2px">
         @if (CompletedCredits > 0)
         {
             <MudText Typo="Typo.body1" Color="Color.Success">@CompletedCredits</MudText>
@@ -32,13 +33,16 @@
 </MudStack>
 
 @code {
-    [Parameter, EditorRequired]
+    [Parameter]
+    [EditorRequired]
     public int SemesterNumber { get; set; }
 
-    [Parameter, EditorRequired]
+    [Parameter]
+    [EditorRequired]
     public SemesterSeason Season { get; set; }
 
-    [Parameter, EditorRequired]
+    [Parameter]
+    [EditorRequired]
     public required IEnumerable<SubjectEntry> Subjects { get; set; }
 
     private int CompletedCredits => Subjects.Where(s => s.Completed == true).Sum(s => s.Subject.Credits);

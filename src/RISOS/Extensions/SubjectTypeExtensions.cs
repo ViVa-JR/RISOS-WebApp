@@ -16,7 +16,7 @@ public static class SubjectTypeExtensions
             _ => Color.Success
         };
 
-        public  string ToLabel() => subjectType switch
+        public string ToLabel() => subjectType switch
         {
             SubjectType.Compulsory => LanguageHelper.CompulsorySingle,
             SubjectType.CompulsoryElective => LanguageHelper.CompulsoryElectiveSingle,

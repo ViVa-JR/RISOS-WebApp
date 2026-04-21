@@ -7,11 +7,11 @@
 @using RISOS.Mappers
 @using RISOS.Pages.Home.Components
 @using RISOS.Pages.Home.Components.MobileLayout
+@using RISOS.Pages.Home.Dialogs.ImportDialog
 @using RISOS.Pages.Home.Dialogs.SettingsDialog
+@using RISOS.Pages.Home.Dialogs.ShareDialog
 @using RISOS.Pages.Home.Models
 @using RISOS.Services
-@using RISOS.Pages.Home.Dialogs.ImportDialog
-@using RISOS.Pages.Home.Dialogs.ShareDialog
 
 @inject UniversityService UniversityService
 @inject IDialogService DialogService
@@ -376,7 +376,7 @@
         if (result.Value.Language != language)
         {
             await LanguageService.SetAppLanguageAsync(result.Value.Language);
-            NavigationManager.NavigateTo(NavigationManager.Uri, forceLoad: true);
+            NavigationManager.NavigateTo(NavigationManager.Uri, true);
         }
 
         StateHasChanged();
@@ -460,8 +460,5 @@
         _selectedSubjects.AddRange(customSubjects);
     }
 
-    private async Task OnShareClick()
-    {
-        await ShareDialog.ShowAsync(DialogService);
-    }
+    private async Task OnShareClick() => await ShareDialog.ShowAsync(DialogService);
 }

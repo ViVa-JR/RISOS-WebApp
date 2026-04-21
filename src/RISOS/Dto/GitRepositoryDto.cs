@@ -4,7 +4,7 @@ namespace RISOS.Dto;
 
 public class GitRepositoryDto
 {
-    [JsonPropertyName("workflow_runs")] 
+    [JsonPropertyName("workflow_runs")]
     public List<WorkflowRunDto> WorkflowList { get; set; } = [];
 }
 

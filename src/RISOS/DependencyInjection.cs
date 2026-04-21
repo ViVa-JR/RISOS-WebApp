@@ -12,40 +12,31 @@ public static class DependencyInjection
 {
     extension(IServiceCollection services)
     {
-        public IServiceCollection AddWebApplication(IConfiguration configuration)
-        {
-            return services
-                .AddBlazorServices()
-                .AddScoped<ApiService>()
-                .AddSingleton<ThemeStateService>()
-                .AddSingleton<LocalStorageService>()
-                .AddSingleton<ExportService>()
-                .AddSingleton<ImportService>()
-                .AddSingleton<LanguageService>()
-                .AddScoped<GitRepositoryInfoService>()
-                .AddScoped<UniversityService>()
-                .AddScoped(_ => new HttpClient())
-                .AddOptions(configuration)
-                .AddLocalization();
-        }
+        public IServiceCollection AddWebApplication(IConfiguration configuration) => services
+            .AddBlazorServices()
+            .AddScoped<ApiService>()
+            .AddSingleton<ThemeStateService>()
+            .AddSingleton<LocalStorageService>()
+            .AddSingleton<ExportService>()
+            .AddSingleton<ImportService>()
+            .AddSingleton<LanguageService>()
+            .AddScoped<GitRepositoryInfoService>()
+            .AddScoped<UniversityService>()
+            .AddScoped(_ => new HttpClient())
+            .AddOptions(configuration)
+            .AddLocalization();
 
-        private IServiceCollection AddBlazorServices()
-        {
-            return services
-                .AddMudServices(config =>
-                {
-                    config.SnackbarConfiguration.VisibleStateDuration = 3000;
-                    config.SnackbarConfiguration.HideTransitionDuration = 500;
-                    config.SnackbarConfiguration.ShowTransitionDuration = 500;
-                })
-                .AddMudExtensions();
-        }
+        private IServiceCollection AddBlazorServices() => services
+            .AddMudServices(config =>
+            {
+                config.SnackbarConfiguration.VisibleStateDuration = 3000;
+                config.SnackbarConfiguration.HideTransitionDuration = 500;
+                config.SnackbarConfiguration.ShowTransitionDuration = 500;
+            })
+            .AddMudExtensions();
 
-        private IServiceCollection AddOptions(IConfiguration configuration)
-        {
-            return services.Configure<ApiOptions>(options =>
-                configuration.GetSection(ApiOptions.Section).Bind(options));
-        }
+        private IServiceCollection AddOptions(IConfiguration configuration) => services.Configure<ApiOptions>(options =>
+            configuration.GetSection(ApiOptions.Section).Bind(options));
     }
 
     extension(WebAssemblyHost host)

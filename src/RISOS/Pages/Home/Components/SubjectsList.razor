@@ -57,7 +57,8 @@
 }
 
 @code {
-    [Parameter, EditorRequired]
+    [Parameter]
+    [EditorRequired]
     public required IEnumerable<IGrouping<TGroupKey, SubjectEntry>> Groups { get; set; }
 
     [Parameter]
@@ -126,5 +127,4 @@
         public TGroupKey? GroupKey { get; init; }
         public SubjectEntry? Subject { get; init; }
     }
-
 }

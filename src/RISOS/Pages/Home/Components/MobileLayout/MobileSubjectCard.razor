@@ -37,20 +37,21 @@
     <div class="px-1 flex-shrink-0">
         @if (Entry.Completed == true)
         {
-            <MudIcon Icon="@Icons.Material.Filled.CheckCircle" Color="Color.Success" />
+            <MudIcon Icon="@Icons.Material.Filled.CheckCircle" Color="Color.Success"/>
         }
         else if (Entry.Completed == false)
         {
-            <MudIcon Icon="@Icons.Material.Filled.Cancel" Color="Color.Error" />
+            <MudIcon Icon="@Icons.Material.Filled.Cancel" Color="Color.Error"/>
         }
         else
         {
-            <MudIcon Icon="@Icons.Material.Outlined.RadioButtonUnchecked" Color="Color.Default" />
+            <MudIcon Icon="@Icons.Material.Outlined.RadioButtonUnchecked" Color="Color.Default"/>
         }
     </div>
 </MudPaper>
 
 @code {
-    [Parameter, EditorRequired]
+    [Parameter]
+    [EditorRequired]
     public required SubjectEntry Entry { get; set; }
 }

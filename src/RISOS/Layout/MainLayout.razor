@@ -1,7 +1,7 @@
 @using RISOS.Services
 
-@inherits LayoutComponentBase
 @implements IDisposable
+@inherits LayoutComponentBase
 
 @inject ThemeStateService ThemeStateService
 @inject IJSRuntime Js
@@ -45,10 +45,7 @@
         await base.OnAfterRenderAsync(firstRender);
     }
 
-    public void Dispose()
-    {
-        ThemeStateService.OnChange -= StateHasChanged;
-    }
+    public void Dispose() => ThemeStateService.OnChange -= StateHasChanged;
 
     private void OnBreakpointChanged(Breakpoint breakpoint)
     {

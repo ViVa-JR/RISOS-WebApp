@@ -8,7 +8,7 @@
         color: white;
         border-color: white;
     }
-    
+
     .error-chip {
         color: var(--mud-palette-error);
         border-color: var(--mud-palette-error);
@@ -45,12 +45,13 @@
                       HeaderTemplate="HeaderTemplate"
                       ReadOnly="@ReadOnly"
                       FixedPixels="FixedPixels"
-                      SubjectChanged="@SubjectChanged" />
+                      SubjectChanged="@SubjectChanged"/>
     </ChildContent>
 </MudExpansionPanel>
 
 @code {
-    [Parameter, EditorRequired]
+    [Parameter]
+    [EditorRequired]
     public required Func<SubjectEntry, TGroupKey> GroupBy { get; set; }
 
     [Parameter]
@@ -86,5 +87,4 @@
 
     private IEnumerable<IGrouping<TGroupKey, SubjectEntry>> Groups => Subjects.Values.GroupBy(GroupBy);
     private bool EveryGroupSelected => !CompulsoryGroups || (Groups.Any() && Groups.All(group => group.Any(entry => entry.Selected)));
-
 }

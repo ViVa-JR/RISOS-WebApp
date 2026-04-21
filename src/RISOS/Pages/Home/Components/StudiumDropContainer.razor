@@ -1,7 +1,7 @@
+@using RISOS.Common.Models
 @using RISOS.Enums
 @using RISOS.Extensions
 @using RISOS.Localization
-@using RISOS.Models
 @using RISOS.Pages.Home.Dialogs.AddCustomSubjectDialog
 @using RISOS.Pages.Home.Models
 @using RISOS.Services
@@ -176,10 +176,7 @@
 
     private Credits TotalCredits => GetTotalCredits();
 
-    private static bool Selector(SubjectEntry item, string dropzone)
-    {
-        return item.Semester == dropzone;
-    }
+    private static bool Selector(SubjectEntry item, string dropzone) => item.Semester == dropzone;
 
     private async Task EntryChanged(SubjectEntry entry)
     {
@@ -235,8 +232,8 @@
             .ToArray();
 
         return new Credits(
-            Registered: semesterSubjects.Sum(s => s.Subject.Credits),
-            Completed: semesterSubjects.Where(s => s.Completed == true).Sum(s => s.Subject.Credits)
+            semesterSubjects.Sum(s => s.Subject.Credits),
+            semesterSubjects.Where(s => s.Completed == true).Sum(s => s.Subject.Credits)
         );
     }
 
@@ -253,8 +250,8 @@
         var allSubjects = Subjects.Where(x => x.Semester != SubjectEntry.Unassigned).ToArray();
 
         return new Credits(
-            Registered: allSubjects.Where(x => x.Completed != false).Sum(s => s.Subject.Credits),
-            Completed: allSubjects.Where(s => s.Completed == true).Sum(s => s.Subject.Credits)
+            allSubjects.Where(x => x.Completed != false).Sum(s => s.Subject.Credits),
+            allSubjects.Where(s => s.Completed == true).Sum(s => s.Subject.Credits)
         );
     }
 

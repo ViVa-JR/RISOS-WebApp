@@ -1,3 +1,4 @@
+@using FastCloner
 @using RISOS.Enums
 @using RISOS.Extensions
 @using RISOS.Localization
@@ -106,7 +107,8 @@
 </MudPaper>
 
 @code {
-    [Parameter, EditorRequired]
+    [Parameter]
+    [EditorRequired]
     public required SubjectEntry Entry { get; set; }
 
     [Parameter]
@@ -120,7 +122,7 @@
 
     [Parameter]
     public EventCallback<SubjectEntry> AddEntry { get; set; }
-    
+
     [Parameter]
     public EventCallback<SubjectEntry> RetakeEntry { get; set; }
 
@@ -145,7 +147,7 @@
         var result = await CreateEditCustomSubjectDialog.ShowAsync(DialogService, Entry);
         if (result.IsSuccess)
         {
-            FastCloner.FastCloner.DeepCloneTo(result.Value, Entry);
+            FastCloner.DeepCloneTo(result.Value, Entry);
             await LocalStorageService.UpdateSubjectAsync(Entry);
             Snackbar.Add("Subject successfully updated", Severity.Success);
         }
@@ -153,7 +155,7 @@
 
     private async Task OnCloneClick()
     {
-        var clone = FastCloner.FastCloner.DeepClone(Entry);
+        var clone = FastCloner.DeepClone(Entry);
         if (clone is null)
         {
             return;

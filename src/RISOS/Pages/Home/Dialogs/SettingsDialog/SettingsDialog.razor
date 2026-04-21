@@ -226,7 +226,7 @@
     private async Task ClearData()
     {
         await LocalStorageService.ClearAppStateAsync();
-        NavigationManager.NavigateTo(NavigationManager.Uri, forceLoad: true);
+        NavigationManager.NavigateTo(NavigationManager.Uri, true);
     }
 
     public static async Task<DialogResult<SettingsDialogModel>> ShowAsync(IDialogService dialogService, StudyContext studyContext, bool isReadOnly = false)

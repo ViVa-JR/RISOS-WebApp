@@ -22,7 +22,7 @@
     .label {
         color: var(--mud-palette-text-primary);
     }
-    
+
     .study-program-item {
         background-color: var(--mud-palette-surface) !important;
         padding-right: 0 !important;
@@ -62,5 +62,7 @@
 </MudListItemExtended>
 
 @code {
-    [Parameter, EditorRequired] public required StudyProgram Program { get; set; }
+    [Parameter]
+    [EditorRequired]
+    public required StudyProgram Program { get; set; }
 }

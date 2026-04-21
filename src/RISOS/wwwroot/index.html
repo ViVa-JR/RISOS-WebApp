@@ -3,14 +3,14 @@
 
 <head>
     <meta charset="utf-8"/>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
     <title>RISOS</title>
     <base href="/~xskrab12/risos/"/>
-    <link rel="preload" id="webassembly"/>
-    <link rel="stylesheet" href="lib/bootstrap/dist/css/bootstrap.min.css"/>
-    <link rel="stylesheet" href="css/font.css"/>
-    <link rel="stylesheet" href="css/app.css"/>
-    <link rel="icon" type="image/png" href="favicon.png"/>
+    <link id="webassembly" rel="preload"/>
+    <link href="lib/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet"/>
+    <link href="css/font.css" rel="stylesheet"/>
+    <link href="css/app.css" rel="stylesheet"/>
+    <link href="favicon.png" rel="icon" type="image/png"/>
     <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap" rel="stylesheet"/>
     <link href="_content/MudBlazor/MudBlazor.min.css?v=1" rel="stylesheet"/>
 
@@ -20,35 +20,35 @@
 </head>
 
 <body>
-    <div id="app">
-        <div class="loader-container loading-progress">
-            <div class="loader-ui">
-                <svg class="progress-ring" viewBox="0 0 100 100">
-                    <defs>
-                        <linearGradient id="ring-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
-                            <stop offset="0%" stop-color="#0fb537"/>
-                            <stop offset="100%" stop-color="#1bc88a"/>
-                        </linearGradient>
-                    </defs>
-                    <circle class="ring-bg" cx="50%" cy="50%" r="40%"/>
-                    <circle class="ring-fill" cx="50%" cy="50%" r="40%"/>
-                </svg>
+<div id="app">
+    <div class="loader-container loading-progress">
+        <div class="loader-ui">
+            <svg class="progress-ring" viewBox="0 0 100 100">
+                <defs>
+                    <linearGradient id="ring-gradient" x1="0%" x2="100%" y1="0%" y2="100%">
+                        <stop offset="0%" stop-color="#0fb537"/>
+                        <stop offset="100%" stop-color="#1bc88a"/>
+                    </linearGradient>
+                </defs>
+                <circle class="ring-bg" cx="50%" cy="50%" r="40%"/>
+                <circle class="ring-fill" cx="50%" cy="50%" r="40%"/>
+            </svg>
 
-                <div class="logo-text-container">
-                    <div class="logo-text">
-                        <span>R</span><span>I</span><span>S</span><span>Ø</span><span>S</span>
-                    </div>
+            <div class="logo-text-container">
+                <div class="logo-text">
+                    <span>R</span><span>I</span><span>S</span><span>Ø</span><span>S</span>
                 </div>
             </div>
         </div>
     </div>
+</div>
 
-    <div id="blazor-error-ui">
-        <span class="error-text">Something went wrong</span>
-        <a href="javascript:location.reload()" class="reload">Restart</a>
-        <span class="dismiss">x</span>
-    </div>
-    <script src="_framework/blazor.webassembly#[.{fingerprint}].js"></script>
+<div id="blazor-error-ui">
+    <span class="error-text">Something went wrong</span>
+    <a class="reload" href="javascript:location.reload()">Restart</a>
+    <span class="dismiss">x</span>
+</div>
+<script src="_framework/blazor.webassembly#[.{fingerprint}].js"></script>
 </body>
 
 </html>

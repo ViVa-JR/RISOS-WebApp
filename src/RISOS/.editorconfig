@@ -1,0 +1,5 @@
+[*]
+insert_final_newline = true
+
+[*.razor]
+resharper_keep_blank_lines_in_code = 1

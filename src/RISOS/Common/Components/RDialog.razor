@@ -1,7 +1,8 @@
+@typeparam TReturn
+
 @using RISOS.Common.Models
 @using RISOS.Localization
 @using DialogResult = MudBlazor.DialogResult
-@typeparam TReturn
 
 <MudDialog Class="pa-2">
     <TitleContent>
@@ -31,7 +32,7 @@
             {
                 <MudButton Color="Color.Primary" Variant="Variant.Outlined" StartIcon="@SubmitIcon" OnClick="@OnSubmitInternal">
                     @SubmitText
-                </MudButton> 
+                </MudButton>
             }
         </MudStack>
     </DialogActions>
@@ -43,34 +44,35 @@
 
     [Parameter]
     public string Title { get; set; } = "Dialog";
-    
+
     [Parameter]
     public Func<Task<TReturn>>? OnSubmit { get; set; }
 
     [Parameter]
     public string SubmitText { get; set; } = LanguageHelper.Submit;
-    
+
     [Parameter]
     public string? SubmitIcon { get; set; }
-    
-    [Parameter, EditorRequired]
+
+    [Parameter]
+    [EditorRequired]
     public required RenderFragment ChildContent { get; set; }
 
     [Parameter]
     public string HeaderIcon { get; set; } = Icons.Material.Filled.School;
-    
+
     [Parameter]
     public Func<Task<Result>>? OnValidateFunc { get; set; }
-    
+
     [Parameter]
     public RenderFragment? FooterLeft { get; set; }
-    
+
     [Parameter]
     public required RenderFragment HeaderRight { get; set; }
-    
+
     [Parameter]
     public bool OnlyClosable { get; set; }
-    
+
     private MudForm _form = null!;
 
     private async Task OnSubmitInternal()
@@ -95,13 +97,10 @@
             MudDialog.Close();
             return;
         }
-        
+
         var value = await OnSubmit.Invoke();
         MudDialog.Close(DialogResult.Ok(value));
     }
-    
-    private void Cancel()
-    {
-        MudDialog.Cancel();
-    }
+
+    private void Cancel() => MudDialog.Cancel();
 }

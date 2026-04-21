@@ -1,7 +1,7 @@
+@using RISOS.Common.Models
 @using RISOS.Enums
 @using RISOS.Extensions
 @using RISOS.Localization
-@using RISOS.Models
 @using RISOS.Pages.Home.Models
 
 <style>
@@ -109,7 +109,8 @@
     [CascadingParameter]
     public required StudyContext StudyContext { get; set; }
 
-    [Parameter, EditorRequired]
+    [Parameter]
+    [EditorRequired]
     public required IEnumerable<SubjectEntry> Subjects { get; set; }
 
     [Parameter]
@@ -144,13 +145,10 @@
         var allSubjects = Subjects.Where(x => x.Semester != SubjectEntry.Unassigned).ToArray();
 
         return new Credits(
-            Registered: allSubjects.Where(x => x.Completed != false).Sum(s => s.Subject.Credits),
-            Completed: allSubjects.Where(s => s.Completed == true).Sum(s => s.Subject.Credits)
+            allSubjects.Where(x => x.Completed != false).Sum(s => s.Subject.Credits),
+            allSubjects.Where(s => s.Completed == true).Sum(s => s.Subject.Credits)
         );
     }
 
-    private IEnumerable<SubjectEntry> GetSubjectsForSemester(string semesterCode)
-    {
-        return Subjects.Where(s => s.Semester == semesterCode).OrderBy(s => s.Subject.Name);
-    }
+    private IEnumerable<SubjectEntry> GetSubjectsForSemester(string semesterCode) => Subjects.Where(s => s.Semester == semesterCode).OrderBy(s => s.Subject.Name);
 }

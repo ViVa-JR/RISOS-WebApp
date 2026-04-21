@@ -23,7 +23,7 @@
         max-height: calc(var(--side-bar-content-height) - @(FixedPixels)px) !important;
         overflow-y: scroll;
     }
-    
+
     .mud-input-clear-button {
         color: var(--mud-palette-text-primary)
     }
@@ -128,8 +128,8 @@
         {
             var program = _faculties
                 .SelectMany(f => f.Programs)
-                .FirstOrDefault(p => 
-                    p.Abbreviation == programAbbreviation && 
+                .FirstOrDefault(p =>
+                    p.Abbreviation == programAbbreviation &&
                     p.Specialization == specialization);
             if (program != null)
             {
@@ -148,10 +148,7 @@
         await SelectedProgramChanged.InvokeAsync(SelectedProgram);
     }
 
-    private void ToggleFacultyExpansion(Faculty faculty)
-    {
-        faculty.IsExpanded = !faculty.IsExpanded;
-    }
+    private void ToggleFacultyExpansion(Faculty faculty) => faculty.IsExpanded = !faculty.IsExpanded;
 
     private async Task OnSearchStringChanged(string newValue)
     {
@@ -181,7 +178,7 @@
                 })
                 .Where(f => f.Programs.Any())
                 .ToList();
-            });
+        });
 
         _isSearching = false;
     }

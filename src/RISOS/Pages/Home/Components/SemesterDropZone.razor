@@ -1,7 +1,7 @@
+@using RISOS.Common.Models
 @using RISOS.Enums
 @using RISOS.Extensions
 @using RISOS.Localization
-@using RISOS.Models
 @using RISOS.Pages.Home.Models
 
 @inject IJSRuntime Js
@@ -120,7 +120,8 @@
 </MudStack>
 
 @code {
-    [Parameter, EditorRequired]
+    [Parameter]
+    [EditorRequired]
     public required int Semester { get; set; }
 
     [Parameter]

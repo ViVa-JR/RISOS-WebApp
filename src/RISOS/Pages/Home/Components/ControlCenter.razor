@@ -1,6 +1,6 @@
+@using RISOS.Common.Models
 @using RISOS.Extensions
 @using RISOS.Localization
-@using RISOS.Models
 @using RISOS.Pages.Home.Dialogs.CreditsDialog
 @using RISOS.Pages.Home.Dialogs.SettingsDialog
 @using RISOS.Pages.Home.Dialogs.ShareDialog
@@ -121,7 +121,8 @@
     [CascadingParameter]
     public required StudyContext StudyContext { get; set; }
 
-    [Parameter, EditorRequired]
+    [Parameter]
+    [EditorRequired]
     public required Credits TotalCredits { get; set; }
 
     [Parameter]
@@ -197,14 +198,11 @@
         if (result.Value.Language != language)
         {
             await LanguageService.SetAppLanguageAsync(result.Value.Language);
-            NavigationManager.NavigateTo(NavigationManager.Uri, forceLoad: true);
+            NavigationManager.NavigateTo(NavigationManager.Uri, true);
         }
 
         StateHasChanged();
     }
 
-    private async Task OnShareClick()
-    {
-        await ShareDialog.ShowAsync(DialogService);
-    }
+    private async Task OnShareClick() => await ShareDialog.ShowAsync(DialogService);
 }

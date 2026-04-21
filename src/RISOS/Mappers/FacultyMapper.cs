@@ -5,19 +5,13 @@ namespace RISOS.Mappers;
 
 public static class FacultyMapper
 {
-    public static List<Faculty> ToFaculties(List<FacultyDto>? dtos)
-    {
-        return dtos?.Select(ToFaculty).ToList() ?? [];
-    }
+    public static List<Faculty> ToFaculties(List<FacultyDto>? dtos) => dtos?.Select(ToFaculty).ToList() ?? [];
 
-    private static Faculty ToFaculty(FacultyDto dto)
-    {
-        return new Faculty(
-            Title: dto.Name,
-            Abbreviation: dto.Code,
-            Programs: dto.Programs.Select(ToProgram).ToList()
-        );
-    }
+    private static Faculty ToFaculty(FacultyDto dto) => new(
+        dto.Name,
+        dto.Code,
+        dto.Programs.Select(ToProgram).ToList()
+    );
 
     private static StudyProgram ToProgram(ProgramDto dto)
     {
@@ -38,21 +32,21 @@ public static class FacultyMapper
         {
             credits = (int)studyDuration * 60;
         }
-        
+
         var name = dto.Name;
         if (dto.StudyType != string.Empty)
         {
-            name += " (" + dto.StudyType + ")";   
+            name += " (" + dto.StudyType + ")";
         }
-        
+
         return new StudyProgram(
-            Title: name,
-            Abbreviation: dto.Code,
-            StudyDuration: studyDuration,
-            Credits: credits,
-            CreditsWarn: creditsWarn,
-            Url: dto.Url,
-            Specialization: dto.Specialization
+            name,
+            dto.Code,
+            studyDuration,
+            credits,
+            creditsWarn,
+            dto.Url,
+            dto.Specialization
         );
     }
 }

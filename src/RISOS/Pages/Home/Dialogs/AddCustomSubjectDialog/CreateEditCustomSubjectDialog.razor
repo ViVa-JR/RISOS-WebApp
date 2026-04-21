@@ -3,7 +3,6 @@
 @using RISOS.Enums
 @using RISOS.Extensions
 @using RISOS.Localization
-@using RISOS.Models
 @using RISOS.Pages.Home.Models
 
 <RDialog TReturn="SubjectEntry"
@@ -105,10 +104,7 @@
         await _groupIdField.ResetValidationAsync();
     }
 
-    private Task<SubjectEntry> OnSubmit()
-    {
-        return Task.FromResult(_model.ToSubjectEntry(true));
-    }
+    private Task<SubjectEntry> OnSubmit() => Task.FromResult(_model.ToSubjectEntry(true));
 
     public static async Task<DialogResult<SubjectEntry>> ShowAsync(IDialogService dialogService, SubjectEntry? entry = null)
     {
