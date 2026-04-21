@@ -1,0 +1,156 @@
+@using RISOS.Enums
+@using RISOS.Extensions
+@using RISOS.Localization
+@using RISOS.Models
+@using RISOS.Pages.Home.Models
+
+<style>
+    .mobile-snap-container {
+        display: flex;
+        overflow-x: auto;
+        scroll-snap-type: x mandatory;
+        scroll-behavior: smooth;
+        -webkit-overflow-scrolling: touch;
+        scrollbar-width: none;
+        width: 100%;
+        gap: 16px;
+        padding-bottom: 16px;
+
+        flex-grow: 1;
+        align-items: flex-start;
+    }
+
+    .mobile-snap-container::-webkit-scrollbar {
+        display: none;
+    }
+
+    .mobile-snap-item {
+        flex: 0 0 100%;
+        scroll-snap-align: center;
+        min-width: 100%;
+    }
+
+    .app-title {
+        color: var(--mud-palette-primary);
+        font-size: 66px;
+        letter-spacing: 2px;
+        line-height: 1;
+    }
+</style>
+
+<div class="d-flex flex-column gap-2 flex-grow-1" style="position: relative; height: 100%;">
+
+    <MudOverlay Visible="LocalStorageLoading" DarkBackground="true" Absolute="true" ZIndex="9999">
+        <MudStack AlignItems="AlignItems.Center">
+            <MudText Class="app-title">RISØS</MudText>
+            <MudProgressCircular Color="Color.Primary" Indeterminate="true" Size="Size.Large"/>
+        </MudStack>
+    </MudOverlay>
+
+    <MudPaper Elevation="0" Class="pa-2 border border-dashed mud-border-lines-default rounded-lg">
+        <MudStack Row AlignItems="AlignItems.Center" Justify="Justify.Center" Spacing="4" Wrap="Wrap.Wrap">
+            @foreach (var type in Enum.GetValues<SubjectType>())
+            {
+                <MudStack Row Spacing="1" AlignItems="AlignItems.Center" Wrap="Wrap.NoWrap">
+                    <MudIcon Size="Size.Small" Color="@type.ToColor()" Icon="@Icons.Material.Filled.Circle"/>
+                    <MudText Typo="Typo.caption">@type.ToLabel()</MudText>
+                </MudStack>
+            }
+        </MudStack>
+    </MudPaper>
+
+    <ControlCenter RecognizedYear="@RecognizedYear" TotalCredits="@TotalCredits"/>
+
+    <div class="mobile-snap-container pt-2 flex-grow-1">
+        @foreach (var year in Enumerable.Range(RecognizedYear ? 0 : 1, StudyContext.Years + (RecognizedYear ? 1 : 0)))
+        {
+            var winterSemNumber = year * 2 - 1;
+            var summerSemNumber = year * 2;
+            var winterSemCode = winterSemNumber.ToString();
+            var summerSemCode = summerSemNumber.ToString();
+
+            var yearSubjects = Subjects.Where(s => s.Semester == winterSemCode || s.Semester == summerSemCode).ToList();
+            var completedYearCredits = yearSubjects.Where(s => s.Completed == true).Sum(s => s.Subject.Credits);
+            var registeredYearCredits = yearSubjects.Sum(s => s.Subject.Credits);
+
+            <div class="mobile-snap-item">
+                <div class="rounded-lg px-4 pb-2 d-flex flex-column mt-4 mb-2"
+                     style="position: relative; border: 2px dotted var(--mud-palette-lines-default);">
+
+                    <div style="position: absolute; top: -16px; left: 16px; background-color: var(--mud-palette-background); padding: 0 8px;">
+                        <MudText Typo="Typo.h6" Color="Color.Primary" Class="font-weight-bold">@year. @LanguageHelper.Years_One</MudText>
+                    </div>
+
+                    <MudStack Class="flex-grow-1 mt-4" Spacing="4">
+                        <MobileSemesterBlock SemesterNumber="@winterSemNumber"
+                                             Season="SemesterSeason.Winter"
+                                             Subjects="@GetSubjectsForSemester(winterSemCode)"/>
+
+                        <MobileSemesterBlock SemesterNumber="@summerSemNumber"
+                                             Season="SemesterSeason.Summer"
+                                             Subjects="@GetSubjectsForSemester(summerSemCode)"/>
+                    </MudStack>
+
+                    <MudStack AlignItems="AlignItems.Center" Row Justify="Justify.FlexEnd" Spacing="1" Class="pt-2">
+                        @if (completedYearCredits > 0)
+                        {
+                            <MudText Typo="Typo.body1" Color="Color.Success" Class="font-weight-bold">@completedYearCredits</MudText>
+                            <MudText Typo="Typo.body1" Color="Color.Primary">/</MudText>
+                        }
+                        <MudText Typo="Typo.body1" Color="Color.Primary"><b>@registeredYearCredits</b> @LanguageHelper.Credits</MudText>
+                    </MudStack>
+                </div>
+            </div>
+        }
+    </div>
+</div>
+
+@code {
+    [CascadingParameter]
+    public required StudyContext StudyContext { get; set; }
+
+    [Parameter, EditorRequired]
+    public required IEnumerable<SubjectEntry> Subjects { get; set; }
+
+    [Parameter]
+    public bool RecognizedYear { get; set; }
+
+    [Parameter]
+    public bool LocalStorageLoading { get; set; }
+
+    private Credits TotalCredits => GetTotalCredits();
+
+    private int SafeNeededCredits => StudyContext.Credits > 0 ? StudyContext.Credits : 180;
+
+    private int CompletedProgress => TotalCredits.Completed > 0
+        ? (int)Math.Min(100, Math.Round((double)TotalCredits.Completed / SafeNeededCredits * 100))
+        : 0;
+
+    private int RegisteredProgress
+    {
+        get
+        {
+            if (TotalCredits.Registered <= TotalCredits.Completed) return 0;
+
+            var pendingCredits = TotalCredits.Registered - TotalCredits.Completed;
+            var pct = (int)Math.Round((double)pendingCredits / SafeNeededCredits * 100);
+
+            return Math.Min(pct, 100 - CompletedProgress);
+        }
+    }
+
+    private Credits GetTotalCredits()
+    {
+        var allSubjects = Subjects.Where(x => x.Semester != SubjectEntry.Unassigned).ToArray();
+
+        return new Credits(
+            Registered: allSubjects.Where(x => x.Completed != false).Sum(s => s.Subject.Credits),
+            Completed: allSubjects.Where(s => s.Completed == true).Sum(s => s.Subject.Credits)
+        );
+    }
+
+    private IEnumerable<SubjectEntry> GetSubjectsForSemester(string semesterCode)
+    {
+        return Subjects.Where(s => s.Semester == semesterCode).OrderBy(s => s.Subject.Name);
+    }
+}

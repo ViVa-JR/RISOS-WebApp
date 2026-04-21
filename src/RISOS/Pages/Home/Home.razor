@@ -6,6 +6,7 @@
 @using RISOS.Localization
 @using RISOS.Mappers
 @using RISOS.Pages.Home.Components
+@using RISOS.Pages.Home.Components.MobileLayout
 @using RISOS.Pages.Home.Dialogs.SettingsDialog
 @using RISOS.Pages.Home.Models
 @using RISOS.Services
@@ -19,8 +20,6 @@
 @inject LocalStorageService LocalStorageService
 @inject ExportService ExportService
 @inject ImportService ImportService
-@inject IJSRuntime Js
-@inject ISnackbar Snackbar
 @inject ThemeStateService ThemeStateService
 
 <style>
@@ -142,17 +141,27 @@
 </SideBar>
 
 <CascadingValue Value="_studyContext">
-    <StudiumDropContainer @ref="_dropContainer" Subjects="_selectedSubjects" OnRemove="OnRemove" RecognizedYear="_recognizedYear" LocalStorageLoading="_dropZoneContainerLoading"/>
+    @if (IsReadOnly)
+    {
+        <MobileStudyPlanView Subjects="_selectedSubjects" RecognizedYear="_recognizedYear" LocalStorageLoading="_dropZoneContainerLoading"/>
+    }
+    else
+    {
+        <StudiumDropContainer @ref="_dropContainer" Subjects="_selectedSubjects" OnRemove="OnRemove" RecognizedYear="_recognizedYear" LocalStorageLoading="_dropZoneContainerLoading"/>
+    }
 </CascadingValue>
 
 @code {
+    [CascadingParameter]
+    public bool IsReadOnly { get; set; }
+
     private Dictionary<SubjectEntryKey, SubjectEntry> _subjects = [];
     private StudyProgram? _selectedProgram;
 
     private bool _isLoading;
     private bool _dropZoneContainerLoading;
     private bool _recognizedYear;
-    private StudiumDropContainer _dropContainer = null!;
+    private StudiumDropContainer? _dropContainer;
 
     private readonly StudyContext _studyContext = new();
 
@@ -168,7 +177,7 @@
 
         if (!string.IsNullOrEmpty(uri.Fragment) && uri.Fragment.Length > 1)
         {
-            var encodedData = uri.Fragment[1..]; 
+            var encodedData = uri.Fragment[1..];
 
             try
             {
@@ -177,6 +186,7 @@
                 {
                     await ImportService.ApplyAppStateAsync(appState);
                 }
+
                 NavigationManager.NavigateTo(uri.GetLeftPart(UriPartial.Path), replace: true);
             }
             catch (Exception ex)
@@ -184,6 +194,7 @@
                 Console.WriteLine($"Failed to load state from URL: {ex.Message}");
             }
         }
+
         await base.OnInitializedAsync();
     }
 
@@ -230,10 +241,10 @@
             .OrderBy(x => x.Semester)
             .ThenBy(x => x.IndexInZone)
             .ToList();
-        
+
         _isLoading = false;
         await InvokeAsync(StateHasChanged);
-        _dropContainer.Refresh();
+        _dropContainer?.Refresh();
     }
 
     private async Task OnSelectedProgramsChanged(StudyProgram? program)
@@ -316,7 +327,7 @@
             await FixZoneIndexesAsync(zone);
         }
 
-        _dropContainer.Refresh();
+        _dropContainer?.Refresh();
     }
 
     private async Task SubjectChanged(SubjectEntry subject)
@@ -346,7 +357,7 @@
             }
         }
 
-        _dropContainer.Refresh();
+        _dropContainer?.Refresh();
     }
 
     private async Task OnSettingsClick()
@@ -367,6 +378,7 @@
             await LanguageService.SetAppLanguageAsync(result.Value.Language);
             NavigationManager.NavigateTo(NavigationManager.Uri, forceLoad: true);
         }
+
         StateHasChanged();
     }
 

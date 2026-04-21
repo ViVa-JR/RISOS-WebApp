@@ -13,15 +13,20 @@
 <MudPopoverProvider/>
 <MudDialogProvider/>
 <MudSnackbarProvider/>
+<MudBreakpointProvider OnBreakpointChanged="OnBreakpointChanged"/>
 
 <MudLayout>
     <MudMainContent class="pt-5 px-5" Style="height: 100vh">
-        @Body
+        <CascadingValue Value="@_isReadOnly">
+            @Body
+        </CascadingValue>
     </MudMainContent>
 </MudLayout>
 
 @code {
     private MudThemeProvider _mudThemeProvider = null!;
+
+    private bool _isReadOnly;
 
     protected override async Task OnInitializedAsync()
     {
@@ -43,5 +48,17 @@
     public void Dispose()
     {
         ThemeStateService.OnChange -= StateHasChanged;
+    }
+
+    private void OnBreakpointChanged(Breakpoint breakpoint)
+    {
+        var readOnly = breakpoint is Breakpoint.Sm or Breakpoint.Xs;
+        if (_isReadOnly == readOnly)
+        {
+            return;
+        }
+
+        _isReadOnly = readOnly;
+        StateHasChanged();
     }
 }
