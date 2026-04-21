@@ -1,6 +1,7 @@
+@typeparam T
+
 @using RISOS.Localization
 @using RISOS.Pages.Home.Models
-@typeparam T
 
 <style>
     .mud-icon-button:focus-within:not(:hover) {
@@ -8,8 +9,7 @@
     }
 </style>
 
-<MudListItem @key="@Row.Subject!.Subject.Id" T="SubjectEntry" Value="@Row.Subject"
-             OnClick="@(async () => await SelectedChanged(Row.Subject!))"
+<MudListItem @key="@Row.Subject!.Subject.Id" T="SubjectEntry" Value="@Row.Subject" OnClick="@(async () => await SelectedChanged(Row.Subject!))"
              Style="background-color: var(--mud-palette-surface) !important; padding: 0 !important; border-bottom: 1px solid var(--mud-palette-lines-default);">
     <div class="d-flex align-center gap-3 px-2 w-100">
         <div class="d-flex align-center gap-2 w-100" style="min-width: 0;" title="@Row.Subject!.Subject.Name">

@@ -1,0 +1,57 @@
+@using RISOS.Extensions
+@using RISOS.Localization
+@using RISOS.Pages.Home.Models
+
+<style>
+    .card-text {
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        overflow: hidden;
+    }
+</style>
+
+<MudPaper Elevation="2" Class="pa-2 d-flex align-center gap-2" Style="width: 100%">
+
+    <MudAvatar Variant="Variant.Filled" Color="@Entry.Subject.Type.ToColor()" Class="rounded"
+               Style="min-width: 48px; width: auto; padding: 0 8px; height: 48px; flex-shrink: 0;">
+        <MudText Typo="Typo.button" Style="font-size: 0.85rem; font-weight: bold; white-space: nowrap;">
+            @Entry.Subject.ShortName
+        </MudText>
+    </MudAvatar>
+
+    <div class="d-flex flex-column flex-grow-1 overflow-hidden pl-1">
+        <MudText Typo="Typo.subtitle2" Class="card-text">
+            @Entry.Subject.Name
+        </MudText>
+
+        <MudStack Row AlignItems="AlignItems.Center" Spacing="1">
+            <MudText Typo="Typo.caption" Color="Color.Secondary">
+                @Entry.Subject.Credits @LanguageHelper.Cr •
+            </MudText>
+            <MudText Typo="Typo.caption" Color="Color.Secondary">
+                @Entry.Subject.CompletionType.ToLabel().ToUpper()
+            </MudText>
+        </MudStack>
+    </div>
+
+    <div class="px-1 flex-shrink-0">
+        @if (Entry.Completed == true)
+        {
+            <MudIcon Icon="@Icons.Material.Filled.CheckCircle" Color="Color.Success"/>
+        }
+        else if (Entry.Completed == false)
+        {
+            <MudIcon Icon="@Icons.Material.Filled.Cancel" Color="Color.Error"/>
+        }
+        else
+        {
+            <MudIcon Icon="@Icons.Material.Outlined.RadioButtonUnchecked" Color="Color.Default"/>
+        }
+    </div>
+</MudPaper>
+
+@code {
+    [Parameter]
+    [EditorRequired]
+    public required SubjectEntry Entry { get; set; }
+}

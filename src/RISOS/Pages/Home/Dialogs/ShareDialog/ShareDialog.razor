@@ -16,7 +16,7 @@
          OnlyClosable
          SubmitIcon="@Icons.Material.Filled.Close"
          HeaderIcon="@Icons.Material.Filled.Share">
-    <MudStack Style="width: 100%; min-width: 400px" Spacing="4">
+    <MudStack Style="width: 100%;" Spacing="4">
 
         <MudAlert Severity="Severity.Warning">
             @LanguageHelper.ShareWarning
@@ -67,7 +67,7 @@
         var dialog = await dialogService.ShowAsync<ShareDialog>(string.Empty, new DialogOptions
         {
             CloseOnEscapeKey = true,
-            MaxWidth = MaxWidth.Medium
+            MaxWidth = MaxWidth.Small
         });
         return await dialog.GetResultAsync();
     }

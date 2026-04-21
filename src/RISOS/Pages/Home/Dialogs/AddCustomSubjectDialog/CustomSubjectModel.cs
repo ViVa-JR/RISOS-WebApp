@@ -40,10 +40,11 @@ public class CustomSubjectModel
 
     public static string GenerateNewId() => "custom-" + Guid.NewGuid();
 
-    public SubjectEntry ToSubjectEntry(bool isCustom = false) => new(new Subject(Id, Name, ShortName, Credits, MinSemester, Type, SemesterSeason, CompletionType, GroupId))
-    {
-        Semester = Semester,
-        Completed = Completed,
-        IsCustomSubject = isCustom
-    };
+    public SubjectEntry ToSubjectEntry(bool isCustom = false)
+        => new(new Subject(Id, Name, ShortName, Credits, MinSemester, Type, SemesterSeason, CompletionType, GroupId))
+        {
+            Semester = Semester,
+            Completed = Completed,
+            IsCustomSubject = isCustom
+        };
 }

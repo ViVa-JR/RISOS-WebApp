@@ -1,0 +1,50 @@
+@using RISOS.Enums
+@using RISOS.Extensions
+@using RISOS.Localization
+@using RISOS.Pages.Home.Models
+
+<MudStack Spacing="0" Class="flex-grow-1 border-2 border-dashed mud-border-lines-default rounded-lg" Style="min-height: 250px">
+    <MudStack Row Spacing="1" AlignItems="AlignItems.Center" Class="pa-2 border-b mud-border-lines-default mud-background-gray rounded-t-lg mt-2 mx-2">
+        <MudText Typo="Typo.subtitle1" Class="font-weight-bold">@SemesterNumber. @LanguageHelper.Semester •</MudText>
+        <MudChip T="SemesterSeason" Value="@Season" Text="@Season.ToLabel()" Size="Size.Small" Variant="Variant.Text"
+                 Color="@Season.ToColor()"/>
+    </MudStack>
+
+    <div class="pa-2 d-flex flex-column gap-2 mud-background-surface flex-1">
+        @foreach (var entry in Subjects)
+        {
+            <MobileSubjectCard Entry="entry"/>
+        }
+    </div>
+
+    <MudStack AlignItems="AlignItems.Center" Row Justify="Justify.FlexEnd" Spacing="1" Class="border-dashed mud-border-lines-default pa-2 mud-background-surface rounded-b-lg"
+              Style="border-top-width: 2px">
+        @if (CompletedCredits > 0)
+        {
+            <MudText Typo="Typo.body1" Color="Color.Success">@CompletedCredits</MudText>
+            <MudText Typo="Typo.body1" Color="Color.Secondary">/</MudText>
+        }
+
+        <MudText Typo="Typo.body1" Color="Color.Secondary">
+            @RegisteredCredits @LanguageHelper.Credits
+        </MudText>
+    </MudStack>
+
+</MudStack>
+
+@code {
+    [Parameter]
+    [EditorRequired]
+    public int SemesterNumber { get; set; }
+
+    [Parameter]
+    [EditorRequired]
+    public SemesterSeason Season { get; set; }
+
+    [Parameter]
+    [EditorRequired]
+    public required IEnumerable<SubjectEntry> Subjects { get; set; }
+
+    private int CompletedCredits => Subjects.Where(s => s.Completed == true).Sum(s => s.Subject.Credits);
+    private int RegisteredCredits => Subjects.Sum(s => s.Subject.Credits);
+}

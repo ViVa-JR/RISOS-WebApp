@@ -18,9 +18,12 @@
          SubmitText="@LanguageHelper.Save"
          OnSubmit="@OnSubmit">
     <HeaderRight>
-        <MudTooltip Text="@LanguageHelper.ClearStorage">
-            <MudIconButton Icon="@Icons.Material.Outlined.DeleteSweep" OnClick="@ClearData"/>
-        </MudTooltip>
+        @if (!IsReadOnly)
+        {
+            <MudTooltip Text="@LanguageHelper.ClearStorage">
+                <MudIconButton Icon="@Icons.Material.Outlined.DeleteSweep" OnClick="@ClearData"/>
+            </MudTooltip>
+        }
     </HeaderRight>
     <ChildContent>
         <ContentOrCircularLoading IsLoading="_loading">
@@ -105,29 +108,32 @@
                     </MudSelect>
                 </MudStack>
 
-                <MudDivider/>
-
-                <MudStack Spacing="2">
-                    <MudText Typo="Typo.subtitle2" Color="Color.Primary">
-                        <b>@LanguageHelper.SettingsDialog_AcademicSettings</b>
-                    </MudText>
+                @if (!IsReadOnly)
+                {
+                    <MudDivider/>
 
                     <MudStack Spacing="2">
-                        <MudSwitch T="bool"
-                                   Value="_overrideCredits"
-                                   ValueChanged="OnOverrideToggled"
-                                   Color="Color.Primary"
-                                   Label="@LanguageHelper.SettingsDialog_OverrideCredits"/>
-                        <MudNumericField T="int?"
-                                         @bind-Value="_model.Credits"
-                                         Disabled="@(!_overrideCredits)"
-                                         Label="@LanguageHelper.SettingsDialog_RequiredCredits"
-                                         Variant="Variant.Outlined"
-                                         Min="0"
-                                         Adornment="Adornment.End"
-                                         AdornmentText="@LanguageHelper.Cr"/>
+                        <MudText Typo="Typo.subtitle2" Color="Color.Primary">
+                            <b>@LanguageHelper.SettingsDialog_AcademicSettings</b>
+                        </MudText>
+
+                        <MudStack Spacing="2">
+                            <MudSwitch T="bool"
+                                       Value="_overrideCredits"
+                                       ValueChanged="OnOverrideToggled"
+                                       Color="Color.Primary"
+                                       Label="@LanguageHelper.SettingsDialog_OverrideCredits"/>
+                            <MudNumericField T="int?"
+                                             @bind-Value="_model.Credits"
+                                             Disabled="@(!_overrideCredits)"
+                                             Label="@LanguageHelper.SettingsDialog_RequiredCredits"
+                                             Variant="Variant.Outlined"
+                                             Min="0"
+                                             Adornment="Adornment.End"
+                                             AdornmentText="@LanguageHelper.Cr"/>
+                        </MudStack>
                     </MudStack>
-                </MudStack>
+                }
 
                 <MudDivider/>
 
@@ -136,7 +142,7 @@
                         <b>@LanguageHelper.Contact</b>
                     </MudText>
 
-                    <MudStack Spacing="5" Row AlignItems="AlignItems.Center" Justify="Justify.Center">
+                    <MudStack Spacing="@(IsReadOnly ? 1 : 5)" Row AlignItems="AlignItems.Center" Justify="Justify.Center" Wrap="@Wrap.Wrap">
                         <MudButton Href="https://github.com/ViVa-JR/RISOS/issues/new/choose"
                                    Target="_blank"
                                    StartIcon="@Icons.Custom.Brands.GitHub"
@@ -157,15 +163,21 @@
         </ContentOrCircularLoading>
     </ChildContent>
     <FooterLeft>
-        <MudText Typo="Typo.caption" Style="color: var(--mud-palette-text-disabled);">
-            @(LanguageHelper.LastDataUpdate + ": " + _dateTime)
-        </MudText>
+        @if (!IsReadOnly)
+        {
+            <MudText Typo="Typo.caption" Style="color: var(--mud-palette-text-disabled);">
+                @(LanguageHelper.LastDataUpdate + ": " + _dateTime)
+            </MudText>
+        }
     </FooterLeft>
 </RDialog>
 
 @code {
     [Parameter]
     public required StudyContext StudyContext { get; set; }
+
+    [Parameter]
+    public bool IsReadOnly { get; set; }
 
     private bool _loading = true;
     private SettingsDialogModel _model = new();
@@ -220,11 +232,12 @@
         NavigationManager.NavigateTo(NavigationManager.Uri, true);
     }
 
-    public static async Task<DialogResult<SettingsDialogModel>> ShowAsync(IDialogService dialogService, StudyContext studyContext)
+    public static async Task<DialogResult<SettingsDialogModel>> ShowAsync(IDialogService dialogService, StudyContext studyContext, bool isReadOnly = false)
     {
         var dialog = await dialogService.ShowAsync<SettingsDialog>(string.Empty, new DialogParameters<SettingsDialog>
         {
-            { x => x.StudyContext, studyContext }
+            { x => x.StudyContext, studyContext },
+            { x => x.IsReadOnly, isReadOnly }
         }, new DialogOptions
         {
             FullWidth = true,

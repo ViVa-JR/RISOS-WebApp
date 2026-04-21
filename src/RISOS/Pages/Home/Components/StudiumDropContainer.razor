@@ -1,7 +1,7 @@
+@using RISOS.Common.Models
 @using RISOS.Enums
 @using RISOS.Extensions
 @using RISOS.Localization
-@using RISOS.Models
 @using RISOS.Pages.Home.Dialogs.AddCustomSubjectDialog
 @using RISOS.Pages.Home.Models
 @using RISOS.Services
@@ -49,14 +49,10 @@
                       CanDropClass="mud-alert-text-success mud-border-success"
                       NoDropClass="mud-alert-text-error mud-border-error">
         <ChildContent>
-            <div
-                class="rounded-lg border-2 border-dashed mud-border-lines-default mud-background-gray w-100 d-flex flex-column">
-                <MudStack Row Spacing="3" StretchItems="StretchItems.Start" Class="px-4 pt-4 pb-2"
-                          AlignItems="AlignItems.Center">
-                    <MudStack Spacing="1">
-                        <MudText Typo="Typo.h6">@LanguageHelper.UnassignedSubjects</MudText>
-                    </MudStack>
-                    <MudStack Spacing="2" Row AlignItems="AlignItems.Center">
+            <div class="rounded-lg border-2 border-dashed mud-border-lines-default mud-background-gray w-100 d-flex flex-column">
+                <MudStack Row Spacing="3" StretchItems="StretchItems.Start" Class="px-4 pt-2 pb-2" AlignItems="AlignItems.Center">
+                    <MudText Typo="Typo.h6">@LanguageHelper.UnassignedSubjects</MudText>
+                    <MudStack Spacing="2" Row AlignItems="AlignItems.Center" Justify="Justify.Center">
                         @foreach (var type in Enum.GetValues<SubjectType>())
                         {
                             <MudStack Row Spacing="1" Wrap="Wrap.NoWrap">
@@ -77,11 +73,9 @@
                         </MudButton>
                     </MudTooltip>
                 </MudStack>
-
                 <MudDropZone T="SubjectEntry" Identifier="@SubjectEntry.Unassigned"
                              Class="px-4 pb-4 pt-2 d-flex flex-wrap gap-2 border-transparent rounded-b-lg overflow-y-auto"
                              Style="max-height: max(220px, 20vh); min-height: 100px;"/>
-
             </div>
 
             <ControlCenter @bind-RecognizedYear="RecognizedYear" YearsChanged="OnYearsChanged"
@@ -115,9 +109,7 @@
                                 <SemesterDropZone Semester="@summerSem" Credits="@GetSemesterCredits(summerSem)"
                                                   SemesterSeason="SemesterSeason.Summer"/>
                             </MudStack>
-                            <MudStack AlignItems="AlignItems.Center" Row StretchItems="StretchItems.Start" Spacing="1"
-                                      Class="pt-2"
-                                      Style="border-top: solid 1px var(--mud-palette-background-gray)">
+                            <MudStack AlignItems="AlignItems.Center" Row StretchItems="StretchItems.Start" Spacing="1" Class="pt-2">
                                 <MudText Typo="Typo.subtitle2" Color="Color.Default">@LanguageHelper.YearTotal</MudText>
 
                                 @{
@@ -127,7 +119,7 @@
                                 @if (yearCredits.Completed > 0)
                                 {
                                     <MudText Typo="Typo.body1" Color="Color.Success">@yearCredits.Completed</MudText>
-                                    <MudText Typo="Typo.body1" Color="Color.Secondary">/</MudText>
+                                    <MudText Typo="Typo.body1" Color="Color.Primary">/</MudText>
                                 }
                                 <MudText Typo="Typo.body1" Color="Color.Primary">
                                     <b>@yearCredits.Registered</b> @LanguageHelper.Credits

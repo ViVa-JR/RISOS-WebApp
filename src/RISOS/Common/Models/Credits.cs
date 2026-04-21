@@ -1,4 +1,4 @@
-namespace RISOS.Models;
+namespace RISOS.Common.Models;
 
 public record Credits(int Registered = 0, int Completed = 0)
 {

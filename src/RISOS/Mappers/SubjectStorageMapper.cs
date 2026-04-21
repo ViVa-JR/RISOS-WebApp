@@ -2,7 +2,7 @@
 
 namespace RISOS.Mappers;
 
-public class SubjectStorageMapper
+public static class SubjectStorageMapper
 {
     public static SubjectStorage ToStorage(SubjectEntry subjectEntry)
     {
@@ -18,7 +18,8 @@ public class SubjectStorageMapper
         return result;
     }
 
-    public static ICollection<SubjectStorage> ToStorageList(List<SubjectEntry> subjectEntries) => subjectEntries.Select(ToStorage).ToList();
+    public static ICollection<SubjectStorage> ToStorageList(List<SubjectEntry> subjectEntries)
+        => subjectEntries.Select(ToStorage).ToList();
 
 
     public static SubjectEntry ToSubjectEntry(SubjectStorage storage, SubjectEntry subjectEntry)
