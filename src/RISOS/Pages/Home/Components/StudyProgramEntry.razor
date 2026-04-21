@@ -1,7 +1,6 @@
 @using MudExtensions
 @using RISOS.Localization
 @using RISOS.Pages.Home.Models
-
 <style>
     .study-program-selector-list .mud-list-item-extended:hover {
         opacity: 0.9;
@@ -55,7 +54,8 @@
                 </MudText>
             }
             <MudLink Href="@Program.Url" Target="_blank">
-                <MudIconButton Size="Size.Small" Icon="@Icons.Material.Outlined.Info" Color="Color.Info" Class="flex-shrink-0" title="@LanguageHelper.ShowProgramInfo"/>
+                <MudIconButton Size="Size.Small" Icon="@Icons.Material.Outlined.Info" Color="Color.Info"
+                               Class="flex-shrink-0" title="@LanguageHelper.ShowProgramInfo"/>
             </MudLink>
         </MudStack>
     </MudTooltip>

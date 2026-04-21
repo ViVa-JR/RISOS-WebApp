@@ -5,7 +5,6 @@
 @using RISOS.Pages.Home.Dialogs.AddCustomSubjectDialog
 @using RISOS.Pages.Home.Models
 @using RISOS.Services
-
 @inject IDialogService DialogService
 @inject ISnackbar Snackbar
 @inject LocalStorageService LocalStorageService
@@ -44,7 +43,9 @@
                         <MudStack Row AlignItems="AlignItems.Center" Spacing="1">
                             @if (!Entry.IsAssigned)
                             {
-                                <MudChip T="SemesterSeason" Value="@Entry.Subject.SemesterSeason" Text="@Entry.Subject.SemesterSeason.ToLabel()" Size="Size.Small" Variant="Variant.Text"
+                                <MudChip T="SemesterSeason" Value="@Entry.Subject.SemesterSeason"
+                                         Text="@Entry.Subject.SemesterSeason.ToLabel()" Size="Size.Small"
+                                         Variant="Variant.Text"
                                          Color="@Entry.Subject.SemesterSeason.ToColor()" Style="font-size: 0.7rem;"/>
                                 <MudText Typo="Typo.caption" Color="Color.Secondary">•</MudText>
                             }
@@ -75,32 +76,38 @@
             </div>
         </ActivatorContent>
         <ChildContent>
-            <MudMenu StartIcon="@Icons.Material.Filled.Subject" IconColor="Color.Primary" Label="@LanguageHelper.MoveTo" Dense>
+            <MudMenu StartIcon="@Icons.Material.Filled.Subject" IconColor="Color.Primary" Label="@LanguageHelper.MoveTo"
+                     Dense>
                 @if (Entry.Semester != SubjectEntry.Unassigned)
                 {
-                    <MudMenuItem Label="@LanguageHelper.Unassigned" OnClick="@(() => MoveEntry(SubjectEntry.Unassigned))"/>
+                    <MudMenuItem Label="@LanguageHelper.Unassigned"
+                                 OnClick="@(() => MoveEntry(SubjectEntry.Unassigned))"/>
                 }
 
                 @foreach (var semester in Enumerable.Range(1, SemesterCount))
                 {
                     if (CanMove(semester))
                     {
-                        <MudMenuItem Label="@($"{semester}. {LanguageHelper.Semester}")" OnClick="@(() => MoveEntry(semester.ToString()))"/>
+                        <MudMenuItem Label="@($"{semester}. {LanguageHelper.Semester}")"
+                                     OnClick="@(() => MoveEntry(semester.ToString()))"/>
                     }
                 }
             </MudMenu>
             @if (Entry is { Completed: false, LatestAttempt: true })
             {
-                <MudMenuItem Icon="@Icons.Material.Filled.RestartAlt" Label="@LanguageHelper.Retake" OnClick="@(() => RetakeEntry.InvokeAsync(Entry))"/>
+                <MudMenuItem Icon="@Icons.Material.Filled.RestartAlt" Label="@LanguageHelper.Retake"
+                             OnClick="@(() => RetakeEntry.InvokeAsync(Entry))"/>
             }
             @if (Entry.IsCustomSubject)
             {
-                <MudMenuItem Icon="@Icons.Material.Filled.ContentCopy" Label="@LanguageHelper.Clone" OnClick="@OnCloneClick"/>
+                <MudMenuItem Icon="@Icons.Material.Filled.ContentCopy" Label="@LanguageHelper.Clone"
+                             OnClick="@OnCloneClick"/>
                 <MudMenuItem Icon="@Icons.Material.Filled.Edit" Label="@LanguageHelper.Edit" OnClick="@OnEditClick"/>
             }
             @if (Entry.Subject.Type != SubjectType.Compulsory || Entry.IsCustomSubject || Entry.Attempt > 1)
             {
-                <MudMenuItem Icon="@Icons.Material.Filled.Delete" IconColor="Color.Error" Label="@LanguageHelper.Delete" OnClick="@(() => RemoveEntry.InvokeAsync(Entry))"/>
+                <MudMenuItem Icon="@Icons.Material.Filled.Delete" IconColor="Color.Error" Label="@LanguageHelper.Delete"
+                             OnClick="@(() => RemoveEntry.InvokeAsync(Entry))"/>
             }
         </ChildContent>
     </MudMenu>

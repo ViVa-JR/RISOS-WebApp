@@ -1,5 +1,4 @@
 @using RISOS.Services
-
 @inject ThemeStateService ThemeStateService
 @inject IJSRuntime Js
 
@@ -102,7 +101,8 @@
 
     @if (_drawerOpen && OpenedDrawerContent is not null)
     {
-        <div id="side-bar-content" class="pa-2 d-flex flex-column" style="overflow-y: auto; overflow-x: hidden; max-height: calc(100vh - 56px)">
+        <div id="side-bar-content" class="pa-2 d-flex flex-column"
+             style="overflow-y: auto; overflow-x: hidden; max-height: calc(100vh - 56px)">
             @OpenedDrawerContent
         </div>
     }

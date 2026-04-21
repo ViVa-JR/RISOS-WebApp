@@ -5,7 +5,6 @@
 @using RISOS.Pages.Home.Dialogs.AddCustomSubjectDialog
 @using RISOS.Pages.Home.Models
 @using RISOS.Services
-
 @inject IDialogService DialogService
 @inject ISnackbar Snackbar
 @inject LocalStorageService LocalStorageService
@@ -42,7 +41,8 @@
         </MudStack>
     </MudOverlay>
 
-    <MudDropContainer T="SubjectEntry" @ref="_dropContainer" Items="@Subjects" ItemsSelector="@Selector" ItemDropped="@ItemUpdated"
+    <MudDropContainer T="SubjectEntry" @ref="_dropContainer" Items="@Subjects" ItemsSelector="@Selector"
+                      ItemDropped="@ItemUpdated"
                       Class="d-flex flex-column gap-3 mb-2"
                       Style="height: calc(100vh - 20px)"
                       ApplyDropClassesOnDragStarted
@@ -56,7 +56,8 @@
                         @foreach (var type in Enum.GetValues<SubjectType>())
                         {
                             <MudStack Row Spacing="1" Wrap="Wrap.NoWrap">
-                                <MudIcon Size="Size.Small" Color="@type.ToColor()" Icon="@Icons.Material.Filled.Circle"/>
+                                <MudIcon Size="Size.Small" Color="@type.ToColor()"
+                                         Icon="@Icons.Material.Filled.Circle"/>
                                 <MudText Typo="Typo.caption">@type.ToLabel()</MudText>
                             </MudStack>
                         }
@@ -77,7 +78,8 @@
                              Style="max-height: max(220px, 20vh); min-height: 100px;"/>
             </div>
 
-            <ControlCenter @bind-RecognizedYear="RecognizedYear" YearsChanged="OnYearsChanged" TotalCredits="TotalCredits"/>
+            <ControlCenter @bind-RecognizedYear="RecognizedYear" YearsChanged="OnYearsChanged"
+                           TotalCredits="TotalCredits"/>
 
             <div id="main-scroll-container" style="overflow: scroll; position: relative;">
 
@@ -95,13 +97,17 @@
 
                         <div class="rounded-lg pa-4 d-flex flex-column mt-4"
                              style="position: relative; border: 2px dotted var(--mud-palette-lines-default); height: 100%; min-width: 336px; flex: 1;">
-                            <div style="position: absolute; top: -16px; left: 15%; transform: translateX(-50%); background-color: var(--mud-palette-background); padding: 0 16px;">
-                                <MudText Typo="Typo.h6" Color="Color.Primary" Class="font-weight-bold">@year. @LanguageHelper.Years_One</MudText>
+                            <div
+                                style="position: absolute; top: -16px; left: 15%; transform: translateX(-50%); background-color: var(--mud-palette-background); padding: 0 16px;">
+                                <MudText Typo="Typo.h6" Color="Color.Primary"
+                                         Class="font-weight-bold">@year. @LanguageHelper.Years_One</MudText>
                             </div>
 
                             <MudStack Class="flex-grow-1">
-                                <SemesterDropZone Semester="@winterSem" Credits="@GetSemesterCredits(winterSem)" SemesterSeason="SemesterSeason.Winter"/>
-                                <SemesterDropZone Semester="@summerSem" Credits="@GetSemesterCredits(summerSem)" SemesterSeason="SemesterSeason.Summer"/>
+                                <SemesterDropZone Semester="@winterSem" Credits="@GetSemesterCredits(winterSem)"
+                                                  SemesterSeason="SemesterSeason.Winter"/>
+                                <SemesterDropZone Semester="@summerSem" Credits="@GetSemesterCredits(summerSem)"
+                                                  SemesterSeason="SemesterSeason.Summer"/>
                             </MudStack>
                             <MudStack AlignItems="AlignItems.Center" Row StretchItems="StretchItems.Start" Spacing="1" Class="pt-2">
                                 <MudText Typo="Typo.subtitle2" Color="Color.Default">@LanguageHelper.YearTotal</MudText>

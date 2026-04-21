@@ -38,8 +38,10 @@
                         }
                         else
                         {
-                            <MudIconButton Size="Size.Small" Icon="@Icons.Material.Filled.Close" Color="Color.Error" Style="position: absolute; top: 8px; right: 8px" OnClick="@ClearFile"/>
-                            <MudIcon Icon="@Icons.Material.Filled.InsertDriveFile" Color="Color.Primary" Size="Size.Large"/>
+                            <MudIconButton Size="Size.Small" Icon="@Icons.Material.Filled.Close" Color="Color.Error"
+                                           Style="position: absolute; top: 8px; right: 8px" OnClick="@ClearFile"/>
+                            <MudIcon Icon="@Icons.Material.Filled.InsertDriveFile" Color="Color.Primary"
+                                     Size="Size.Large"/>
                         }
                         <MudText Typo="Typo.subtitle1" Class="mt-2">
                             @(_selectedFile == null ? LanguageHelper.DropJSON : _selectedFile.Name)

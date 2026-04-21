@@ -1,6 +1,6 @@
-@typeparam TGroupKey
-
+@using System.Globalization
 @using RISOS.Pages.Home.Models
+@typeparam TGroupKey
 
 <style>
     .subjects-list .mud-list-item-extended:hover {
@@ -15,12 +15,13 @@
 @if (Groups.Any())
 {
     <MudStack Spacing="0" Class="h-100" Style="box-shadow: var(--mud-elevation-1);">
-        <div class="pa-3" style="border-bottom: 1px solid var(--mud-palette-lines-default); background-color: var(--mud-palette-surface); border-radius: 4px 4px 0 0; flex-shrink: 0;">
+        <div class="pa-3"
+             style="border-bottom: 1px solid var(--mud-palette-lines-default); background-color: var(--mud-palette-surface); border-radius: 4px 4px 0 0; flex-shrink: 0;">
             <MudTextField T="string"
                           @bind-Value="SearchValue"
                           Placeholder="Search"
                           Adornment="Adornment.Start"
-                          DebounceInterval="300"
+                          DebounceInterval="400"
                           AdornmentIcon="@Icons.Material.Filled.Search"
                           IconSize="Size.Medium"
                           Class="mt-0"
@@ -33,7 +34,8 @@
             <Virtualize Items="@_flattenedList" Context="row" OverscanCount="10">
                 @if (row.IsHeader)
                 {
-                    <MudListSubheader @key="@($"header_{row.GroupKey}")" Style="background-color: var(--mud-palette-background-gray)" Class="pa-2">
+                    <MudListSubheader @key="@($"header_{row.GroupKey}")"
+                                      Style="background-color: var(--mud-palette-background-gray)" Class="pa-2">
                         <MudText Typo="Typo.body2" Color="Color.Primary">
                             @if (HeaderTemplate != null)
                             {
@@ -49,7 +51,8 @@
                 }
                 else
                 {
-                    <SubjectsListEntryTemplate T="TGroupKey" Row="row" ReadOnly="@ReadOnly" SubjectChanged="@SubjectChanged"/>
+                    <SubjectsListEntryTemplate T="TGroupKey" Row="row" ReadOnly="@ReadOnly"
+                                               SubjectChanged="@SubjectChanged"/>
                 }
             </Virtualize>
         </MudList>
@@ -100,17 +103,31 @@
     {
         var result = new List<VirtualRow>();
 
-        // 2. Filter within the existing Groups using Tuples, ignoring groups that become empty
-        var filteredGroups = string.IsNullOrWhiteSpace(SearchValue)
-            ? Groups.Select(g => (g.Key, Items: g.AsEnumerable()))
-            : Groups.Select(g => (
-                    g.Key,
-                    Items: g.Where(x =>
-                        x.Subject.Name.Contains(SearchValue, StringComparison.OrdinalIgnoreCase) ||
-                        x.Subject.ShortName.Contains(SearchValue, StringComparison.OrdinalIgnoreCase) ||
-                        (x.Subject.GroupId is not null && x.Subject.GroupId.Contains(SearchValue, StringComparison.OrdinalIgnoreCase)))
-                ))
-                .Where(g => g.Items.Any());
+        if (string.IsNullOrWhiteSpace(SearchValue))
+        {
+            var allGroups = Groups.Select(g => (g.Key, Items: g.AsEnumerable()));
+            foreach (var group in allGroups.OrderBy(g => g.Key))
+            {
+                result.Add(new VirtualRow { GroupKey = group.Key });
+                result.AddRange(group.Items.Select(subject => new VirtualRow { Subject = subject }));
+            }
+
+            _flattenedList = result;
+            return;
+        }
+
+        var compareInfo = CultureInfo.InvariantCulture.CompareInfo;
+        const CompareOptions compareOptions = CompareOptions.IgnoreCase | CompareOptions.IgnoreNonSpace;
+
+        var filteredGroups = Groups.Select(g => (
+                g.Key,
+                Items: g.Where(x =>
+                    (!string.IsNullOrWhiteSpace(x.Subject.Name) && compareInfo.IndexOf(x.Subject.Name, SearchValue, compareOptions) >= 0) ||
+                    (!string.IsNullOrWhiteSpace(x.Subject.ShortName) && compareInfo.IndexOf(x.Subject.ShortName, SearchValue, compareOptions) >= 0) ||
+                    (!string.IsNullOrWhiteSpace(x.Subject.GroupId) && compareInfo.IndexOf(x.Subject.GroupId, SearchValue, compareOptions) >= 0)
+                )
+            ))
+            .Where(g => g.Items.Any());
 
         foreach (var group in filteredGroups.OrderBy(g => g.Key))
         {

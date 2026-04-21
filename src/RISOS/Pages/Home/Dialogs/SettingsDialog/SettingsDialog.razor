@@ -6,7 +6,6 @@
 @using RISOS.Localization
 @using RISOS.Pages.Home.Models
 @using RISOS.Services
-
 @inject LanguageService LanguageService
 @inject GitRepositoryInfoService GitRepositoryInfoService
 @inject NavigationManager NavigationManager
@@ -77,28 +76,32 @@
 
                         <MudSelectItem Value="ThemeType.Deuteranopia">
                             <div class="d-flex align-center gap-2">
-                                <MudIcon Icon="@Icons.Material.Filled.Visibility" Size="Size.Small" Style="color: #009E73;"/>
+                                <MudIcon Icon="@Icons.Material.Filled.Visibility" Size="Size.Small"
+                                         Style="color: #009E73;"/>
                                 @LanguageHelper.Theme_Deuteranopia
                             </div>
                         </MudSelectItem>
 
                         <MudSelectItem Value="ThemeType.Protanopia">
                             <div class="d-flex align-center gap-2">
-                                <MudIcon Icon="@Icons.Material.Filled.Visibility" Size="Size.Small" Style="color: #0072B2;"/>
+                                <MudIcon Icon="@Icons.Material.Filled.Visibility" Size="Size.Small"
+                                         Style="color: #0072B2;"/>
                                 @LanguageHelper.Theme_Protanopia
                             </div>
                         </MudSelectItem>
 
                         <MudSelectItem Value="ThemeType.Tritanopia">
                             <div class="d-flex align-center gap-2">
-                                <MudIcon Icon="@Icons.Material.Filled.RemoveRedEye" Size="Size.Small" Style="color: #00ced1;"/>
+                                <MudIcon Icon="@Icons.Material.Filled.RemoveRedEye" Size="Size.Small"
+                                         Style="color: #00ced1;"/>
                                 @LanguageHelper.Theme_Tritanopia
                             </div>
                         </MudSelectItem>
 
                         <MudSelectItem Value="ThemeType.HighContrast">
                             <div class="d-flex align-center gap-2">
-                                <MudIcon Icon="@Icons.Material.Filled.Contrast" Size="Size.Small" Color="Color.Default"/>
+                                <MudIcon Icon="@Icons.Material.Filled.Contrast" Size="Size.Small"
+                                         Color="Color.Default"/>
                                 @LanguageHelper.Theme_HighContrast
                             </div>
                         </MudSelectItem>

@@ -1,7 +1,6 @@
-@typeparam TGroupKey
-
 @using RISOS.Localization
 @using RISOS.Pages.Home.Models
+@typeparam TGroupKey
 
 <style>
     .count-chip {
@@ -24,7 +23,8 @@
             @if (Count > 0)
             {
                 <MudTooltip Text="@(EveryGroupSelected ? string.Empty : LanguageHelper.CompulsoryElectiveErrorMessage)">
-                    <MudChip T="int" Variant="Variant.Outlined" Size="Size.Small" Style="margin: 0 !important;" Class="@(EveryGroupSelected ? "count-chip" : "error-chip")">
+                    <MudChip T="int" Variant="Variant.Outlined" Size="Size.Small" Style="margin: 0 !important;"
+                             Class="@(EveryGroupSelected ? "count-chip" : "error-chip")">
                         @Count
                     </MudChip>
                 </MudTooltip>
@@ -35,7 +35,8 @@
             }
             else
             {
-                <MudIcon Icon="@(_expanded ? Icons.Material.Filled.KeyboardArrowUp : Icons.Material.Filled.KeyboardArrowDown)"/>
+                <MudIcon
+                    Icon="@(_expanded ? Icons.Material.Filled.KeyboardArrowUp : Icons.Material.Filled.KeyboardArrowDown)"/>
             }
         </MudStack>
     </TitleContent>

@@ -1,5 +1,4 @@
 ﻿@page "/"
-
 @using RISOS.Enums
 @using RISOS.Extensions
 @using RISOS.Helpers
@@ -81,7 +80,8 @@
     <OpenedDrawerContent>
         <MudExpansionPanels Elevation="3" Style="height: calc(100vh - 128px); overflow: hidden">
             <MudExpansionPanel Text="@LanguageHelper.StudyProgram" Gutters="false">
-                <StudyProgramSelector SelectedProgram="@_selectedProgram" SelectedProgramChanged="@OnSelectedProgramsChanged" Loading="@_isLoading"/>
+                <StudyProgramSelector SelectedProgram="@_selectedProgram"
+                                      SelectedProgramChanged="@OnSelectedProgramsChanged" Loading="@_isLoading"/>
             </MudExpansionPanel>
             <SubjectsPanel TGroupKey="int"
                            HeaderTemplate="@(x => $"{x}. {LanguageHelper.Semester}")"
@@ -114,9 +114,11 @@
         </MudExpansionPanels>
     </OpenedDrawerContent>
     <AlwaysVisible>
-        <MudStack Row Justify="Justify.Center" Spacing="2" AlignItems="AlignItems.Center" Wrap="Wrap.Wrap" Class="px-2 pb-2" Style="width: 100%">
+        <MudStack Row Justify="Justify.Center" Spacing="2" AlignItems="AlignItems.Center" Wrap="Wrap.Wrap"
+                  Class="px-2 pb-2" Style="width: 100%">
             <MudTooltip Text="@LanguageHelper.Settings">
-                <MudIconButton Icon="@Icons.Material.Filled.Settings" Style="color: var(--mud-palette-drawer-text)" OnClick="@OnSettingsClick"/>
+                <MudIconButton Icon="@Icons.Material.Filled.Settings" Style="color: var(--mud-palette-drawer-text)"
+                               OnClick="@OnSettingsClick"/>
             </MudTooltip>
             <MudTooltip Text="@LanguageHelper.Export">
                 <MudIconButton
