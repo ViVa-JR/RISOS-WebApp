@@ -9,13 +9,12 @@
         display: flex;
         overflow-x: auto;
         scroll-snap-type: x mandatory;
-        scroll-behavior: smooth;
+        overscroll-behavior-x: none;
         -webkit-overflow-scrolling: touch;
         scrollbar-width: none;
         width: 100%;
         gap: 16px;
         padding-bottom: 16px;
-
         flex-grow: 1;
         align-items: flex-start;
     }
@@ -26,8 +25,9 @@
 
     .mobile-snap-item {
         flex: 0 0 100%;
-        scroll-snap-align: center;
         min-width: 100%;
+        scroll-snap-align: start;
+        scroll-snap-stop: always;
     }
 
     .app-title {
@@ -120,25 +120,6 @@
     public bool LocalStorageLoading { get; set; }
 
     private Credits TotalCredits => GetTotalCredits();
-
-    private int SafeNeededCredits => StudyContext.Credits > 0 ? StudyContext.Credits : 180;
-
-    private int CompletedProgress => TotalCredits.Completed > 0
-        ? (int)Math.Min(100, Math.Round((double)TotalCredits.Completed / SafeNeededCredits * 100))
-        : 0;
-
-    private int RegisteredProgress
-    {
-        get
-        {
-            if (TotalCredits.Registered <= TotalCredits.Completed) return 0;
-
-            var pendingCredits = TotalCredits.Registered - TotalCredits.Completed;
-            var pct = (int)Math.Round((double)pendingCredits / SafeNeededCredits * 100);
-
-            return Math.Min(pct, 100 - CompletedProgress);
-        }
-    }
 
     private Credits GetTotalCredits()
     {
