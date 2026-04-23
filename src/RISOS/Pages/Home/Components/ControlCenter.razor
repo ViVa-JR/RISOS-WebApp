@@ -84,16 +84,9 @@
                     <MudToggleIconButton Toggled="ThemeStateService.IsDarkMode"
                                          ToggledChanged="ThemeStateService.SetDarkMode"
                                          Icon="@Icons.Material.Filled.NightsStay"
-                                         ToggledIcon="@Icons.Material.Filled.WbSunny"
-                                         Style="color: var(--mud-palette-drawer-text)"/>
-
-                    <MudIconButton Icon="@Icons.Material.Filled.Share"
-                                   Style="color: var(--mud-palette-drawer-text)"
-                                   OnClick="@OnShareClick"/>
-
-                    <MudTooltip Text="@LanguageHelper.Settings">
-                        <MudIconButton Icon="@Icons.Material.Filled.Settings" Style="color: var(--mud-palette-drawer-text)" OnClick="@OnSettingsClick"/>
-                    </MudTooltip>
+                                         ToggledIcon="@Icons.Material.Filled.WbSunny"/>
+                    <MudIconButton Icon="@Icons.Material.Filled.Share" OnClick="@OnShareClick"/>
+                    <MudIconButton Icon="@Icons.Material.Filled.Settings" OnClick="@OnSettingsClick"/>
                 </div>
             }
 
