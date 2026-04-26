@@ -1,6 +1,6 @@
 ﻿namespace RISOS.Pages.Home.Models;
 
-public class SubjectStorage
+public class SubjectStorageEntry
 {
     public string SubjectId { get; set; } = "";
     public bool? Completed { get; set; }

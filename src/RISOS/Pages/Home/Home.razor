@@ -454,7 +454,7 @@
                 continue;
             }
 
-            var updatedEntry = SubjectStorageMapper.ToSubjectEntry(storageItem, subject);
+            var updatedEntry = SubjectStorageMapper.AplyStorageData(storageItem, subject);
             _selectedSubjects.Add(updatedEntry);
         }
 

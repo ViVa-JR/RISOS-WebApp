@@ -128,17 +128,17 @@
         }
     }
 
-    private Task<Result> Validate()
+    private async Task <Result> Validate()
     {
         if (_validatedData != null)
         {
-            return Task.FromResult(Result.Success());
+            return Result.Success();
         }
 
         _isSubmitAttempted = true;
         _dragClass = $"{DefaultDragClass} mud-border-error";
         StateHasChanged();
-        return Task.FromResult(Result.Failure(Error.NullValue));
+        return Result.Failure(Error.NullValue);
     }
 
     private void ClearFile()

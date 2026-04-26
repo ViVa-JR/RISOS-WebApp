@@ -17,17 +17,7 @@ public class ExportService(IJSRuntime js, LocalStorageService localStorageServic
     {
         var json = JsonSerializer.Serialize(data, Options);
 
-        await js.InvokeVoidAsync("eval", $@"
-            (function(name, content) {{
-                const blob = new Blob([content], {{type: 'application/json'}});
-                const url = URL.createObjectURL(blob);
-                const a = document.createElement('a');
-                a.href = url;
-                a.download = name;
-                a.click();
-                URL.revokeObjectURL(url);
-            }})('{fileName}', `{json.Replace("`", "\\`")}`)
-        ");
+        await js.InvokeVoidAsync("downloadFile", fileName, json);
     }
 
     public async Task HandleExportAsync()
