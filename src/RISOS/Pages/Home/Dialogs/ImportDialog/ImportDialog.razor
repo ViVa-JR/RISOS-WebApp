@@ -137,7 +137,7 @@
 
         _isSubmitAttempted = true;
         _dragClass = $"{DefaultDragClass} mud-border-error";
-        StateHasChanged();
+        await InvokeAsync(StateHasChanged);
         return Result.Failure(Error.NullValue);
     }
 

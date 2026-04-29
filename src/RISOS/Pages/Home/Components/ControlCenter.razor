@@ -196,8 +196,7 @@
             await LanguageService.SetAppLanguageAsync(result.Value.Language);
             NavigationManager.NavigateTo(NavigationManager.Uri, true);
         }
-
-        StateHasChanged();
+        await InvokeAsync(StateHasChanged);
     }
 
     private async Task OnShareClick() => await ShareDialog.ShowAsync(DialogService);
