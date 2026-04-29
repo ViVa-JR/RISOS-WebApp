@@ -191,13 +191,13 @@ public class LocalStorageService(IJSRuntime js)
         }
     }
 
-    public async Task SaveSubjects(ICollection<SubjectStorage> subjects)
+    public async Task SaveSubjects(ICollection<SubjectStorageEntry> subjects)
     {
         var json = JsonSerializer.Serialize(subjects);
         await js.InvokeVoidAsync("localStorage.setItem", Subjects, json);
     }
 
-    public async Task<List<SubjectStorage>> LoadSubjectsAsync()
+    public async Task<List<SubjectStorageEntry>> LoadSubjectsAsync()
     {
         var json = await js.InvokeAsync<string>("localStorage.getItem", Subjects);
         if (string.IsNullOrWhiteSpace(json))
@@ -207,7 +207,7 @@ public class LocalStorageService(IJSRuntime js)
 
         try
         {
-            var subjects = JsonSerializer.Deserialize<List<SubjectStorage>>(json);
+            var subjects = JsonSerializer.Deserialize<List<SubjectStorageEntry>>(json);
             return subjects ?? [];
         }
         catch (Exception)
@@ -263,7 +263,7 @@ public class LocalStorageService(IJSRuntime js)
 
     public async Task ResetSubjectsAsync()
     {
-        var emptyList = new List<SubjectStorage>();
+        var emptyList = new List<SubjectStorageEntry>();
         await SaveSubjects(emptyList);
     }
 

@@ -153,7 +153,7 @@
     }
 </CascadingValue>
 
-@code {
+    @code {
     [CascadingParameter]
     public bool IsReadOnly { get; set; }
 
@@ -291,7 +291,6 @@
 
         _dropZoneContainerLoading = false;
         await InvokeAsync(StateHasChanged);
-        StateHasChanged();
     }
 
     private async Task OnRemove(SubjectEntry entry)
@@ -380,8 +379,7 @@
             await LanguageService.SetAppLanguageAsync(result.Value.Language);
             NavigationManager.NavigateTo(NavigationManager.Uri, true);
         }
-
-        StateHasChanged();
+        await InvokeAsync(StateHasChanged);
     }
 
     private async Task OnImportClick()
@@ -454,7 +452,7 @@
                 continue;
             }
 
-            var updatedEntry = SubjectStorageMapper.ToSubjectEntry(storageItem, subject);
+            var updatedEntry = SubjectStorageMapper.AplyStorageData(storageItem, subject);
             _selectedSubjects.Add(updatedEntry);
         }
 

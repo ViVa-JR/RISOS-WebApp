@@ -4,9 +4,9 @@ namespace RISOS.Mappers;
 
 public static class SubjectStorageMapper
 {
-    public static SubjectStorage ToStorage(SubjectEntry subjectEntry)
+    public static SubjectStorageEntry ToStorage(SubjectEntry subjectEntry)
     {
-        var result = new SubjectStorage
+        return new SubjectStorageEntry
         {
             SubjectId = subjectEntry.Subject.Id,
             Completed = subjectEntry.Completed,
@@ -15,14 +15,13 @@ public static class SubjectStorageMapper
             LatestAttempt = subjectEntry.LatestAttempt,
             IndexInZone = subjectEntry.IndexInZone
         };
-        return result;
     }
 
-    public static ICollection<SubjectStorage> ToStorageList(List<SubjectEntry> subjectEntries)
+    public static ICollection<SubjectStorageEntry> ToStorageList(List<SubjectEntry> subjectEntries)
         => subjectEntries.Select(ToStorage).ToList();
 
 
-    public static SubjectEntry ToSubjectEntry(SubjectStorage storage, SubjectEntry subjectEntry)
+    public static SubjectEntry AplyStorageData(SubjectStorageEntry storage, SubjectEntry subjectEntry)
     {
         if (storage.Attempt != 1)
         {
