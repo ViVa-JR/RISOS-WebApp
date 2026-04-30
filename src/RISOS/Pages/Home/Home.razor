@@ -1,4 +1,5 @@
 ﻿@page "/"
+@using FastCloner
 @using RISOS.Enums
 @using RISOS.Extensions
 @using RISOS.Helpers
@@ -6,6 +7,7 @@
 @using RISOS.Mappers
 @using RISOS.Pages.Home.Components
 @using RISOS.Pages.Home.Components.MobileLayout
+@using RISOS.Pages.Home.Dialogs.AddCustomSubjectDialog
 @using RISOS.Pages.Home.Dialogs.ImportDialog
 @using RISOS.Pages.Home.Dialogs.SettingsDialog
 @using RISOS.Pages.Home.Dialogs.ShareDialog
@@ -91,7 +93,7 @@
                            Disabled="@Disabled"
                            Subjects="@CompulsorySubjects"
                            IsLoading="@_isLoading"
-                           FixedPixels="326"
+                           FixedPixels="382"
                            ReadOnly/>
             <SubjectsPanel TGroupKey="string"
                            GroupBy="@(x => x.Subject.GroupId!)"
@@ -100,7 +102,7 @@
                            Disabled="@Disabled"
                            Subjects="@CompulsoryElectiveSubjects"
                            IsLoading="@_isLoading"
-                           FixedPixels="326"
+                           FixedPixels="382"
                            CompulsoryGroups/>
             <SubjectsPanel TGroupKey="SemesterSeason"
                            GroupBy="@(x => x.Subject.SemesterSeason)"
@@ -110,7 +112,16 @@
                            Disabled="@Disabled"
                            Subjects="@ElectiveSubjects"
                            IsLoading="@_isLoading"
-                           FixedPixels="310"/>
+                           FixedPixels="382"/>
+            <SubjectsPanel TGroupKey="SemesterSeason"
+                           GroupBy="@(x => x.Subject.SemesterSeason)"
+                           HeaderTemplate="@(x => x.ToLabel())"
+                           SubjectChanged="@SubjectChanged"
+                           Title="@LanguageHelper.Sport"
+                           Disabled="@Disabled"
+                           Subjects="@SportSubjects"
+                           IsLoading="@_isLoading"
+                           FixedPixels="366"/>
         </MudExpansionPanels>
     </OpenedDrawerContent>
     <AlwaysVisible>
@@ -170,6 +181,8 @@
     private Dictionary<SubjectEntryKey, SubjectEntry> CompulsorySubjects => _subjects.Where(s => s.Value.Subject.Type == SubjectType.Compulsory && !s.Value.IsCustomSubject).ToDictionary();
     private Dictionary<SubjectEntryKey, SubjectEntry> CompulsoryElectiveSubjects => _subjects.Where(s => s.Value.Subject.Type == SubjectType.CompulsoryElective && !s.Value.IsCustomSubject).ToDictionary();
     private Dictionary<SubjectEntryKey, SubjectEntry> ElectiveSubjects => _subjects.Where(s => s.Value.Subject.Type == SubjectType.Elective && !s.Value.IsCustomSubject).ToDictionary();
+    private Dictionary<SubjectEntryKey, SubjectEntry> SportSubjects => _subjects.Where(s => s.Value.Subject.Type == SubjectType.Sport && !s.Value.IsCustomSubject).ToDictionary();
+
     private List<SubjectEntry> _selectedSubjects = [];
     private bool Disabled => _selectedProgram is null;
 
@@ -333,6 +346,12 @@
 
     private async Task SubjectChanged(SubjectEntry subject)
     {
+        if (subject.Subject.Type == SubjectType.Sport)
+        {
+            await AddNewSportEntry(subject);
+            return;
+        }
+
         _subjects[subject.Key] = subject;
 
         if (subject.Selected)
@@ -358,6 +377,22 @@
             }
         }
 
+        _dropContainer?.Refresh();
+    }
+
+    private async Task AddNewSportEntry(SubjectEntry subject)
+    {
+        var clone = FastCloner.DeepClone(subject);
+        if (clone is null)
+        {
+            return;
+        }
+
+        clone.Subject.Id = CustomSubjectModel.GenerateNewId();
+        clone.Semester = SubjectEntry.Unassigned;
+        clone.IsCustomSubject = true;
+        _selectedSubjects.Add(clone);
+        await LocalStorageService.UpdateSubjectAsync(clone);
         _dropContainer?.Refresh();
     }
 

@@ -13,6 +13,7 @@ public static class SubjectTypeExtensions
             SubjectType.Elective => Color.Tertiary,
             SubjectType.Compulsory => Color.Primary,
             SubjectType.CompulsoryElective => Color.Secondary,
+            SubjectType.Sport => Color.Warning,
             _ => Color.Success
         };
 
@@ -21,6 +22,7 @@ public static class SubjectTypeExtensions
             SubjectType.Compulsory => LanguageHelper.CompulsorySingle,
             SubjectType.CompulsoryElective => LanguageHelper.CompulsoryElectiveSingle,
             SubjectType.Elective => LanguageHelper.ElectiveSingle,
+            SubjectType.Sport => LanguageHelper.Sport,
             _ => subjectType.ToString()
         };
     }

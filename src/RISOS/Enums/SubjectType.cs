@@ -4,5 +4,6 @@ public enum SubjectType
 {
     Compulsory,
     CompulsoryElective,
-    Elective
+    Elective,
+    Sport
 }

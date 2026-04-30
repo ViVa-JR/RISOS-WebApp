@@ -42,6 +42,7 @@ public static class SubjectMapper
     {
         "p" or "povinný" or "compulsory" => SubjectType.Compulsory,
         "pv" or "povinně volitelný" or "compulsory-optional" => SubjectType.CompulsoryElective,
+        "sport" => SubjectType.Sport,
         _ => SubjectType.Elective
     };
 

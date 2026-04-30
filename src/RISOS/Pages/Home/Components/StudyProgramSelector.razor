@@ -3,6 +3,7 @@
 @using RISOS.Localization
 @using RISOS.Pages.Home.Models
 @using RISOS.Services
+
 @inject UniversityService UniversityService
 @inject LocalStorageService LocalStorageService
 
@@ -107,7 +108,7 @@
     [Parameter]
     public bool Loading { get; set; }
 
-    private const int FixedPixels = 310;
+    private const int FixedPixels = 366;
     const CompareOptions CompareOptions = System.Globalization.CompareOptions.IgnoreCase | System.Globalization.CompareOptions.IgnoreNonSpace;
 
     private IEnumerable<Faculty> Faculties => _filteredFaculties ?? _faculties;

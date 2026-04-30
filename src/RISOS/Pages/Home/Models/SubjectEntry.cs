@@ -16,7 +16,7 @@ public class SubjectEntry(Subject subject)
         ? $"{(subject.MinSemester == 0 ? Unassigned : subject.MinSemester)}"
         : Unassigned;
 
-    public bool IsCustomSubject { get; init; }
+    public bool IsCustomSubject { get; set; }
     public int Attempt { get; set; } = 1;
     public bool LatestAttempt { get; set; } = true;
     public int IndexInZone { get; set; }

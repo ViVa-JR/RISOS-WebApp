@@ -612,4 +612,10 @@ Additional notes / screenshots:]]></value>
     <data name="RequestFeature" xml:space="preserve">
         <value>Request a Feature</value>
     </data>
+    <data name="Sport" xml:space="preserve">
+        <value>Sports</value>
+    </data>
+    <data name="SportSingle" xml:space="preserve">
+        <value>Sport</value>
+    </data>
 </root>
