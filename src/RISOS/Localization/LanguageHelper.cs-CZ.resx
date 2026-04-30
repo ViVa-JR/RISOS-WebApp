@@ -612,4 +612,7 @@ Další poznámky / screenshoty:]]></value>
     <data name="RequestFeature" xml:space="preserve">
       <value>Žádost o rozšíření</value>
   </data>
+    <data name="Sport" xml:space="preserve">
+      <value>Sporty</value>
+    </data>
 </root>

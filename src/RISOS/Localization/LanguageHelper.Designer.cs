@@ -992,5 +992,17 @@ namespace RISOS.Localization {
                 return ResourceManager.GetString("RequestFeature", resourceCulture);
             }
         }
+        
+        internal static string Sport {
+            get {
+                return ResourceManager.GetString("Sport", resourceCulture);
+            }
+        }
+        
+        internal static string SportSingle {
+            get {
+                return ResourceManager.GetString("SportSingle", resourceCulture);
+            }
+        }
     }
 }
