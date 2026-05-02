@@ -31,6 +31,7 @@
             @if (!OnlyClosable)
             {
                 <MudButton Color="Color.Primary" Variant="Variant.Outlined" StartIcon="@SubmitIcon"
+                           Disabled="@SubmitDisabled"
                            OnClick="@OnSubmitInternal">
                     @SubmitText
                 </MudButton>
@@ -73,6 +74,9 @@
 
     [Parameter]
     public bool OnlyClosable { get; set; }
+
+    [Parameter]
+    public bool SubmitDisabled { get; set; }
 
     private MudForm _form = null!;
 

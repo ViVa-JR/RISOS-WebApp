@@ -17,6 +17,7 @@
          Title="@LanguageHelper.SettingsDialog_Title"
          SubmitIcon="@Icons.Material.Filled.Save"
          SubmitText="@LanguageHelper.Save"
+         SubmitDisabled="@(!HasChanges)"
          OnSubmit="@OnSubmit">
     <HeaderRight>
         @if (!IsReadOnly)
@@ -172,6 +173,9 @@
     private DateTime? _dateTime;
 
     private bool LanguageChanged => _model.Language != _originalLanguage;
+    private bool ThemeChanged => _model.SelectedTheme != (ThemeService.CurrentThemeType ?? ThemeType.Default);
+    private bool CreditsChanged => _overrideCredits != StudyContext.CreditOverride.HasValue || (_overrideCredits && _model.Credits != StudyContext.CreditOverride);
+    private bool HasChanges => LanguageChanged || ThemeChanged || CreditsChanged;
     private static string MailToUri => $"mailto:xsafar26@vutbr.cz?subject={Uri.EscapeDataString(LanguageHelper.EmailSubject)}&body={Uri.EscapeDataString(LanguageHelper.EmailBody)}";
 
     @code {
