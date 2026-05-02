@@ -6,5 +6,6 @@ public enum ThemeType
     Deuteranopia,
     Protanopia,
     Tritanopia,
-    HighContrast
+    HighContrast,
+    Rose
 }

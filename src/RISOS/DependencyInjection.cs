@@ -16,6 +16,7 @@ public static class DependencyInjection
             .AddBlazorServices()
             .AddScoped<ApiService>()
             .AddSingleton<ThemeStateService>()
+            .AddSingleton<ThemePreviewService>()
             .AddSingleton<LocalStorageService>()
             .AddSingleton<ExportService>()
             .AddSingleton<ImportService>()

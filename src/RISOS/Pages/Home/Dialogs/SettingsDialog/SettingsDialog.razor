@@ -11,6 +11,7 @@
 @inject NavigationManager NavigationManager
 @inject LocalStorageService LocalStorageService
 @inject ThemeStateService ThemeService
+@inject ThemePreviewService ThemePreviewService
 
 <RDialog TReturn="SettingsDialogModel"
          Title="@LanguageHelper.SettingsDialog_Title"
@@ -63,49 +64,34 @@
                     <MudText Typo="Typo.subtitle2" Color="Color.Primary">
                         <b>@LanguageHelper.Themes</b>
                     </MudText>
-                    <MudSelect T="ThemeType" @bind-Value="_model.SelectedTheme"
-                               Label="@LanguageHelper.SettingsDialog_Palette"
-                               Variant="Variant.Outlined" Dense AnchorOrigin="Origin.BottomCenter">
-
-                        <MudSelectItem Value="ThemeType.Default">
-                            <div class="d-flex align-center gap-2">
-                                <MudIcon Icon="@Icons.Material.Filled.Palette" Size="Size.Small" Color="Color.Primary"/>
-                                @LanguageHelper.Theme_Default
-                            </div>
-                        </MudSelectItem>
-
-                        <MudSelectItem Value="ThemeType.Deuteranopia">
-                            <div class="d-flex align-center gap-2">
-                                <MudIcon Icon="@Icons.Material.Filled.Visibility" Size="Size.Small"
-                                         Style="color: #009E73;"/>
-                                @LanguageHelper.Theme_Deuteranopia
-                            </div>
-                        </MudSelectItem>
-
-                        <MudSelectItem Value="ThemeType.Protanopia">
-                            <div class="d-flex align-center gap-2">
-                                <MudIcon Icon="@Icons.Material.Filled.Visibility" Size="Size.Small"
-                                         Style="color: #0072B2;"/>
-                                @LanguageHelper.Theme_Protanopia
-                            </div>
-                        </MudSelectItem>
-
-                        <MudSelectItem Value="ThemeType.Tritanopia">
-                            <div class="d-flex align-center gap-2">
-                                <MudIcon Icon="@Icons.Material.Filled.RemoveRedEye" Size="Size.Small"
-                                         Style="color: #00ced1;"/>
-                                @LanguageHelper.Theme_Tritanopia
-                            </div>
-                        </MudSelectItem>
-
-                        <MudSelectItem Value="ThemeType.HighContrast">
-                            <div class="d-flex align-center gap-2">
-                                <MudIcon Icon="@Icons.Material.Filled.Contrast" Size="Size.Small"
-                                         Color="Color.Default"/>
-                                @LanguageHelper.Theme_HighContrast
-                            </div>
-                        </MudSelectItem>
-                    </MudSelect>
+                    <MudGrid Spacing="2" Class="mt-2">
+                        @foreach (var theme in Enum.GetValues<ThemeType>())
+                        {
+                            var isSelected = _model.SelectedTheme == theme;
+                            <MudItem xs="6" sm="4">
+                                <MudPaper Elevation="@(isSelected ? 4 : 1)"
+                                          Class="pa-2 cursor-pointer transition-transform hover-scale"
+                                          Style="@($"width: 100%; border-radius: 8px; border: 2px solid {(isSelected ? "var(--mud-palette-primary)" : "transparent")};")"
+                                          @onclick="() => SelectTheme(theme)">
+                                    <MudStack Spacing="2" AlignItems="AlignItems.Center">
+                                        <div class="d-flex justify-center align-center overflow-hidden" style="width: 100%; height: 80px;">
+                                            @if (_svgPreviews.TryGetValue(theme, out var svgContent))
+                                            {
+                                                @((MarkupString)svgContent)
+                                            }
+                                            else
+                                            {
+                                                <MudProgressCircular Size="Size.Small" Color="Color.Default" Indeterminate="true"/>
+                                            }
+                                        </div>
+                                        <MudText Typo="Typo.caption" Align="Align.Center">
+                                            <b>@GetThemeLabel(theme)</b>
+                                        </MudText>
+                                    </MudStack>
+                                </MudPaper>
+                            </MudItem>
+                        }
+                    </MudGrid>
                 </MudStack>
 
                 @if (!IsReadOnly)
@@ -188,6 +174,28 @@
     private bool LanguageChanged => _model.Language != _originalLanguage;
     private static string MailToUri => $"mailto:xsafar26@vutbr.cz?subject={Uri.EscapeDataString(LanguageHelper.EmailSubject)}&body={Uri.EscapeDataString(LanguageHelper.EmailBody)}";
 
+    @code {
+        private Dictionary<ThemeType, string> _svgPreviews = new();
+
+        private void SelectTheme(ThemeType theme)
+        {
+            _model.SelectedTheme = theme;
+        }
+
+        private string GetThemeLabel(ThemeType theme)
+        {
+            return theme switch
+            {
+                ThemeType.Default => LanguageHelper.Theme_Default,
+                ThemeType.Deuteranopia => LanguageHelper.Theme_Deuteranopia,
+                ThemeType.Protanopia => LanguageHelper.Theme_Protanopia,
+                ThemeType.Tritanopia => LanguageHelper.Theme_Tritanopia,
+                ThemeType.HighContrast => LanguageHelper.Theme_HighContrast,
+                _ => theme.ToString()
+            };
+        }
+    }
+
     protected override async Task OnInitializedAsync()
     {
         _model.Language = await LanguageService.GetAppLanguageAsync();
@@ -200,6 +208,12 @@
         if (result.IsSuccess)
         {
             _dateTime = result.Value;
+        }
+
+        foreach (var theme in Enum.GetValues<ThemeType>())
+        {
+            var svg = await ThemePreviewService.GetPreviewSvgAsync(theme);
+            _svgPreviews[theme] = svg;
         }
 
         _loading = false;
