@@ -645,4 +645,7 @@ Další poznámky / screenshoty:]]></value>
     <data name="CompulsorySubjectDeleteError" xml:space="preserve">
         <value>Povinné předměty nelze smazat</value>
     </data>
+    <data name="CompleteAllSubjectsInSemester" xml:space="preserve">
+        <value>Dokončit všechny předměty v tomto semestru</value>
+    </data>
 </root>

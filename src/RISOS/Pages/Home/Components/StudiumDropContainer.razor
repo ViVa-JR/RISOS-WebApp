@@ -153,9 +153,11 @@
 
                                 <MudStack Class="flex-grow-1">
                                     <SemesterDropZone Semester="@winterSem" Credits="@GetSemesterCredits(winterSem)"
-                                                      SemesterSeason="SemesterSeason.Winter"/>
+                                                      SemesterSeason="SemesterSeason.Winter"
+                                                      CompleteSemester="@OnCompleteSemester"/>
                                     <SemesterDropZone Semester="@summerSem" Credits="@GetSemesterCredits(summerSem)"
-                                                      SemesterSeason="SemesterSeason.Summer"/>
+                                                      SemesterSeason="SemesterSeason.Summer"
+                                                      CompleteSemester="@OnCompleteSemester"/>
                                 </MudStack>
                                 <MudStack AlignItems="AlignItems.Center" Row StretchItems="StretchItems.Start" Spacing="1" Class="pt-2">
                                     <MudText Typo="Typo.subtitle2" Color="Color.Default">@LanguageHelper.YearTotal</MudText>
@@ -306,12 +308,14 @@
             .Where(s => s.Semester == semesterIdentifier.ToString())
             .ToArray();
 
+        var hasUnprocessed = semesterSubjects.Any(s => s.Completed == null);
+
         if (semesterIdentifier <= 0)
         {
             var registered = semesterSubjects.Sum(s => s.Subject.Credits);
             var completed = semesterSubjects.Where(s => s.Completed == true).Sum(s => s.Subject.Credits);
 
-            return new Credits(registered, completed, false, false);
+            return new Credits(registered, completed, false, false, hasUnprocessed);
         }
 
         var registeredNormal = semesterSubjects.Where(s => !s.IsSport).Sum(s => s.Subject.Credits);
@@ -326,7 +330,8 @@
             Registered: registeredNormal + Math.Min(2, uniqueSportsRegistered),
             Completed: completedNormal + Math.Min(2, uniqueSportsCompleted),
             SportLimitReached: uniqueSportsRegistered > 2,
-            HasDuplicateSports: totalSportsRegistered > uniqueSportsRegistered
+            HasDuplicateSports: totalSportsRegistered > uniqueSportsRegistered,
+            HasUnprocessed: hasUnprocessed
         );
     }
 
@@ -442,5 +447,27 @@
         await SubjectsChanged.InvokeAsync(Subjects);
         _dropContainer?.Refresh();
         Snackbar.Add($"{LanguageHelper.RetakeSnackbarText} {newEntry.Semester}. {LanguageHelper.Semester_u}", Severity.Success);
+    }
+
+    private async Task OnCompleteSemester(int semester)
+    {
+        var subjectsToComplete = Subjects
+            .Where(x => x.Semester == semester.ToString() && x.Completed == null)
+            .ToList();
+
+        if (subjectsToComplete.Count == 0)
+        {
+            return;
+        }
+
+        foreach (var subject in subjectsToComplete)
+        {
+            subject.Completed = true;
+            await LocalStorageService.UpdateSubjectAsync(subject);
+        }
+
+        await SubjectsChanged.InvokeAsync(Subjects);
+        _dropContainer?.Refresh();
+        Snackbar.Add($"{LanguageHelper.Semester} {semester} {LanguageHelper.Completed}", Severity.Success);
     }
 }

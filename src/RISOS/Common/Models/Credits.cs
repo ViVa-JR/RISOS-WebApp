@@ -4,13 +4,15 @@ public record Credits(
     int Registered = 0,
     int Completed = 0,
     bool SportLimitReached = false,
-    bool HasDuplicateSports = false)
+    bool HasDuplicateSports = false,
+    bool HasUnprocessed = false)
 {
     public static Credits operator +(Credits a, Credits b) =>
         new(
             a.Registered + b.Registered,
             a.Completed + b.Completed,
             a.SportLimitReached || b.SportLimitReached,
-            a.HasDuplicateSports || b.HasDuplicateSports
+            a.HasDuplicateSports || b.HasDuplicateSports,
+            a.HasUnprocessed || b.HasUnprocessed
         );
 }

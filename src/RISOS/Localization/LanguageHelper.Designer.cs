@@ -1064,5 +1064,11 @@ namespace RISOS.Localization {
                 return ResourceManager.GetString("CompulsorySubjectDeleteError", resourceCulture);
             }
         }
+        
+        internal static string CompleteAllSubjectsInSemester {
+            get {
+                return ResourceManager.GetString("CompleteAllSubjectsInSemester", resourceCulture);
+            }
+        }
     }
 }
