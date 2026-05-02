@@ -10,16 +10,19 @@ public class ThemeStateService(LocalStorageService localStorageService)
     public ThemeType? CurrentThemeType { get; private set; }
     public bool IsInitialized { get; private set; }
 
-    public MudTheme Theme => CurrentThemeType switch
+    public MudTheme Theme => GetThemeByThemeType(CurrentThemeType ?? ThemeType.Default);
+
+    public event Action? OnChange;
+
+    public static MudTheme GetThemeByThemeType(ThemeType type) => type switch
     {
+        ThemeType.Default => GetDefaultTheme(),
         ThemeType.Deuteranopia or ThemeType.Protanopia => GetDeuteranopiaTheme(),
         ThemeType.Tritanopia => GetTritanopiaTheme(),
         ThemeType.HighContrast => GetHighContrastTheme(),
-        ThemeType.Default => GetDefaultTheme(),
+        ThemeType.Rose => GetRoseTheme(),
         _ => GetLoadingTheme()
     };
-
-    public event Action? OnChange;
 
     private static MudTheme GetLoadingTheme() => new()
     {
@@ -196,6 +199,34 @@ public class ThemeStateService(LocalStorageService localStorageService)
             DrawerBackground = "#000000",
             DrawerText = "#FFFFFF",
             ActionDefault = "#FFFF00"
+        }
+    };
+
+    private static MudTheme GetRoseTheme() => new()
+    {
+        PaletteLight = new PaletteLight
+        {
+            Primary = "#D81B60",
+            Secondary = "#8E24AA",
+            Background = "#FFF5F8",
+            Surface = "#FFFFFF",
+            TextPrimary = "#2D1B22",
+            TextSecondary = "#6D535E",
+            AppbarBackground = "#C2185B",
+            DrawerBackground = "#FFFFFF",
+            DrawerText = "#C2185B",
+            Success = "#2E7D32",
+            Error = "#D32F2F",
+            Divider = "#F8BBD0"
+        },
+        PaletteDark = new PaletteDark
+        {
+            Primary = "#F06292",
+            Secondary = "#BA68C8",
+            Background = "#1A1014",
+            Surface = "#2D1C24",
+            TextPrimary = "#FCE4EC",
+            TextSecondary = "#F48FB1"
         }
     };
 }
