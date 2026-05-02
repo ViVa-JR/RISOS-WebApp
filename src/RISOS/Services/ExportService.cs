@@ -17,13 +17,23 @@ public class ExportService(IJSRuntime js, LocalStorageService localStorageServic
     {
         var json = JsonSerializer.Serialize(data, Options);
 
-        await js.InvokeVoidAsync("downloadFile", fileName, json);
+        await js.InvokeVoidAsync("eval", $@"
+            (function(name, content) {{
+                const blob = new Blob([content], {{type: 'application/json'}});
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = name;
+                a.click();
+                URL.revokeObjectURL(url);
+            }})('{fileName}', `{json.Replace("`", "\\`")}`)
+        ");
     }
 
     public async Task HandleExportAsync()
     {
         var exportState = await localStorageService.GetExportStateAsync();
         var fileName = $"risos_backup_{DateTime.Now:yyyyMMdd}.json";
-        await DownloadJsonAsync(exportState, fileName);
+        await this.DownloadJsonAsync(exportState, fileName);
     }
 }

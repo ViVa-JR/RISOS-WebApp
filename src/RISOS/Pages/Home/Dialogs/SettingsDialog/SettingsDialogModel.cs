@@ -8,3 +8,4 @@ public class SettingsDialogModel
     public int? Credits { get; set; }
     public ThemeType SelectedTheme { get; set; }
 }
+

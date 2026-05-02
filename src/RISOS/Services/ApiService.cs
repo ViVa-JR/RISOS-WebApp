@@ -18,14 +18,14 @@ public class ApiService(HttpClient httpClient, ISnackbar snackbar)
         {
             snackbar.Add("Failed to load data", Severity.Error);
             return Result.Failure<T>(new Error(e.HttpRequestError.ToString(), e));
-        }
+        } 
         catch (Exception e)
-        {
+        {            
             snackbar.Add("Failed to load data", Severity.Error);
             return Result.Failure<T>(new Error("Unknown exception", e));
         }
     }
-
+    
     public async Task<Result> TryRequestAsync(Func<HttpClient, Task> handler)
     {
         try
@@ -45,3 +45,5 @@ public class ApiService(HttpClient httpClient, ISnackbar snackbar)
         }
     }
 }
+
+
