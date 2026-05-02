@@ -630,4 +630,16 @@ Additional notes / screenshots:]]></value>
     <data name="DataFailed" xml:space="preserve">
         <value>Failed to load data</value>
     </data>
+    <data name="ConfirmDecrese" xml:space="preserve">
+        <value>Confirm decrese of study duration</value>
+    </data>
+    <data name="ConfirmDecreseMessage" xml:space="preserve">
+        <value>Decresing study duration will put all the subjects in last year in group of unassigned subjects. Are you sure you want to perform this action?</value>
+    </data>
+    <data name="Confirm" xml:space="preserve">
+        <value>Yes</value>
+    </data>
+    <data name="CompulsorySubjectDeleteError" xml:space="preserve">
+        <value>Compulsory subjects cannot be deleted</value>
+    </data>
 </root>
