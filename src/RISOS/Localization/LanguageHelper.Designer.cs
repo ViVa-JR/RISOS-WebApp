@@ -999,9 +999,15 @@ namespace RISOS.Localization {
             }
         }
         
-        internal static string SportSingle {
+        internal static string SportsCreditsLimitWarning {
             get {
-                return ResourceManager.GetString("SportSingle", resourceCulture);
+                return ResourceManager.GetString("SportsCreditsLimitWarning", resourceCulture);
+            }
+        }
+        
+        internal static string DuplicateSportsWarning {
+            get {
+                return ResourceManager.GetString("DuplicateSportsWarning", resourceCulture);
             }
         }
     }

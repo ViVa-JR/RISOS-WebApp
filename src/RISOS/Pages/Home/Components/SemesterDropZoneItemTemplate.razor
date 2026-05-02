@@ -9,6 +9,18 @@
 @inject ISnackbar Snackbar
 @inject LocalStorageService LocalStorageService
 
+<style>
+    .subject-link {
+        text-decoration: none;
+        color: var(--mud-palette-text-primary) !important;
+        font-weight: bold;
+    }
+
+    .subject-link:hover {
+        text-decoration: underline;
+    }
+</style>
+
 <MudPaper Elevation="2" Style="cursor: grab; min-width: 280px">
     <MudMenu ActivationEvent="MouseEvent.RightClick" Dense Class="pa-2 d-flex align-center" Style="width: 100%">
         <ActivatorContent>
@@ -32,7 +44,7 @@
                             }
                             else
                             {
-                                <MudLink Href="@Entry.Subject.Url" Target="_blank">
+                                <MudLink Href="@Entry.Subject.Url" Target="_blank" Class="subject-link">
                                     <MudText Typo="Typo.subtitle2" Class="card-text">
                                         @Entry.Subject.Name
                                     </MudText>

@@ -105,6 +105,19 @@
                 <MudChip T="SemesterSeason" Value="@SemesterSeason" Text="@SemesterSeason.ToLabel()" Size="Size.Small"
                          Variant="Variant.Text"
                          Color="@SemesterSeason.ToColor()"/>
+                <MudSpacer/>
+                @if (Credits.SportLimitReached)
+                {
+                    <MudTooltip Text="@LanguageHelper.SportsCreditsLimitWarning">
+                        <MudIcon Icon="@Icons.Material.Filled.WarningAmber" Color="Color.Warning" Size="Size.Small"/>
+                    </MudTooltip>
+                }
+                else if (Credits.HasDuplicateSports)
+                {
+                    <MudTooltip Text="@LanguageHelper.DuplicateSportsWarning">
+                        <MudIcon Icon="@Icons.Material.Filled.WarningAmber" Color="Color.Warning" Size="Size.Small"/>
+                    </MudTooltip>
+                }
             </MudStack>
         </ChildContent>
     </MudDropZone>

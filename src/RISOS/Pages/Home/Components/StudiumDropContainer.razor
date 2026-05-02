@@ -5,6 +5,7 @@
 @using RISOS.Pages.Home.Dialogs.AddCustomSubjectDialog
 @using RISOS.Pages.Home.Models
 @using RISOS.Services
+
 @inject IDialogService DialogService
 @inject ISnackbar Snackbar
 @inject LocalStorageService LocalStorageService
@@ -50,18 +51,8 @@
                       NoDropClass="mud-alert-text-error mud-border-error">
         <ChildContent>
             <div class="rounded-lg border-2 border-dashed mud-border-lines-default mud-background-gray w-100 d-flex flex-column">
-                <MudStack Row Spacing="3" StretchItems="StretchItems.Start" Class="px-4 pt-2 pb-2" AlignItems="AlignItems.Center">
+                <MudStack Row Spacing="3" Class="px-4 pt-2 pb-2" AlignItems="AlignItems.Center">
                     <MudText Typo="Typo.h6">@LanguageHelper.UnassignedSubjects</MudText>
-                    <MudStack Spacing="2" Row AlignItems="AlignItems.Center" Justify="Justify.Center">
-                        @foreach (var type in Enum.GetValues<SubjectType>())
-                        {
-                            <MudStack Row Spacing="1" Wrap="Wrap.NoWrap">
-                                <MudIcon Size="Size.Small" Color="@type.ToColor()"
-                                         Icon="@Icons.Material.Filled.Circle"/>
-                                <MudText Typo="Typo.caption">@type.ToLabel()</MudText>
-                            </MudStack>
-                        }
-                    </MudStack>
                     <MudTooltip Text="@LanguageHelper.AddCustomSubject">
                         <MudButton
                             Variant="Variant.Text"
@@ -72,6 +63,17 @@
                             @LanguageHelper.Add
                         </MudButton>
                     </MudTooltip>
+                    <MudSpacer/>
+                    <MudStack Spacing="2" Row AlignItems="AlignItems.Center" Justify="Justify.Center">
+                        @foreach (var type in Enum.GetValues<SubjectType>())
+                        {
+                            <MudStack Row Spacing="1" Wrap="Wrap.NoWrap">
+                                <MudIcon Size="Size.Small" Color="@type.ToColor()"
+                                         Icon="@Icons.Material.Filled.Circle"/>
+                                <MudText Typo="Typo.caption">@type.ToLabel()</MudText>
+                            </MudStack>
+                        }
+                    </MudStack>
                 </MudStack>
                 <MudDropZone T="SubjectEntry" Identifier="@SubjectEntry.Unassigned"
                              Class="px-4 pb-4 pt-2 d-flex flex-wrap gap-2 border-transparent rounded-b-lg overflow-y-auto"
@@ -237,9 +239,19 @@
             .Where(s => s.Semester == semesterIdentifier.ToString())
             .ToArray();
 
+        var registeredNormal = semesterSubjects.Where(s => !s.IsSport).Sum(s => s.Subject.Credits);
+        var completedNormal = semesterSubjects.Where(s => s is { Completed: true, IsSport: false }).Sum(s => s.Subject.Credits);
+
+        var sports = semesterSubjects.Where(s => s.IsSport).ToArray();
+        var totalSportsRegistered = sports.Length;
+        var uniqueSportsRegistered = sports.DistinctBy(s => s.Subject.ShortName).Count();
+        var uniqueSportsCompleted = sports.Where(s => s.Completed == true).DistinctBy(s => s.Subject.ShortName).Count();
+
         return new Credits(
-            semesterSubjects.Sum(s => s.Subject.Credits),
-            semesterSubjects.Where(s => s.Completed == true).Sum(s => s.Subject.Credits)
+            Registered: registeredNormal + Math.Min(2, uniqueSportsRegistered),
+            Completed: completedNormal + Math.Min(2, uniqueSportsCompleted),
+            SportLimitReached: uniqueSportsRegistered > 2,
+            HasDuplicateSports: totalSportsRegistered > uniqueSportsRegistered // Flips true if duplicates exist
         );
     }
 
@@ -253,12 +265,23 @@
 
     private Credits GetTotalCredits()
     {
-        var allSubjects = Subjects.Where(x => x.Semester != SubjectEntry.Unassigned).ToArray();
+        var assignedSubjects = Subjects.Where(x => x.Semester != SubjectEntry.Unassigned).ToArray();
 
-        return new Credits(
-            allSubjects.Where(x => x.Completed != false).Sum(s => s.Subject.Credits),
-            allSubjects.Where(s => s.Completed == true).Sum(s => s.Subject.Credits)
-        );
+        int CalculateCredits(IEnumerable<SubjectEntry> subjects)
+        {
+            return subjects.GroupBy(x => x.Semester).Sum(semester =>
+            {
+                var normalCredits = semester.Where(x => !x.IsSport).Sum(x => x.Subject.Credits);
+                var sportCredits = semester.Where(x => x.IsSport).DistinctBy(x => x.Subject.ShortName).Count();
+
+                return normalCredits + Math.Min(2, sportCredits);
+            });
+        }
+
+        var attemptedCredits = CalculateCredits(assignedSubjects.Where(x => x.Completed != false));
+        var completedCredits = CalculateCredits(assignedSubjects.Where(x => x.Completed == true));
+
+        return new Credits(attemptedCredits, completedCredits);
     }
 
     private void OnYearsChanged(int years)
