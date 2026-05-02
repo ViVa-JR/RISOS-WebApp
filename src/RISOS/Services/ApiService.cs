@@ -1,6 +1,7 @@
 using System.Text.Json;
 using MudBlazor;
 using RISOS.Common.Models;
+using RISOS.Localization;
 
 namespace RISOS.Services;
 
@@ -16,12 +17,12 @@ public class ApiService(HttpClient httpClient, ISnackbar snackbar)
         }
         catch (HttpRequestException e)
         {
-            snackbar.Add("Failed to load data", Severity.Error);
+            snackbar.Add(LanguageHelper.DataFailed, Severity.Error);
             return Result.Failure<T>(new Error(e.HttpRequestError.ToString(), e));
         }
         catch (Exception e)
         {
-            snackbar.Add("Failed to load data", Severity.Error);
+            snackbar.Add(LanguageHelper.DataFailed, Severity.Error);
             return Result.Failure<T>(new Error("Unknown exception", e));
         }
     }
@@ -35,12 +36,12 @@ public class ApiService(HttpClient httpClient, ISnackbar snackbar)
         }
         catch (HttpRequestException e)
         {
-            snackbar.Add("Failed to load data", Severity.Error);
+            snackbar.Add(LanguageHelper.DataFailed, Severity.Error);
             return Result.Failure(new Error(e.HttpRequestError.ToString(), e));
         }
         catch (Exception e)
         {
-            snackbar.Add("Failed to load data", Severity.Error);
+            snackbar.Add(LanguageHelper.DataFailed, Severity.Error);
             return Result.Failure(new Error("Unknown exception", e));
         }
     }
