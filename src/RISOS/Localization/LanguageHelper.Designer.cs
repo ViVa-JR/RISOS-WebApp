@@ -1010,5 +1010,11 @@ namespace RISOS.Localization {
                 return ResourceManager.GetString("DuplicateSportsWarning", resourceCulture);
             }
         }
+        
+        internal static string ShareHelperText {
+            get {
+                return ResourceManager.GetString("ShareHelperText", resourceCulture);
+            }
+        }
     }
 }

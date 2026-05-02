@@ -80,8 +80,8 @@
                              Style="max-height: max(220px, 20vh); min-height: 100px;"/>
             </div>
 
-            <ControlCenter @bind-RecognizedYear="RecognizedYear" YearsChanged="OnYearsChanged"
-                           TotalCredits="TotalCredits"/>
+            <ControlCenter RecognizedYear="@RecognizedYear" RecognizedYearChanged="@RecognizedYearChanged" YearsChanged="@OnYearsChanged"
+                           TotalCredits="@TotalCredits"/>
 
             <div id="main-scroll-container" style="overflow: scroll; position: relative;">
 
@@ -165,6 +165,9 @@
 
     [Parameter]
     public bool RecognizedYear { get; set; }
+
+    [Parameter]
+    public EventCallback<bool> RecognizedYearChanged { get; set; }
 
     [Parameter]
     public bool LocalStorageLoading { get; set; }

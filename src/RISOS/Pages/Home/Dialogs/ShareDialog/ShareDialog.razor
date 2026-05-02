@@ -31,7 +31,8 @@
                       AdornmentIcon="@(_isCopied ? Icons.Material.Filled.Check : Icons.Material.Filled.ContentCopy)"
                       AdornmentColor="@(_isCopied ? Color.Success : Color.Primary)"
                       OnAdornmentClick="CopyShareLink"
-                      AdornmentAriaLabel="@LanguageHelper.Copy"/>
+                      AdornmentAriaLabel="@LanguageHelper.Copy"
+                      HelperText="@LanguageHelper.ShareHelperText"/>
 
     </MudStack>
 </RDialog>
