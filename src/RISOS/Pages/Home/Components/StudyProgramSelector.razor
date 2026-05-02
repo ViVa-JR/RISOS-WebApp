@@ -6,6 +6,7 @@
 
 @inject UniversityService UniversityService
 @inject LocalStorageService LocalStorageService
+@inject AnalyticsService AnalyticsService
 
 <style>
     .study-program-selector-list .mud-list-item-extended {
@@ -151,6 +152,7 @@
     private async Task OnSelectionChanged(StudyProgram? newSelection)
     {
         SelectedProgram = newSelection;
+        await AnalyticsService.TrackStudyProgramSelectedAsync(newSelection);
         await SelectedProgramChanged.InvokeAsync(SelectedProgram);
     }
 
