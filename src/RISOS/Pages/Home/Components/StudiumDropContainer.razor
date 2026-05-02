@@ -108,16 +108,7 @@
                             </MudButton>
                         </MudTooltip>
                         <MudSpacer/>
-                        <MudStack Spacing="2" Row AlignItems="AlignItems.Center" Justify="Justify.Center">
-                            @foreach (var type in Enum.GetValues<SubjectType>())
-                            {
-                                <MudStack Row Spacing="1" Wrap="Wrap.NoWrap">
-                                    <MudIcon Size="Size.Small" Color="@type.ToColor()"
-                                             Icon="@Icons.Material.Filled.Circle"/>
-                                    <MudText Typo="Typo.caption">@type.ToLabel()</MudText>
-                                </MudStack>
-                            }
-                        </MudStack>
+                        <SubjectTypeLegend Class="hide-in-export" />
                     </MudStack>
                     <MudDropZone T="SubjectEntry" Identifier="@SubjectEntry.Unassigned"
                                  Class="px-4 pb-4 pt-2 d-flex flex-wrap gap-2 border-transparent rounded-b-lg overflow-y-auto"

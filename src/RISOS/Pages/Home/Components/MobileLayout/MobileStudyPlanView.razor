@@ -48,15 +48,7 @@
     </MudOverlay>
 
     <MudPaper Elevation="0" Class="pa-2 border-2 mud-border-lines-default rounded-lg">
-        <MudStack Row AlignItems="AlignItems.Center" Justify="Justify.Center" Spacing="4" Wrap="Wrap.Wrap">
-            @foreach (var type in Enum.GetValues<SubjectType>())
-            {
-                <MudStack Row Spacing="1" AlignItems="AlignItems.Center" Wrap="Wrap.NoWrap">
-                    <MudIcon Size="Size.Small" Color="@type.ToColor()" Icon="@Icons.Material.Filled.Circle"/>
-                    <MudText Typo="Typo.caption">@type.ToLabel()</MudText>
-                </MudStack>
-            }
-        </MudStack>
+        <SubjectTypeLegend Spacing="4" Class="hide-in-export" />
     </MudPaper>
 
     <ControlCenter RecognizedYear="@RecognizedYear" TotalCredits="@TotalCredits"/>

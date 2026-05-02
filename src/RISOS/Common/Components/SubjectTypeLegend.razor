@@ -1,0 +1,21 @@
+@using RISOS.Enums
+@using RISOS.Extensions
+
+<MudStack Row="@Row" Spacing="@Spacing" AlignItems="AlignItems.Center" Justify="Justify.Center" Wrap="@(CanWrap ? MudBlazor.Wrap.Wrap : MudBlazor.Wrap.NoWrap)" Class="@Class">
+    @foreach (var type in Enum.GetValues<SubjectType>())
+    {
+        <MudStack Row Spacing="1" AlignItems="AlignItems.Center" Wrap="MudBlazor.Wrap.NoWrap">
+            <MudIcon Size="@IconSize" Color="@type.ToColor()" Icon="@Icons.Material.Filled.Circle"/>
+            <MudText Typo="@TextTypo">@type.ToLabel()</MudText>
+        </MudStack>
+    }
+</MudStack>
+
+@code {
+    [Parameter] public string Class { get; set; } = string.Empty;
+    [Parameter] public int Spacing { get; set; } = 2;
+    [Parameter] public bool Row { get; set; } = true;
+    [Parameter] public bool CanWrap { get; set; } = true;
+    [Parameter] public Size IconSize { get; set; } = Size.Small;
+    [Parameter] public Typo TextTypo { get; set; } = Typo.caption;
+}

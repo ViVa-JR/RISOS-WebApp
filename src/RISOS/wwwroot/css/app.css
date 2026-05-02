@@ -284,3 +284,7 @@ code {
     user-select: none !important;
     -webkit-user-select: none !important;
 }
+
+.show-only-in-export {
+    display: none !important;
+}

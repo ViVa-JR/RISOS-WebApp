@@ -79,9 +79,13 @@ window.captureElementAsImage = async function (elementId, fileName) {
                     clonedScrollContainer.style.maxWidth = 'none';
                 }
                 
-                // Hide scroll indicators in the export
-                const indicators = clonedDoc.querySelectorAll('.indicator-anchor');
-                indicators.forEach(el => el.style.display = 'none');
+                // Hide scroll indicators and marked control elements in the export
+                const toHide = clonedDoc.querySelectorAll('.indicator-anchor, .hide-in-export');
+                toHide.forEach(el => el.style.setProperty('display', 'none', 'important'));
+
+                // Show elements that are marked to be shown only in export
+                const toShow = clonedDoc.querySelectorAll('.show-only-in-export');
+                toShow.forEach(el => el.style.setProperty('display', 'flex', 'important'));
             }
         });
 
