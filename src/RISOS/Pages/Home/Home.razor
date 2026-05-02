@@ -156,15 +156,15 @@
 <CascadingValue Value="_studyContext">
     @if (IsReadOnly)
     {
-        <MobileStudyPlanView Subjects="_selectedSubjects" RecognizedYear="_recognizedYear" LocalStorageLoading="_dropZoneContainerLoading"/>
+        <MobileStudyPlanView Subjects="@_selectedSubjects" RecognizedYear="@_recognizedYear" LocalStorageLoading="@_dropZoneContainerLoading"/>
     }
     else
     {
-        <StudiumDropContainer @ref="_dropContainer" Subjects="_selectedSubjects" OnRemove="OnRemove" RecognizedYear="_recognizedYear" LocalStorageLoading="_dropZoneContainerLoading"/>
+        <StudiumDropContainer @ref="@_dropContainer" Subjects="@_selectedSubjects" OnRemove="@OnRemove" @bind-RecognizedYear="@_recognizedYear" LocalStorageLoading="@_dropZoneContainerLoading"/>
     }
 </CascadingValue>
 
-    @code {
+@code {
     [CascadingParameter]
     public bool IsReadOnly { get; set; }
 
@@ -290,7 +290,6 @@
         _studyContext.RequiredCredits = _selectedProgram?.Credits ?? 0;
         _studyContext.CreditsWarn = _selectedProgram?.CreditsWarn ?? true;
 
-
         if (_selectedProgram is null)
         {
             _subjects.Clear();
@@ -414,6 +413,7 @@
             await LanguageService.SetAppLanguageAsync(result.Value.Language);
             NavigationManager.NavigateTo(NavigationManager.Uri, true);
         }
+
         await InvokeAsync(StateHasChanged);
     }
 

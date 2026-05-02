@@ -618,4 +618,7 @@ Další poznámky / screenshoty:]]></value>
     <data name="DuplicateSportsWarning" xml:space="preserve">
       <value>Zaregistrován duplicitní sport (max. 1 kredit za konkrétní sport)</value>
     </data>
+    <data name="ShareHelperText" xml:space="preserve">
+      <value>Otevři v Anonimním okně</value>
+    </data>
 </root>

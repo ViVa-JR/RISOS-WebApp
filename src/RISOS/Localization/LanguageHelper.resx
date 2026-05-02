@@ -621,4 +621,7 @@ Additional notes / screenshots:]]></value>
     <data name="DuplicateSportsWarning" xml:space="preserve">
         <value>Duplicate sport detected (max 1 credit per specific sport)</value>
     </data>
+    <data name="ShareHelperText" xml:space="preserve">
+        <value>Open in Incognito mode browser</value>
+    </data>
 </root>
