@@ -5,9 +5,17 @@
         <Nullable>enable</Nullable>
         <ImplicitUsings>enable</ImplicitUsings>
         <OverrideHtmlAssetPlaceholders>true</OverrideHtmlAssetPlaceholders>
-        <BlazorWebAssemblyLoadAllGlobalizationData>true</BlazorWebAssemblyLoadAllGlobalizationData>
         <RunAOTCompilation>true</RunAOTCompilation>
         <WasmStripILAfterAOT>true</WasmStripILAfterAOT>
+        <PublishTrimmed>true</PublishTrimmed>
+        <TrimMode>partial</TrimMode>
+        <InvariantGlobalization>false</InvariantGlobalization>
+        <BlazorWebAssemblyEnableCompression>true</BlazorWebAssemblyEnableCompression>
+        <BlazorWebAssemblyLoadAllGlobalizationData>true</BlazorWebAssemblyLoadAllGlobalizationData>
+        <EventSourceSupport>false</EventSourceSupport>
+        <UseSystemResourceKeys>true</UseSystemResourceKeys>
+        <DebuggerSupport>false</DebuggerSupport>
+        <WasmEmitSymbolMap>false</WasmEmitSymbolMap>
     </PropertyGroup>
 
     <ItemGroup>
