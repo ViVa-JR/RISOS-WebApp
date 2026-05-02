@@ -164,7 +164,6 @@
         var previousYears = StudyContext.Years;
         var newYears = Math.Max(0, StudyContext.Years - 1);
         StudyContext.Years = newYears;
-
         await AnalyticsService.TrackStudyYearsChangedAsync("decrease", previousYears, newYears);
         await YearsChanged.InvokeAsync(newYears);
         await LocalStorageService.SaveStudyYears(StudyContext.Years);
@@ -175,7 +174,6 @@
         var previousYears = StudyContext.Years;
         var newYears = StudyContext.Years + 1;
         StudyContext.Years = newYears;
-
         await AnalyticsService.TrackStudyYearsChangedAsync("increase", previousYears, newYears);
         await YearsChanged.InvokeAsync(newYears);
         await LocalStorageService.SaveStudyYears(StudyContext.Years);
