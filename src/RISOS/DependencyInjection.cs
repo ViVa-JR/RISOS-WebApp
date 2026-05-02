@@ -15,6 +15,7 @@ public static class DependencyInjection
         public IServiceCollection AddWebApplication(IConfiguration configuration) => services
             .AddBlazorServices()
             .AddScoped<ApiService>()
+            .AddScoped<AnalyticsService>()
             .AddSingleton<ThemeStateService>()
             .AddSingleton<ThemePreviewService>()
             .AddSingleton<LocalStorageService>()

@@ -22,6 +22,7 @@
 @inject ExportService ExportService
 @inject ImportService ImportService
 @inject ThemeStateService ThemeStateService
+@inject AnalyticsService AnalyticsService
 
 <style>
     :root {
@@ -345,6 +346,8 @@
 
     private async Task SubjectChanged(SubjectEntry subject)
     {
+        await AnalyticsService.TrackSubjectClickAsync(subject);
+
         if (subject.Subject.Type == SubjectType.Sport)
         {
             await AddNewSportEntry(subject);
@@ -397,6 +400,9 @@
 
     private async Task OnSettingsClick()
     {
+        var previousTheme = ThemeStateService.CurrentThemeType ?? ThemeType.Default;
+        var previousLanguage = await LanguageService.GetAppLanguageAsync();
+
         var result = await SettingsDialog.ShowAsync(DialogService, _studyContext);
         if (result.IsCancelled || result.IsFailure)
         {
@@ -406,10 +412,14 @@
         _studyContext.CreditOverride = result.Value.Credits;
         await LocalStorageService.SaveCreditOverride(result.Value.Credits);
         await ThemeStateService.SetThemeType(result.Value.SelectedTheme);
-
-        var language = await LanguageService.GetAppLanguageAsync();
-        if (result.Value.Language != language)
+        if (result.Value.SelectedTheme != previousTheme)
         {
+            await AnalyticsService.TrackThemeChangedAsync(previousTheme, result.Value.SelectedTheme);
+        }
+
+        if (result.Value.Language != previousLanguage)
+        {
+            await AnalyticsService.TrackLanguageChangedAsync(previousLanguage, result.Value.Language);
             await LanguageService.SetAppLanguageAsync(result.Value.Language);
             NavigationManager.NavigateTo(NavigationManager.Uri, true);
         }

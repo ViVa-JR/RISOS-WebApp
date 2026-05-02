@@ -9,6 +9,7 @@
 @inject IDialogService DialogService
 @inject ISnackbar Snackbar
 @inject LocalStorageService LocalStorageService
+@inject AnalyticsService AnalyticsService
 
 <style>
     .card-text {
@@ -307,6 +308,7 @@
 
     private async Task OpenAddDialog()
     {
+        await AnalyticsService.TrackAddButtonClickAsync();
         var result = await CreateEditCustomSubjectDialog.ShowAsync(DialogService);
         if (result.IsSuccess)
         {
