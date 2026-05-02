@@ -65,31 +65,34 @@ public static class SubjectMapper
         };
     }
 
-    private static CompletionType MapCompletionType(string completionType) => completionType.ToUpperInvariant() switch
+    private static CompletionType MapCompletionType(string completionType)
     {
-        "Z" => CompletionType.Cr,
-        "KZ" => CompletionType.GCr,
-        "Z+ZK" or "ZZK" => CompletionType.CrEx,
-        "ZK" => CompletionType.Ex,
-        "KL" => CompletionType.Col,
-        "KP" => CompletionType.Kp,
-        "REC" => CompletionType.Rec,
-        "SZZ" => CompletionType.Szz,
-        "RZ" => CompletionType.RCr,
-        "RKZ" => CompletionType.RgCr,
-        "RZ+ZK" or "RZZK" => CompletionType.RCrEx,
-        "RZK" => CompletionType.REx,
-        "HS" => CompletionType.Hs,
-        "HDS" => CompletionType.Hds,
-        "UPZA" => CompletionType.UpZa,
-        "RVOL" => CompletionType.RVol,
-        "Z-FSP" => CompletionType.CrFsp,
-        "DRZK" => CompletionType.DrEx,
-        "REC+Z" => CompletionType.RecCr,
-        "ZK-DD" => CompletionType.ExDd,
-        "SPZK" => CompletionType.SpEx,
-        "SPZ+ZK" => CompletionType.SpCrEx,
-        "RKL" => CompletionType.RCol,
-        _ => CompletionType.Cr
-    };
+        return completionType.Trim().ToLowerInvariant() switch
+        {
+            "cr"      or "zá"      => CompletionType.Cr,
+            "gcr"     or "kl"      => CompletionType.GCr,
+            "cr,ex"   or "zá,zk"   => CompletionType.CrEx,
+            "ex"      or "zk"      => CompletionType.Ex,
+            "col"     or "kol"     => CompletionType.Col,
+            "kp"                   => CompletionType.Kp,
+            "rec"     or "u"       => CompletionType.Rec,
+            "szz"                  => CompletionType.Szz,
+            "rcr"     or "uzá"     => CompletionType.RCr,
+            "rgcr"    or "ukl"     => CompletionType.RgCr,
+            "rcr,ex"  or "uzá,uzk" => CompletionType.RCrEx,
+            "rex"     or "uzk"     => CompletionType.REx,
+            "hs"                   => CompletionType.Hs,
+            "hds"                  => CompletionType.Hds,
+            "upzá"                 => CompletionType.UpZa,
+            "rvol"    or "uro"     => CompletionType.RVol,
+            "cr,fsp"  or "zá,kp"   => CompletionType.CrFsp,
+            "drex"    or "drzk"    => CompletionType.DrEx,
+            "udrzk"                => CompletionType.RecCr,
+            "-dd"                  => CompletionType.ExDd,
+            "spex"    or "spzk"    => CompletionType.SpEx,
+            "spcr,ex" or "spzá,zk" => CompletionType.SpCrEx,
+            "rcol"    or "ukol"    => CompletionType.RCol,
+            _                      => CompletionType.Cr
+        };
+    }
 }
