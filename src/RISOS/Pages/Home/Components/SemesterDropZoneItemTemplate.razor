@@ -168,7 +168,8 @@
         {
             FastCloner.DeepCloneTo(result.Value, Entry);
             await LocalStorageService.UpdateSubjectAsync(Entry);
-            Snackbar.Add("Subject successfully updated", Severity.Success);
+            await EntryChanged.InvokeAsync(Entry);
+            Snackbar.Add(LanguageHelper.SubjectUpdated, Severity.Success);
         }
     }
 

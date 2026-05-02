@@ -155,11 +155,11 @@
     <value>Vyhledat</value>
   </data>
     <data name="RemoveRecognizedYear" xml:space="preserve">
-    <value>Odebrat uznaný rok</value>
-  </data>
+      <value>Skrýt uznaný rok</value>
+    </data>
     <data name="AddRecognizedYear" xml:space="preserve">
-    <value>Přidat uznaný rok</value>
-  </data>
+      <value>Zobrazit uznaný rok</value>
+    </data>
     <data name="StudyProgress" xml:space="preserve">
     <value>Průběh studia</value>
   </data>
@@ -620,5 +620,11 @@ Další poznámky / screenshoty:]]></value>
     </data>
     <data name="ShareHelperText" xml:space="preserve">
       <value>Otevři v Anonimním okně</value>
+    </data>
+    <data name="SubjectUpdated" xml:space="preserve">
+      <value>Předmět byl uložen</value>
+    </data>
+    <data name="DataFailed" xml:space="preserve">
+      <value>Nepodařilo se načíst data</value>
     </data>
 </root>

@@ -242,6 +242,14 @@
             .Where(s => s.Semester == semesterIdentifier.ToString())
             .ToArray();
 
+        if (semesterIdentifier <= 0)
+        {
+            var registered = semesterSubjects.Sum(s => s.Subject.Credits);
+            var completed = semesterSubjects.Where(s => s.Completed == true).Sum(s => s.Subject.Credits);
+
+            return new Credits(registered, completed, false, false);
+        }
+
         var registeredNormal = semesterSubjects.Where(s => !s.IsSport).Sum(s => s.Subject.Credits);
         var completedNormal = semesterSubjects.Where(s => s is { Completed: true, IsSport: false }).Sum(s => s.Subject.Credits);
 
@@ -254,7 +262,7 @@
             Registered: registeredNormal + Math.Min(2, uniqueSportsRegistered),
             Completed: completedNormal + Math.Min(2, uniqueSportsCompleted),
             SportLimitReached: uniqueSportsRegistered > 2,
-            HasDuplicateSports: totalSportsRegistered > uniqueSportsRegistered // Flips true if duplicates exist
+            HasDuplicateSports: totalSportsRegistered > uniqueSportsRegistered
         );
     }
 
@@ -270,21 +278,26 @@
     {
         var assignedSubjects = Subjects.Where(x => x.Semester != SubjectEntry.Unassigned).ToArray();
 
+        var attemptedCredits = CalculateCredits(assignedSubjects.Where(x => x.Completed != false));
+        var completedCredits = CalculateCredits(assignedSubjects.Where(x => x.Completed == true));
+
+        return new Credits(attemptedCredits, completedCredits);
+
         int CalculateCredits(IEnumerable<SubjectEntry> subjects)
         {
             return subjects.GroupBy(x => x.Semester).Sum(semester =>
             {
+                if (semester.Key is "-1" or "0")
+                {
+                    return semester.Sum(x => x.Subject.Credits);
+                }
+
                 var normalCredits = semester.Where(x => !x.IsSport).Sum(x => x.Subject.Credits);
                 var sportCredits = semester.Where(x => x.IsSport).DistinctBy(x => x.Subject.ShortName).Count();
 
                 return normalCredits + Math.Min(2, sportCredits);
             });
         }
-
-        var attemptedCredits = CalculateCredits(assignedSubjects.Where(x => x.Completed != false));
-        var completedCredits = CalculateCredits(assignedSubjects.Where(x => x.Completed == true));
-
-        return new Credits(attemptedCredits, completedCredits);
     }
 
     private void OnYearsChanged(int years)

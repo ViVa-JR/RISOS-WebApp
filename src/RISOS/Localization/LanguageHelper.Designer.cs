@@ -1016,5 +1016,17 @@ namespace RISOS.Localization {
                 return ResourceManager.GetString("ShareHelperText", resourceCulture);
             }
         }
+        
+        internal static string SubjectUpdated {
+            get {
+                return ResourceManager.GetString("SubjectUpdated", resourceCulture);
+            }
+        }
+        
+        internal static string DataFailed {
+            get {
+                return ResourceManager.GetString("DataFailed", resourceCulture);
+            }
+        }
     }
 }

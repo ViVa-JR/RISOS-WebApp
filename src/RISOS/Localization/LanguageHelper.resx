@@ -155,10 +155,10 @@
         <value>Search</value>
     </data>
     <data name="RemoveRecognizedYear" xml:space="preserve">
-        <value>Remove recognized year</value>
+        <value>Hide recognized year</value>
     </data>
     <data name="AddRecognizedYear" xml:space="preserve">
-        <value>Add recognized year</value>
+        <value>Show recognized year</value>
     </data>
     <data name="StudyProgress" xml:space="preserve">
         <value>Study progress</value>
@@ -623,5 +623,11 @@ Additional notes / screenshots:]]></value>
     </data>
     <data name="ShareHelperText" xml:space="preserve">
         <value>Open in Incognito mode browser</value>
+    </data>
+    <data name="SubjectUpdated" xml:space="preserve">
+        <value>Subject successfully updated</value>
+    </data>
+    <data name="DataFailed" xml:space="preserve">
+        <value>Failed to load data</value>
     </data>
 </root>
