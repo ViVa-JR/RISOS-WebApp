@@ -132,12 +132,17 @@
                 <MudIconButton Icon="@Icons.Material.Filled.Settings" Style="color: var(--mud-palette-drawer-text)"
                                OnClick="@OnSettingsClick"/>
             </MudTooltip>
-            <MudTooltip Text="@LanguageHelper.Export">
-                <MudIconButton
-                    Icon="@Icons.Material.Filled.Download"
-                    Style="color: var(--mud-palette-drawer-text)"
-                    OnClick="@ExportService.HandleExportAsync"/>
-            </MudTooltip>
+            <MudMenu Dense AnchorOrigin="Origin.BottomRight" TransformOrigin="Origin.TopRight">
+                <ActivatorContent>
+                    <MudTooltip Text="@LanguageHelper.Export">
+                        <MudIconButton Icon="@Icons.Material.Filled.Download" Style="color: var(--mud-palette-drawer-text)" OnClick="@context.ToggleAsync"/>
+                    </MudTooltip>
+                </ActivatorContent>
+                <ChildContent>
+                    <MudMenuItem Icon="@Icons.Material.Filled.Image" OnClick="@(() => ExportService.ExportAsImageAsync())">@LanguageHelper.ExportAsImage</MudMenuItem>
+                    <MudMenuItem Icon="@Icons.Material.Filled.DataObject" OnClick="@(() => ExportService.HandleExportAsync())">@LanguageHelper.ExportAsJson</MudMenuItem>
+                </ChildContent>
+            </MudMenu>
             <MudTooltip Text="@LanguageHelper.Import">
                 <MudIconButton
                     Icon="@Icons.Material.Filled.Upload"

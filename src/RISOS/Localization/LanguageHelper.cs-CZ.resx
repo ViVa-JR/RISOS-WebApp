@@ -148,6 +148,12 @@
     <data name="Export" xml:space="preserve">
     <value>Stáhnout</value>
   </data>
+    <data name="ExportAsImage" xml:space="preserve">
+        <value>Stáhnout jako obrázek</value>
+    </data>
+    <data name="ExportAsJson" xml:space="preserve">
+        <value>Stáhnout jako JSON (Záloha)</value>
+    </data>
     <data name="Import" xml:space="preserve">
     <value>Nahrát</value>
   </data>

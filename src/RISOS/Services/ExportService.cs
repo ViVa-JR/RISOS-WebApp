@@ -26,4 +26,10 @@ public class ExportService(IJSRuntime js, LocalStorageService localStorageServic
         var fileName = $"risos_backup_{DateTime.Now:yyyyMMdd}.json";
         await DownloadJsonAsync(exportState, fileName);
     }
+
+    public async Task ExportAsImageAsync()
+    {
+        var fileName = $"risos_plan_{DateTime.Now:yyyyMMdd}.png";
+        await js.InvokeVoidAsync("captureElementAsImage", "export-zone", fileName);
+    }
 }
