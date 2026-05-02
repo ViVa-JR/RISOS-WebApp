@@ -179,10 +179,10 @@
 
     private readonly StudyContext _studyContext = new();
 
-    private Dictionary<SubjectEntryKey, SubjectEntry> CompulsorySubjects => _subjects.Where(s => s.Value.Subject.Type == SubjectType.Compulsory && !s.Value.IsCustomSubject).ToDictionary();
-    private Dictionary<SubjectEntryKey, SubjectEntry> CompulsoryElectiveSubjects => _subjects.Where(s => s.Value.Subject.Type == SubjectType.CompulsoryElective && !s.Value.IsCustomSubject).ToDictionary();
-    private Dictionary<SubjectEntryKey, SubjectEntry> ElectiveSubjects => _subjects.Where(s => s.Value.Subject.Type == SubjectType.Elective && !s.Value.IsCustomSubject).ToDictionary();
-    private Dictionary<SubjectEntryKey, SubjectEntry> SportSubjects => _subjects.Where(s => s.Value.Subject.Type == SubjectType.Sport && !s.Value.IsCustomSubject).ToDictionary();
+    private Dictionary<SubjectEntryKey, SubjectEntry> CompulsorySubjects => _subjects.Where(s => s.Value.Subject.Type == SubjectType.Compulsory && !s.Value.IsCustomSubject).OrderBy(x => x.Value.Subject.ShortName).ToDictionary();
+    private Dictionary<SubjectEntryKey, SubjectEntry> CompulsoryElectiveSubjects => _subjects.Where(s => s.Value.Subject.Type == SubjectType.CompulsoryElective && !s.Value.IsCustomSubject).OrderBy(x => x.Value.Subject.ShortName).ToDictionary();
+    private Dictionary<SubjectEntryKey, SubjectEntry> ElectiveSubjects => _subjects.Where(s => s.Value.Subject.Type == SubjectType.Elective && !s.Value.IsCustomSubject).OrderBy(x => x.Value.Subject.ShortName).ToDictionary();
+    private Dictionary<SubjectEntryKey, SubjectEntry> SportSubjects => _subjects.Where(s => s.Value.Subject.Type == SubjectType.Sport && !s.Value.IsCustomSubject).OrderBy(x => x.Value.Subject.ShortName).ToDictionary();
 
     private List<SubjectEntry> _selectedSubjects = [];
     private bool Disabled => _selectedProgram is null;

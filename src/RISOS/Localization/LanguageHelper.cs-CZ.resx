@@ -627,4 +627,16 @@ Další poznámky / screenshoty:]]></value>
     <data name="DataFailed" xml:space="preserve">
       <value>Nepodařilo se načíst data</value>
     </data>
+    <data name="ConfirmDecrese" xml:space="preserve">
+      <value>Potvrzení snížení délky studia</value>
+    </data>
+    <data name="Confirm" xml:space="preserve">
+      <value>Ano</value>
+    </data>
+    <data name="ConfirmDecreseMessage" xml:space="preserve">
+      <value>Snížením délky studia přesunete všechny předměty v posledním roce do skupiny nezařezených předmětů. Jste si jistý, že chcete provést tuto akci?</value>
+    </data>
+    <data name="CompulsorySubjectDeleteError" xml:space="preserve">
+        <value>Povinné předměty nelze smazat</value>
+    </data>
 </root>

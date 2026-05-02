@@ -2,6 +2,7 @@
 @using RISOS.Enums
 @using RISOS.Extensions
 @using RISOS.Localization
+@using RISOS.Pages.Home.Dialogs
 @using RISOS.Pages.Home.Dialogs.CreditsDialog
 @using RISOS.Pages.Home.Dialogs.SettingsDialog
 @using RISOS.Pages.Home.Dialogs.ShareDialog
@@ -132,6 +133,9 @@
     [Parameter]
     public EventCallback<int> YearsChanged { get; set; }
 
+    [Parameter]
+    public bool NeedConfirmation { get; set; }
+
     private int SafeNeededCredits => StudyContext.Credits > 0 ? StudyContext.Credits : 180;
 
     private int CompletedProgress => TotalCredits.Completed > 0
@@ -161,6 +165,15 @@
 
     private async Task DecreaseYears()
     {
+        if (NeedConfirmation)
+        {
+            var result = await ConfirmationDialog.ShowAsync(DialogService);
+            if (result.IsCancelled || result.IsFailure)
+            {
+                return;
+            }
+        }
+
         var previousYears = StudyContext.Years;
         var newYears = Math.Max(0, StudyContext.Years - 1);
         StudyContext.Years = newYears;
@@ -214,6 +227,7 @@
             await LanguageService.SetAppLanguageAsync(result.Value.Language);
             NavigationManager.NavigateTo(NavigationManager.Uri, true);
         }
+
         await InvokeAsync(StateHasChanged);
     }
 

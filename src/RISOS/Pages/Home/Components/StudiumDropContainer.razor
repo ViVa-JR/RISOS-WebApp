@@ -30,6 +30,45 @@
     }
 </style>
 
+<style>
+    .trash-drop-zone {
+        opacity: 0;
+        width: 0;
+        pointer-events: none;
+        transition: opacity 0.2s ease, width 0.2s ease;
+        border: 2px dashed var(--mud-palette-error) !important;
+        background-color: var(--mud-palette-surface) !important;
+    }
+
+    .trash-drop-zone.mud-border-success,
+    .trash-drop-zone.mud-border-error {
+        opacity: 1;
+        width: 120px;
+        min-width: 120px;
+        pointer-events: auto;
+    }
+
+    .trash-drop-zone.mud-border-error {
+        opacity: 0.4;
+        background-color: var(--mud-palette-error-hover) !important;
+        border-style: solid !important;
+    }
+
+    .trash-drop-zone .trash-disabled-icon,
+    .trash-drop-zone .trash-error-text {
+        display: none;
+    }
+
+    .trash-drop-zone.mud-border-error .trash-icon {
+        display: none;
+    }
+
+    .trash-drop-zone.mud-border-error .trash-disabled-icon,
+    .trash-drop-zone.mud-border-error .trash-error-text {
+        display: block;
+    }
+</style>
+
 <div style="position: relative;">
     <MudOverlay Visible="LocalStorageLoading"
                 DarkBackground="true"
@@ -45,44 +84,56 @@
 
     <MudDropContainer T="SubjectEntry" @ref="_dropContainer" Items="@Subjects" ItemsSelector="@Selector"
                       ItemDropped="@ItemUpdated"
+                      CanDrop="@CanDrop"
                       Class="d-flex flex-column gap-3 mb-2"
                       Style="height: calc(100vh - 20px)"
                       ApplyDropClassesOnDragStarted
                       CanDropClass="mud-alert-text-success mud-border-success"
                       NoDropClass="mud-alert-text-error mud-border-error">
         <ChildContent>
-            <div class="rounded-lg border-2 border-dashed mud-border-lines-default mud-background-gray w-100 d-flex flex-column">
-                <MudStack Row Spacing="3" Class="px-4 pt-2 pb-2" AlignItems="AlignItems.Center">
-                    <MudText Typo="Typo.h6">@LanguageHelper.UnassignedSubjects</MudText>
-                    <MudTooltip Text="@LanguageHelper.AddCustomSubject">
-                        <MudButton
-                            Variant="Variant.Text"
-                            StartIcon="@Icons.Material.Filled.AddCircleOutline"
-                            IconColor="Color.Primary"
-                            Color="Color.Primary"
-                            OnClick="@OpenAddDialog">
-                            @LanguageHelper.Add
-                        </MudButton>
-                    </MudTooltip>
-                    <MudSpacer/>
-                    <MudStack Spacing="2" Row AlignItems="AlignItems.Center" Justify="Justify.Center">
-                        @foreach (var type in Enum.GetValues<SubjectType>())
-                        {
-                            <MudStack Row Spacing="1" Wrap="Wrap.NoWrap">
-                                <MudIcon Size="Size.Small" Color="@type.ToColor()"
-                                         Icon="@Icons.Material.Filled.Circle"/>
-                                <MudText Typo="Typo.caption">@type.ToLabel()</MudText>
-                            </MudStack>
-                        }
+            <MudStack Row Spacing="3" Class="w-100">
+                <div class="rounded-lg border-2 border-dashed mud-border-lines-default mud-background-gray flex-grow-1 d-flex flex-column">
+                    <MudStack Row Spacing="3" Class="px-4 pt-2 pb-2" AlignItems="AlignItems.Center">
+                        <MudText Typo="Typo.h6">@LanguageHelper.UnassignedSubjects</MudText>
+                        <MudTooltip Text="@LanguageHelper.AddCustomSubject">
+                            <MudButton
+                                Variant="Variant.Text"
+                                StartIcon="@Icons.Material.Filled.AddCircleOutline"
+                                IconColor="Color.Primary"
+                                Color="Color.Primary"
+                                OnClick="@OpenAddDialog">
+                                @LanguageHelper.Add
+                            </MudButton>
+                        </MudTooltip>
+                        <MudSpacer/>
+                        <MudStack Spacing="2" Row AlignItems="AlignItems.Center" Justify="Justify.Center">
+                            @foreach (var type in Enum.GetValues<SubjectType>())
+                            {
+                                <MudStack Row Spacing="1" Wrap="Wrap.NoWrap">
+                                    <MudIcon Size="Size.Small" Color="@type.ToColor()"
+                                             Icon="@Icons.Material.Filled.Circle"/>
+                                    <MudText Typo="Typo.caption">@type.ToLabel()</MudText>
+                                </MudStack>
+                            }
+                        </MudStack>
                     </MudStack>
-                </MudStack>
-                <MudDropZone T="SubjectEntry" Identifier="@SubjectEntry.Unassigned"
-                             Class="px-4 pb-4 pt-2 d-flex flex-wrap gap-2 border-transparent rounded-b-lg overflow-y-auto"
-                             Style="max-height: max(220px, 20vh); min-height: 100px;"/>
-            </div>
+                    <MudDropZone T="SubjectEntry" Identifier="@SubjectEntry.Unassigned"
+                                 Class="px-4 pb-4 pt-2 d-flex flex-wrap gap-2 border-transparent rounded-b-lg overflow-y-auto"
+                                 Style="max-height: max(220px, 20vh); min-height: 100px;"/>
+                </div>
+
+                <MudDropZone T="SubjectEntry" Identifier="Trash"
+                             Class="trash-drop-zone rounded-lg d-flex flex-column align-center justify-center">
+                    <MudIcon Icon="@Icons.Material.Filled.Delete" Size="Size.Large" Color="Color.Error" Class="trash-icon" />
+                    <MudIcon Icon="@Icons.Material.Filled.DeleteForever" Size="Size.Large" Color="Color.Error" Class="trash-disabled-icon" />
+                    <MudText Typo="Typo.caption" Color="Color.Error" Class="trash-error-text mt-1 px-2 text-center" Style="font-weight: bold; line-height: 1.2;">
+                        @LanguageHelper.CompulsorySubjectDeleteError
+                    </MudText>
+                </MudDropZone>
+            </MudStack>
 
             <ControlCenter RecognizedYear="@RecognizedYear" RecognizedYearChanged="@RecognizedYearChanged" YearsChanged="@OnYearsChanged"
-                           TotalCredits="@TotalCredits"/>
+                           TotalCredits="@TotalCredits" NeedConfirmation="@NeedConfirmation"/>
 
             <div id="main-scroll-container" style="overflow: scroll; position: relative;">
 
@@ -175,6 +226,7 @@
 
     private int StartYear => RecognizedYear ? 0 : 1;
     private int Years => StudyContext.Years + (RecognizedYear ? 1 : 0);
+    private bool NeedConfirmation => Subjects.Any(x => x.Semester == (StudyContext.Years * 2).ToString() || x.Semester == (StudyContext.Years * 2 - 1).ToString());
 
     private MudDropContainer<SubjectEntry>? _dropContainer;
 
@@ -190,6 +242,16 @@
 
     private static bool Selector(SubjectEntry item, string dropzone) => item.Semester == dropzone;
 
+    private static bool CanDrop(SubjectEntry item, string identifier)
+    {
+        if (identifier == "Trash")
+        {
+            return item.Subject.Type != SubjectType.Compulsory || item.IsCustomSubject || item.Attempt > 1;
+        }
+
+        return true;
+    }
+
     private async Task EntryChanged(SubjectEntry entry)
     {
         await SubjectsChanged.InvokeAsync(Subjects);
@@ -201,6 +263,12 @@
     {
         if (dropItem.Item is null)
         {
+            return;
+        }
+
+        if (dropItem.DropzoneIdentifier == "Trash")
+        {
+            await OnRemove.InvokeAsync(dropItem.Item);
             return;
         }
 

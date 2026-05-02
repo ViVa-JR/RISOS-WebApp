@@ -1028,5 +1028,29 @@ namespace RISOS.Localization {
                 return ResourceManager.GetString("DataFailed", resourceCulture);
             }
         }
+        
+        internal static string ConfirmDecrese {
+            get {
+                return ResourceManager.GetString("ConfirmDecrese", resourceCulture);
+            }
+        }
+        
+        internal static string ConfirmDecreseMessage {
+            get {
+                return ResourceManager.GetString("ConfirmDecreseMessage", resourceCulture);
+            }
+        }
+        
+        internal static string Confirm {
+            get {
+                return ResourceManager.GetString("Confirm", resourceCulture);
+            }
+        }
+        
+        internal static string CompulsorySubjectDeleteError {
+            get {
+                return ResourceManager.GetString("CompulsorySubjectDeleteError", resourceCulture);
+            }
+        }
     }
 }
