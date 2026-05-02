@@ -176,8 +176,8 @@
     <value>Nepodařilo se ověřit požadované kredity. Po kliknutí můžete upravit</value>
   </data>
     <data name="Duration" xml:space="preserve">
-    <value>Doba studia</value>
-  </data>
+      <value>Délka studia</value>
+    </data>
     <data name="Years_One" xml:space="preserve">
     <value>Rok</value>
   </data>
@@ -612,7 +612,10 @@ Další poznámky / screenshoty:]]></value>
     <data name="RequestFeature" xml:space="preserve">
       <value>Žádost o rozšíření</value>
   </data>
-    <data name="Sport" xml:space="preserve">
-      <value>Sporty</value>
+    <data name="SportsCreditsLimitWarning" xml:space="preserve">
+      <value>Limit pro sport dosažen (max 2 kredity/semestr)</value>
+    </data>
+    <data name="DuplicateSportsWarning" xml:space="preserve">
+      <value>Zaregistrován duplicitní sport (max. 1 kredit za konkrétní sport)</value>
     </data>
 </root>

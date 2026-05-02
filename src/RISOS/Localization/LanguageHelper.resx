@@ -613,9 +613,12 @@ Additional notes / screenshots:]]></value>
         <value>Request a Feature</value>
     </data>
     <data name="Sport" xml:space="preserve">
-        <value>Sports</value>
-    </data>
-    <data name="SportSingle" xml:space="preserve">
         <value>Sport</value>
+    </data>
+    <data name="SportsCreditsLimitWarning" xml:space="preserve">
+        <value>Sports limit reached (max 2 credits/semester)</value>
+    </data>
+    <data name="DuplicateSportsWarning" xml:space="preserve">
+        <value>Duplicate sport detected (max 1 credit per specific sport)</value>
     </data>
 </root>
