@@ -96,6 +96,13 @@
                                  OnClick="@(() => MoveEntry(SubjectEntry.Unassigned))"/>
                 }
 
+                @if (RecognizedYear && Entry.Semester != "-1" && Entry.Semester != "0")
+                {
+                    var preferredRecognized = Entry.Subject.SemesterSeason == SemesterSeason.Summer ? 0 : -1;
+                    <MudMenuItem Label="@LanguageHelperExtensions.Semester(preferredRecognized)"
+                                 OnClick="@(() => MoveEntry(preferredRecognized.ToString()))"/>
+                }
+
                 @foreach (var semester in Enumerable.Range(1, SemesterCount))
                 {
                     if (CanMove(semester))
@@ -137,6 +144,9 @@
     public int SemesterCount { get; set; }
 
     [Parameter]
+    public bool RecognizedYear { get; set; }
+
+    [Parameter]
     public EventCallback<SubjectEntry> RemoveEntry { get; set; }
 
     [Parameter]
@@ -145,9 +155,17 @@
     [Parameter]
     public EventCallback<SubjectEntry> RetakeEntry { get; set; }
 
-    private bool CanMove(int semester) => Entry.Semester != semester.ToString() &&
-                                          Entry.Subject.MinSemester <= semester &&
-                                          Entry.Subject.SemesterSeason.IsValidForSemester(semester);
+    private bool CanMove(int semester)
+    {
+        if (semester <= 0)
+        {
+            return Entry.Semester != semester.ToString();
+        }
+
+        return Entry.Semester != semester.ToString() &&
+               Entry.Subject.MinSemester <= semester &&
+               Entry.Subject.SemesterSeason.IsValidForSemester(semester);
+    }
 
     private async Task MoveEntry(string zone)
     {

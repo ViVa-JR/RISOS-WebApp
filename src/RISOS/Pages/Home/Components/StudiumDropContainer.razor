@@ -192,7 +192,8 @@
     </ChildContent>        <ItemRenderer>
             <SemesterDropZoneItemTemplate Entry="context"
                                           EntryChanged="@EntryChanged"
-                                          SemesterCount="@(Years * 2)"
+                                          SemesterCount="@(StudyContext.Years * 2)"
+                                          RecognizedYear="@RecognizedYear"
                                           RemoveEntry="@OnRemove"
                                           AddEntry="@AddSubjectAsync"
                                           RetakeEntry="@RetakeSubject"/>
