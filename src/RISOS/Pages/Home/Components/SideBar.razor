@@ -11,105 +11,156 @@
         const targetElement = document.getElementById(elementId);
 
         if (!targetElement) {
-            console.warn(`Observer failed: Could not find element with ID '${elementId}'`);
             return;
         }
 
         window.__myHeightObserver = new ResizeObserver(entries => {
-            for (let entry of entries) {
-                if (targetElement.offsetParent !== null) {
-                    const newHeight = entry.contentRect.height;
-                    document.documentElement.style.setProperty(cssVariableName, `${newHeight}px`);
+            if (debounceTimer) clearTimeout(debounceTimer);
+            debounceTimer = setTimeout(() => {
+                for (let entry of entries) {
+                    if (targetElement.offsetParent !== null) {
+                        const newHeight = entry.contentRect.height;
+                        document.documentElement.style.setProperty(cssVariableName, `${newHeight}px`);
+                    }
                 }
-            }
+            }, 50);
         });
 
+        let debounceTimer = null;
         window.__myHeightObserver.observe(targetElement);
 
         const initialHeight = targetElement.getBoundingClientRect().height;
         document.documentElement.style.setProperty(cssVariableName, `${initialHeight}px`);
     };
 </script>
-
 <style>
+    .sidebar-header {
+        display: flex;
+        align-items: center;
+        transition: padding 300ms ease;
+        position: relative;
+    }
+
+    .sidebar-header.drawer-open {
+        flex-direction: row;
+        height: 56px;
+        padding: 0 4px;
+        justify-content: space-between;
+    }
+
+    .sidebar-header.drawer-closed {
+        flex-direction: column;
+        padding: 8px 0;
+        width: 100%;
+        justify-content: flex-start;
+    }
+
+    .sidebar-header.drawer-closed .drawer-toggle-button,
+    .sidebar-header.drawer-closed .theme-button {
+        width: 100%;
+        display: flex;
+        justify-content: center;
+    }
+
+    .sidebar-header.drawer-open .theme-button {
+        order: 1;
+    }
+
+    .sidebar-header.drawer-open .drawer-toggle-button {
+        order: 3;
+    }
+
     .app-title {
         transition: transform 300ms cubic-bezier(0.4, 0, 0.2, 1),
-        margin-top 300ms cubic-bezier(0.4, 0, 0.2, 1);
-        order: 2;
-        margin: 0;
-        white-space: nowrap;
-        display: inline-block;
-        transform-origin: center center;
-
+        top 300ms cubic-bezier(0.4, 0, 0.2, 1),
+        left 300ms cubic-bezier(0.4, 0, 0.2, 1),
+        opacity 250ms ease;
         font-size: 44px;
         font-family: 'Aladin', cursive;
         letter-spacing: 2px;
         line-height: 1;
+        white-space: nowrap;
+        display: inline-block;
+        transform-origin: center center;
+        margin: 0;
+        position: absolute;
+        pointer-events: none;
+    }
+
+    .drawer-open .app-title {
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, -30%) scale(1);
     }
 
     .drawer-closed .app-title {
-        transform: rotate(-90deg) translateX(-35px);
+        left: 56%;
+        top: 170px;
+        transform: translate(-50%, -50%) rotate(-90deg) scale(0.85);
     }
 
-    .theme-button {
-        order: 1;
+    .drawer-content-wrapper {
+        transition: opacity 200ms ease;
+        opacity: 1;
+        visibility: visible;
+        display: flex;
+        flex-direction: column;
+        flex-grow: 1;
+        overflow: hidden;
     }
 
-    .drawer-closed .theme-button {
-        order: 2;
+    .drawer-closed-content {
+        opacity: 0;
+        visibility: hidden;
+        pointer-events: none;
+        flex-grow: 0;
+        height: 0;
     }
 
-    .drawer-toggle-button {
-        order: 3;
-    }
-
-    .drawer-closed .drawer-toggle-button {
-        order: 1;
-    }
-
-    .mud-drawer.hidden {
-        display: none;
+    .drawer-closed-bottom-wrapper .mud-stack-row {
+        flex-direction: column !important;
+        gap: 0 !important;
+        align-items: center !important;
+        width: 100% !important;
     }
 </style>
 
 <MudDrawer @bind-Open="_drawerOpen" Elevation="1" Breakpoint="Breakpoint.Sm" Variant="@(IsReadOnly ? DrawerVariant.Temporary : DrawerVariant.Mini)"
            Class="@($"mt-n5 {(IsReadOnly ? "hidden " : string.Empty)}{Class}")" Width="260px" Overlay="false">
-    <MudStack Row="@_drawerOpen"
-              AlignItems="AlignItems.Center"
-              Justify="@(_drawerOpen ? Justify.SpaceBetween : Justify.FlexStart)"
-              Spacing="1"
-              Class="@($"pa-1 {(_drawerOpen ? string.Empty : "drawer-closed")}")"
-              Style="flex-shrink: 0;">
 
-        <MudToggleIconButton Class="theme-button"
-                             Toggled="ThemeStateService.IsDarkMode"
-                             ToggledChanged="ThemeStateService.SetDarkMode"
-                             Icon="@Icons.Material.Filled.NightsStay"
-                             ToggledIcon="@Icons.Material.Filled.WbSunny"
-                             Style="color: var(--mud-palette-drawer-text)"/>
+    <div class="@($"sidebar-header {(_drawerOpen ? "drawer-open" : "drawer-closed")}")">
+        <MudIconButton
+            OnClick="@DrawerToggle"
+            Icon="@(_drawerOpen ? Icons.Material.Filled.KeyboardArrowLeft : Icons.Material.Filled.KeyboardArrowRight)"
+            Style="color: var(--mud-palette-drawer-text)"
+            Class="drawer-toggle-button"/>
+
+        <MudToggleIconButton
+            Toggled="ThemeStateService.IsDarkMode"
+            ToggledChanged="ThemeStateService.SetDarkMode"
+            Icon="@Icons.Material.Filled.NightsStay"
+            ToggledIcon="@Icons.Material.Filled.WbSunny"
+            Style="color: var(--mud-palette-drawer-text)"
+            Class="theme-button"/>
 
         <MudText Class="app-title">
             RISØS
         </MudText>
+    </div>
 
-        <MudIconButton Class="drawer-toggle-button"
-                       OnClick="@DrawerToggle"
-                       Icon="@(_drawerOpen ? Icons.Material.Filled.KeyboardArrowLeft : Icons.Material.Filled.KeyboardArrowRight)"
-                       Style="color: var(--mud-palette-drawer-text)"/>
-
-    </MudStack>
-
-    @if (_drawerOpen && OpenedDrawerContent is not null)
-    {
+    <div class="@($"drawer-content-wrapper {(_drawerOpen ? "" : "drawer-closed-content")}")">
         <div id="side-bar-content" class="pa-2 d-flex flex-column"
-             style="overflow-y: auto; overflow-x: hidden; max-height: calc(100vh - 56px)">
+             style="overflow-y: auto; overflow-x: hidden; height: 100%;">
             @OpenedDrawerContent
         </div>
-    }
+    </div>
+
     @if (AlwaysVisible is not null)
     {
         <MudSpacer/>
-        @AlwaysVisible
+        <div class="@($"pa-2 {(_drawerOpen ? "w-100" : "drawer-closed-bottom-wrapper d-flex flex-column align-center")}")">
+            @AlwaysVisible
+        </div>
     }
 </MudDrawer>
 

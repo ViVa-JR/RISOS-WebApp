@@ -99,6 +99,18 @@ namespace RISOS.Localization {
             }
         }
         
+        internal static string ExportAsImage {
+            get {
+                return ResourceManager.GetString("ExportAsImage", resourceCulture);
+            }
+        }
+        
+        internal static string ExportAsJson {
+            get {
+                return ResourceManager.GetString("ExportAsJson", resourceCulture);
+            }
+        }
+        
         internal static string Import {
             get {
                 return ResourceManager.GetString("Import", resourceCulture);
@@ -1050,6 +1062,12 @@ namespace RISOS.Localization {
         internal static string CompulsorySubjectDeleteError {
             get {
                 return ResourceManager.GetString("CompulsorySubjectDeleteError", resourceCulture);
+            }
+        }
+        
+        internal static string CompleteAllSubjectsInSemester {
+            get {
+                return ResourceManager.GetString("CompleteAllSubjectsInSemester", resourceCulture);
             }
         }
     }

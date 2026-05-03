@@ -22,13 +22,18 @@
         @if (!IsReadOnly)
         {
             <div class="d-flex w-100 w-md-auto justify-center justify-md-start order-3 order-md-1 mt-3 mt-md-0">
-                <MudButton Variant="@(RecognizedYear ? Variant.Filled : Variant.Outlined)"
-                           Color="@Color.Primary"
-                           OnClick="@OnRecognizedYearClick"
-                           StartIcon="@(RecognizedYear ? Icons.Material.Filled.BookmarkRemove : Icons.Material.Filled.BookmarkAdd)"
-                           Size="Size.Small">
-                    @(RecognizedYear ? LanguageHelper.RemoveRecognizedYear : LanguageHelper.AddRecognizedYear)
-                </MudButton>
+                <div class="hide-in-export">
+                    <MudButton Variant="@(RecognizedYear ? Variant.Filled : Variant.Outlined)"
+                               Color="@Color.Primary"
+                               OnClick="@OnRecognizedYearClick"
+                               StartIcon="@(RecognizedYear ? Icons.Material.Filled.BookmarkRemove : Icons.Material.Filled.BookmarkAdd)"
+                               Size="Size.Small">
+                        @(RecognizedYear ? LanguageHelper.RemoveRecognizedYear : LanguageHelper.AddRecognizedYear)
+                    </MudButton>
+                </div>
+                <div class="show-only-in-export">
+                    <SubjectTypeLegend />
+                </div>
             </div>
         }
 
@@ -63,7 +68,7 @@
 
                     @if (!IsReadOnly && StudyContext is { CreditsWarn: true, CreditOverride: null })
                     {
-                        <MudTooltip Text="@LanguageHelper.CreditsWarning">
+                        <MudTooltip Text="@LanguageHelper.CreditsWarning" RootClass="hide-in-export">
                             <MudIconButton Icon="@Icons.Material.Filled.WarningAmber" Color="Color.Warning" Size="Size.Small" OnClick="@OnCreditWarningClick" Class="pa-0 ml-1"/>
                         </MudTooltip>
                     }
@@ -83,7 +88,7 @@
 
             @if (IsReadOnly)
             {
-                <div class="d-flex align-center">
+                <div class="d-flex align-center hide-in-export">
                     <MudToggleIconButton Toggled="ThemeStateService.IsDarkMode"
                                          ToggledChanged="ThemeStateService.SetDarkMode"
                                          Icon="@Icons.Material.Filled.NightsStay"
@@ -101,7 +106,7 @@
 
                 @if (!IsReadOnly)
                 {
-                    <MudTooltip Text="@LanguageHelper.AdjustYears">
+                    <MudTooltip Text="@LanguageHelper.AdjustYears" RootClass="hide-in-export">
                         <MudButtonGroup Variant="Variant.Outlined" Color="Color.Primary" Size="Size.Small">
                             <MudIconButton Icon="@Icons.Material.Filled.Remove" Color="Color.Error" OnClick="@DecreaseYears" Disabled="@(StudyContext.Years <= 1)"/>
                             <MudIconButton Icon="@Icons.Material.Filled.Add" Color="Color.Success" OnClick="@IncreaseYears"/>

@@ -148,6 +148,12 @@
     <data name="Export" xml:space="preserve">
         <value>Export</value>
     </data>
+    <data name="ExportAsImage" xml:space="preserve">
+        <value>Export as Image</value>
+    </data>
+    <data name="ExportAsJson" xml:space="preserve">
+        <value>Export as JSON (Backup)</value>
+    </data>
     <data name="Import" xml:space="preserve">
         <value>Import</value>
     </data>
@@ -641,5 +647,8 @@ Additional notes / screenshots:]]></value>
     </data>
     <data name="CompulsorySubjectDeleteError" xml:space="preserve">
         <value>Compulsory subjects cannot be deleted</value>
+    </data>
+    <data name="CompleteAllSubjectsInSemester" xml:space="preserve">
+        <value>Complete all subjects in this semester</value>
     </data>
 </root>

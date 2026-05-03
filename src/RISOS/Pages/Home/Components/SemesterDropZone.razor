@@ -89,12 +89,26 @@
         triggerRecalculation();
     };
 </script>
+<style>
+    .semester-drop-zone {
+        transition: border-color 0.2s ease;
+    }
+
+    .semester-drop-zone .complete-semester-btn {
+        opacity: 0;
+        transition: opacity 0.2s ease;
+    }
+
+    .semester-drop-zone:hover .complete-semester-btn {
+        opacity: 1;
+    }
+</style>
 
 <MudStack Spacing="0" Class="flex-grow-1">
     <MudDropZone T="SubjectEntry"
                  Identifier="@Semester.ToString()"
                  id="@($"dropzone-{Semester}")"
-                 Class="pa-2 flex-grow-1 d-flex flex-column gap-2 border-2 border-b-0 border-dashed mud-border-lines-default rounded-t-lg"
+                 Class="pa-2 flex-grow-1 d-flex flex-column gap-2 border-2 border-b-0 border-dashed mud-border-lines-default rounded-t-lg semester-drop-zone"
                  Style="@($"min-height: var({CssVariableName}, 250px);")"
                  CanDrop="CanDrop"
                  AllowReorder>
@@ -106,6 +120,18 @@
                          Variant="Variant.Text"
                          Color="@SemesterSeason.ToColor()"/>
                 <MudSpacer/>
+
+                @if (Credits.HasUnprocessed)
+                {
+                    <MudTooltip Text="@LanguageHelper.CompleteAllSubjectsInSemester">
+                        <MudIconButton Icon="@Icons.Material.Filled.DoneAll"
+                                       Color="Color.Success"
+                                       Size="Size.Small"
+                                       Class="complete-semester-btn hide-in-export"
+                                       OnClick="@(() => CompleteSemester.InvokeAsync(Semester))"/>
+                    </MudTooltip>
+                }
+
                 @if (Credits.SportLimitReached)
                 {
                     <MudTooltip Text="@LanguageHelper.SportsCreditsLimitWarning">
@@ -144,6 +170,9 @@
 
     [Parameter]
     public Credits Credits { get; set; } = new();
+
+    [Parameter]
+    public EventCallback<int> CompleteSemester { get; set; }
 
     private bool IsOddSemester => Semester % 2 != 0;
     private string CssVariableName => IsOddSemester ? "--dropzone-height-odd" : "--dropzone-height-even";

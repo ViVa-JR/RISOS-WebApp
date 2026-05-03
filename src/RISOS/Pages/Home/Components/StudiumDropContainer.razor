@@ -34,8 +34,9 @@
     .trash-drop-zone {
         opacity: 0;
         width: 0;
+        margin-left: 0;
         pointer-events: none;
-        transition: opacity 0.2s ease, width 0.2s ease;
+        transition: opacity 0.2s ease, width 0.2s ease, margin-left 0.2s ease;
         border: 2px dashed var(--mud-palette-error) !important;
         background-color: var(--mud-palette-surface) !important;
     }
@@ -45,6 +46,7 @@
         opacity: 1;
         width: 120px;
         min-width: 120px;
+        margin-left: 12px;
         pointer-events: auto;
     }
 
@@ -91,7 +93,7 @@
                       CanDropClass="mud-alert-text-success mud-border-success"
                       NoDropClass="mud-alert-text-error mud-border-error">
         <ChildContent>
-            <MudStack Row Spacing="3" Class="w-100">
+            <MudStack Row Spacing="0" Class="w-100">
                 <div class="rounded-lg border-2 border-dashed mud-border-lines-default mud-background-gray flex-grow-1 d-flex flex-column">
                     <MudStack Row Spacing="3" Class="px-4 pt-2 pb-2" AlignItems="AlignItems.Center">
                         <MudText Typo="Typo.h6">@LanguageHelper.UnassignedSubjects</MudText>
@@ -106,16 +108,7 @@
                             </MudButton>
                         </MudTooltip>
                         <MudSpacer/>
-                        <MudStack Spacing="2" Row AlignItems="AlignItems.Center" Justify="Justify.Center">
-                            @foreach (var type in Enum.GetValues<SubjectType>())
-                            {
-                                <MudStack Row Spacing="1" Wrap="Wrap.NoWrap">
-                                    <MudIcon Size="Size.Small" Color="@type.ToColor()"
-                                             Icon="@Icons.Material.Filled.Circle"/>
-                                    <MudText Typo="Typo.caption">@type.ToLabel()</MudText>
-                                </MudStack>
-                            }
-                        </MudStack>
+                        <SubjectTypeLegend Class="hide-in-export" />
                     </MudStack>
                     <MudDropZone T="SubjectEntry" Identifier="@SubjectEntry.Unassigned"
                                  Class="px-4 pb-4 pt-2 d-flex flex-wrap gap-2 border-transparent rounded-b-lg overflow-y-auto"
@@ -124,69 +117,73 @@
 
                 <MudDropZone T="SubjectEntry" Identifier="Trash"
                              Class="trash-drop-zone rounded-lg d-flex flex-column align-center justify-center">
-                    <MudIcon Icon="@Icons.Material.Filled.Delete" Size="Size.Large" Color="Color.Error" Class="trash-icon" />
-                    <MudIcon Icon="@Icons.Material.Filled.DeleteForever" Size="Size.Large" Color="Color.Error" Class="trash-disabled-icon" />
+                    <MudIcon Icon="@Icons.Material.Filled.DeleteForever" Size="Size.Large" Color="Color.Error" Class="trash-icon"/>
+                    <MudIcon Icon="@Icons.Material.Filled.Block" Size="Size.Large" Color="Color.Error" Class="trash-disabled-icon"/>
                     <MudText Typo="Typo.caption" Color="Color.Error" Class="trash-error-text mt-1 px-2 text-center" Style="font-weight: bold; line-height: 1.2;">
                         @LanguageHelper.CompulsorySubjectDeleteError
                     </MudText>
                 </MudDropZone>
             </MudStack>
 
-            <ControlCenter RecognizedYear="@RecognizedYear" RecognizedYearChanged="@RecognizedYearChanged" YearsChanged="@OnYearsChanged"
-                           TotalCredits="@TotalCredits" NeedConfirmation="@NeedConfirmation"/>
+            <div id="export-zone" class="d-flex flex-column gap-3">
+                <ControlCenter RecognizedYear="@RecognizedYear" RecognizedYearChanged="@RecognizedYearChanged" YearsChanged="@OnYearsChanged"
+                               TotalCredits="@TotalCredits" NeedConfirmation="@NeedConfirmation"/>
 
-            <div id="main-scroll-container" style="overflow: scroll; position: relative;">
+                <div id="main-scroll-container" style="overflow: scroll; position: relative;">
 
-                <div class="indicator-anchor top">
-                    <div class="scroll-indicator top">
-                        <MudIcon Icon="@Icons.Material.Filled.KeyboardDoubleArrowUp"/>
-                        <MudText Typo="Typo.caption">SCROLL UP</MudText>
-                    </div>
-                </div>
-                <MudStack Row Class="mb-3">
-                    @foreach (var year in Enumerable.Range(StartYear, Years))
-                    {
-                        var winterSem = year * 2 - 1;
-                        var summerSem = year * 2;
-
-                        <div class="rounded-lg pa-4 d-flex flex-column mt-4"
-                             style="position: relative; border: 2px dotted var(--mud-palette-lines-default); height: 100%; min-width: 336px; flex: 1;">
-                            <div
-                                style="position: absolute; top: -16px; left: 15%; transform: translateX(-50%); background-color: var(--mud-palette-background); padding: 0 16px;">
-                                <MudText Typo="Typo.h6" Color="Color.Primary"
-                                         Class="font-weight-bold">@year. @LanguageHelper.Years_One</MudText>
-                            </div>
-
-                            <MudStack Class="flex-grow-1">
-                                <SemesterDropZone Semester="@winterSem" Credits="@GetSemesterCredits(winterSem)"
-                                                  SemesterSeason="SemesterSeason.Winter"/>
-                                <SemesterDropZone Semester="@summerSem" Credits="@GetSemesterCredits(summerSem)"
-                                                  SemesterSeason="SemesterSeason.Summer"/>
-                            </MudStack>
-                            <MudStack AlignItems="AlignItems.Center" Row StretchItems="StretchItems.Start" Spacing="1" Class="pt-2">
-                                <MudText Typo="Typo.subtitle2" Color="Color.Default">@LanguageHelper.YearTotal</MudText>
-
-                                @{
-                                    var yearCredits = GetYearCredits(year);
-                                }
-
-                                @if (yearCredits.Completed > 0)
-                                {
-                                    <MudText Typo="Typo.body1" Color="Color.Success">@yearCredits.Completed</MudText>
-                                    <MudText Typo="Typo.body1" Color="Color.Primary">/</MudText>
-                                }
-                                <MudText Typo="Typo.body1" Color="Color.Primary">
-                                    <b>@yearCredits.Registered</b> @LanguageHelper.Credits
-                                </MudText>
-                            </MudStack>
+                    <div class="indicator-anchor top">
+                        <div class="scroll-indicator top">
+                            <MudIcon Icon="@Icons.Material.Filled.KeyboardDoubleArrowUp"/>
+                            <MudText Typo="Typo.caption">SCROLL UP</MudText>
                         </div>
-                    }
-                </MudStack>
+                    </div>
+                    <MudStack Row Class="mb-3">
+                        @foreach (var year in Enumerable.Range(StartYear, Years))
+                        {
+                            var winterSem = year * 2 - 1;
+                            var summerSem = year * 2;
 
-                <div class="indicator-anchor bottom">
-                    <div class="scroll-indicator bottom">
-                        <MudText Typo="Typo.caption">SCROLL DOWN</MudText>
-                        <MudIcon Icon="@Icons.Material.Filled.KeyboardDoubleArrowDown"/>
+                            <div class="rounded-lg pa-4 d-flex flex-column mt-4"
+                                 style="position: relative; border: 2px dotted var(--mud-palette-lines-default); height: 100%; min-width: 336px; flex: 1;">
+                                <div
+                                    style="position: absolute; top: -16px; left: 15%; transform: translateX(-50%); background-color: var(--mud-palette-background); padding: 0 16px;">
+                                    <MudText Typo="Typo.h6" Color="Color.Primary"
+                                             Class="font-weight-bold">@year. @LanguageHelper.Years_One</MudText>
+                                </div>
+
+                                <MudStack Class="flex-grow-1">
+                                    <SemesterDropZone Semester="@winterSem" Credits="@GetSemesterCredits(winterSem)"
+                                                      SemesterSeason="SemesterSeason.Winter"
+                                                      CompleteSemester="@OnCompleteSemester"/>
+                                    <SemesterDropZone Semester="@summerSem" Credits="@GetSemesterCredits(summerSem)"
+                                                      SemesterSeason="SemesterSeason.Summer"
+                                                      CompleteSemester="@OnCompleteSemester"/>
+                                </MudStack>
+                                <MudStack AlignItems="AlignItems.Center" Row StretchItems="StretchItems.Start" Spacing="1" Class="pt-2">
+                                    <MudText Typo="Typo.subtitle2" Color="Color.Default">@LanguageHelper.YearTotal</MudText>
+
+                                    @{
+                                        var yearCredits = GetYearCredits(year);
+                                    }
+
+                                    @if (yearCredits.Completed > 0)
+                                    {
+                                        <MudText Typo="Typo.body1" Color="Color.Success">@yearCredits.Completed</MudText>
+                                        <MudText Typo="Typo.body1" Color="Color.Primary">/</MudText>
+                                    }
+                                    <MudText Typo="Typo.body1" Color="Color.Primary">
+                                        <b>@yearCredits.Registered</b> @LanguageHelper.Credits
+                                    </MudText>
+                                </MudStack>
+                            </div>
+                        }
+                    </MudStack>
+
+                    <div class="indicator-anchor bottom">
+                        <div class="scroll-indicator bottom">
+                            <MudText Typo="Typo.caption">SCROLL DOWN</MudText>
+                            <MudIcon Icon="@Icons.Material.Filled.KeyboardDoubleArrowDown"/>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -311,12 +308,14 @@
             .Where(s => s.Semester == semesterIdentifier.ToString())
             .ToArray();
 
+        var hasUnprocessed = semesterSubjects.Any(s => s.Completed == null);
+
         if (semesterIdentifier <= 0)
         {
             var registered = semesterSubjects.Sum(s => s.Subject.Credits);
             var completed = semesterSubjects.Where(s => s.Completed == true).Sum(s => s.Subject.Credits);
 
-            return new Credits(registered, completed, false, false);
+            return new Credits(registered, completed, false, false, hasUnprocessed);
         }
 
         var registeredNormal = semesterSubjects.Where(s => !s.IsSport).Sum(s => s.Subject.Credits);
@@ -331,7 +330,8 @@
             Registered: registeredNormal + Math.Min(2, uniqueSportsRegistered),
             Completed: completedNormal + Math.Min(2, uniqueSportsCompleted),
             SportLimitReached: uniqueSportsRegistered > 2,
-            HasDuplicateSports: totalSportsRegistered > uniqueSportsRegistered
+            HasDuplicateSports: totalSportsRegistered > uniqueSportsRegistered,
+            HasUnprocessed: hasUnprocessed
         );
     }
 
@@ -447,5 +447,27 @@
         await SubjectsChanged.InvokeAsync(Subjects);
         _dropContainer?.Refresh();
         Snackbar.Add($"{LanguageHelper.RetakeSnackbarText} {newEntry.Semester}. {LanguageHelper.Semester_u}", Severity.Success);
+    }
+
+    private async Task OnCompleteSemester(int semester)
+    {
+        var subjectsToComplete = Subjects
+            .Where(x => x.Semester == semester.ToString() && x.Completed == null)
+            .ToList();
+
+        if (subjectsToComplete.Count == 0)
+        {
+            return;
+        }
+
+        foreach (var subject in subjectsToComplete)
+        {
+            subject.Completed = true;
+            await LocalStorageService.UpdateSubjectAsync(subject);
+        }
+
+        await SubjectsChanged.InvokeAsync(Subjects);
+        _dropContainer?.Refresh();
+        Snackbar.Add($"{LanguageHelper.Semester} {semester} {LanguageHelper.Completed}", Severity.Success);
     }
 }
