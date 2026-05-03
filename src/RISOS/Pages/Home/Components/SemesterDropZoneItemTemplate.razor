@@ -21,7 +21,7 @@
     }
 </style>
 
-<MudPaper Elevation="2" Style="cursor: grab; min-width: 280px">
+<MudPaper Elevation="2" Style="cursor: grab; min-width: 280px; transform: translate3d(0,0,0); -webkit-user-select: none; user-select: none;">
     <MudMenu ActivationEvent="MouseEvent.RightClick" Dense Class="pa-2 d-flex align-center" Style="width: 100%">
         <ActivatorContent>
             <div @oncontextmenu="@context.ToggleAsync" @oncontextmenu:preventDefault style="width: 100%">
@@ -159,7 +159,8 @@
     {
         if (semester <= 0)
         {
-            return Entry.Semester != semester.ToString();
+            return Entry.Semester != semester.ToString() &&
+                   Entry.Subject.SemesterSeason.IsValidForSemester(semester);
         }
 
         return Entry.Semester != semester.ToString() &&

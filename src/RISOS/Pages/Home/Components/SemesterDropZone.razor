@@ -177,8 +177,8 @@
     private bool IsOddSemester => Semester % 2 != 0;
     private string CssVariableName => IsOddSemester ? "--dropzone-height-odd" : "--dropzone-height-even";
 
-    public bool CanDrop(SubjectEntry entry) => Semester < 1 || ((entry.Subject.SemesterSeason == SemesterSeason || entry.Subject.SemesterSeason == SemesterSeason.Any)
-                                                                && entry.Subject.MinSemester <= Semester);
+    public bool CanDrop(SubjectEntry entry) => (entry.Subject.SemesterSeason == SemesterSeason || entry.Subject.SemesterSeason == SemesterSeason.Any)
+                                               && (Semester < 1 || entry.Subject.MinSemester <= Semester);
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
