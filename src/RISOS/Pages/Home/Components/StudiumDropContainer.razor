@@ -146,9 +146,9 @@
                             <div class="rounded-lg pa-4 d-flex flex-column mt-4"
                                  style="position: relative; border: 2px dotted var(--mud-palette-lines-default); height: 100%; min-width: 336px; flex: 1;">
                                 <div
-                                    style="position: absolute; top: -16px; left: 15%; transform: translateX(-50%); background-color: var(--mud-palette-background); padding: 0 16px;">
+                                    style="position: absolute; top: -16px; left: 16px; background-color: var(--mud-palette-background); padding: 0 16px; white-space: nowrap; z-index: 10;">
                                     <MudText Typo="Typo.h6" Color="Color.Primary"
-                                             Class="font-weight-bold">@year. @LanguageHelper.Years_One</MudText>
+                                             Class="font-weight-bold">@(year == 0 ? LanguageHelper.RecognizedYearTitle : $"{year}. {LanguageHelper.Years_One}")</MudText>
                                 </div>
 
                                 <MudStack Class="flex-grow-1">
@@ -468,6 +468,6 @@
 
         await SubjectsChanged.InvokeAsync(Subjects);
         _dropContainer?.Refresh();
-        Snackbar.Add($"{LanguageHelper.Semester} {semester} {LanguageHelper.Completed}", Severity.Success);
+        Snackbar.Add($"{LanguageHelperExtensions.Semester(semester)} {LanguageHelper.Completed}", Severity.Success);
     }
 }

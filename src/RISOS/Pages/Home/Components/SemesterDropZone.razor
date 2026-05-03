@@ -115,7 +115,7 @@
         <ChildContent>
             <MudStack Row Spacing="1" AlignItems="AlignItems.Center"
                       Class="pa-2 border-b mud-border-lines-default mud-background-gray rounded-t-lg">
-                <MudText Typo="Typo.subtitle1" Class="font-weight-bold">@Semester. @LanguageHelper.Semester •</MudText>
+                <MudText Typo="Typo.subtitle1" Class="font-weight-bold">@LanguageHelperExtensions.Semester(Semester) •</MudText>
                 <MudChip T="SemesterSeason" Value="@SemesterSeason" Text="@SemesterSeason.ToLabel()" Size="Size.Small"
                          Variant="Variant.Text"
                          Color="@SemesterSeason.ToColor()"/>

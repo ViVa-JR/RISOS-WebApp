@@ -161,10 +161,10 @@
         <value>Search</value>
     </data>
     <data name="RemoveRecognizedYear" xml:space="preserve">
-        <value>Hide recognized year</value>
+        <value>Hide recognized subjects</value>
     </data>
     <data name="AddRecognizedYear" xml:space="preserve">
-        <value>Show recognized year</value>
+        <value>Show recognized subjects</value>
     </data>
     <data name="StudyProgress" xml:space="preserve">
         <value>Study progress</value>
@@ -272,7 +272,7 @@
         <value>Recognized course-unit credit only</value>
     </data>
     <data name="CompletionTypeRVol" xml:space="preserve">
-        <value>Recognized year of study</value>
+        <value>Recognized year</value>
     </data>
     <data name="CompletionTypeCrFsp" xml:space="preserve">
         <value>Course-unit credit and final semester project</value>
@@ -650,5 +650,11 @@ Additional notes / screenshots:]]></value>
     </data>
     <data name="CompleteAllSubjectsInSemester" xml:space="preserve">
         <value>Complete all subjects in this semester</value>
+    </data>
+    <data name="RecognizedYearTitle" xml:space="preserve">
+        <value>Recognized subjects</value>
+    </data>
+    <data name="RecognizedSemester" xml:space="preserve">
+        <value>Recognized</value>
     </data>
 </root>

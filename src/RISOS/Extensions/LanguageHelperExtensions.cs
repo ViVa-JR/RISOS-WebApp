@@ -14,4 +14,11 @@ public static class LanguageHelperExtensions
                 ? LanguageHelper.Years_Few
                 : LanguageHelper.Years_Many, count);
     }
+
+    public static string Semester(int number)
+    {
+        return number <= 0
+            ? LanguageHelper.RecognizedSemester
+            : $"{number}. {LanguageHelper.Semester}";
+    }
 }

@@ -100,7 +100,7 @@
                 {
                     if (CanMove(semester))
                     {
-                        <MudMenuItem Label="@($"{semester}. {LanguageHelper.Semester}")"
+                        <MudMenuItem Label="@LanguageHelperExtensions.Semester(semester)"
                                      OnClick="@(() => MoveEntry(semester.ToString()))"/>
                     }
                 }
