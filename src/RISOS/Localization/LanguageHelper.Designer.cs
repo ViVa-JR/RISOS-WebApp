@@ -1070,5 +1070,17 @@ namespace RISOS.Localization {
                 return ResourceManager.GetString("CompleteAllSubjectsInSemester", resourceCulture);
             }
         }
+        
+        internal static string RecognizedYearTitle {
+            get {
+                return ResourceManager.GetString("RecognizedYearTitle", resourceCulture);
+            }
+        }
+        
+        internal static string RecognizedSemester {
+            get {
+                return ResourceManager.GetString("RecognizedSemester", resourceCulture);
+            }
+        }
     }
 }

@@ -161,10 +161,10 @@
     <value>Vyhledat</value>
   </data>
     <data name="RemoveRecognizedYear" xml:space="preserve">
-      <value>Skrýt uznaný rok</value>
+      <value>Skrýt uznané předměty</value>
     </data>
     <data name="AddRecognizedYear" xml:space="preserve">
-      <value>Zobrazit uznaný rok</value>
+      <value>Zobrazit uznané předměty</value>
     </data>
     <data name="StudyProgress" xml:space="preserve">
     <value>Průběh studia</value>
@@ -647,5 +647,11 @@ Další poznámky / screenshoty:]]></value>
     </data>
     <data name="CompleteAllSubjectsInSemester" xml:space="preserve">
         <value>Dokončit všechny předměty v tomto semestru</value>
+    </data>
+    <data name="RecognizedYearTitle" xml:space="preserve">
+        <value>Uznané předměty</value>
+    </data>
+    <data name="RecognizedSemester" xml:space="preserve">
+        <value>Uznané</value>
     </data>
 </root>

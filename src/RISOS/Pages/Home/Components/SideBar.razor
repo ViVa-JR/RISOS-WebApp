@@ -125,8 +125,20 @@
     }
 </style>
 
-<MudDrawer @bind-Open="_drawerOpen" Elevation="1" Breakpoint="Breakpoint.Sm" Variant="@(IsReadOnly ? DrawerVariant.Temporary : DrawerVariant.Mini)"
-           Class="@($"mt-n5 {(IsReadOnly ? "hidden " : string.Empty)}{Class}")" Width="260px" Overlay="false">
+<style>
+    .mobile-hidden-sidebar {
+        display: none !important;
+    }
+
+    @@media (min-width: 960px) {
+        .mobile-hidden-sidebar {
+            display: flex !important;
+        }
+    }
+</style>
+
+<MudDrawer @bind-Open="_drawerOpen" Elevation="1" Breakpoint="Breakpoint.None" Variant="@(IsReadOnly ? DrawerVariant.Temporary : DrawerVariant.Mini)"
+           Class="@($"mt-n5 mobile-hidden-sidebar {Class}")" Width="260px" Overlay="false">
 
     <div class="@($"sidebar-header {(_drawerOpen ? "drawer-open" : "drawer-closed")}")">
         <MudIconButton
@@ -189,5 +201,12 @@
 
     private bool _drawerOpen = true;
 
-    private void DrawerToggle() => _drawerOpen = !_drawerOpen;
+    [Parameter]
+    public EventCallback<bool> DrawerOpenChanged { get; set; }
+
+    private async Task DrawerToggle()
+    {
+        _drawerOpen = !_drawerOpen;
+        await DrawerOpenChanged.InvokeAsync(_drawerOpen);
+    }
 }

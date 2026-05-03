@@ -79,15 +79,15 @@
 
 </style>
 
-<SideBar Class="side-bar">
+<SideBar Class="side-bar" DrawerOpenChanged="@ToggleExpansionPanels">
     <OpenedDrawerContent>
-        <MudExpansionPanels Elevation="3" Style="height: calc(100vh - 128px); overflow: hidden">
-            <MudExpansionPanel Text="@LanguageHelper.StudyProgram" Gutters="false">
+        <MudExpansionPanels @ref="_expansionPanels" MultiExpansion="true" Elevation="3" Style="height: calc(100vh - 128px); overflow: hidden">
+            <MudExpansionPanel Text="@LanguageHelper.StudyProgram" Gutters="false" @bind-Expanded="_panelsExpanded">
                 <StudyProgramSelector SelectedProgram="@_selectedProgram"
                                       SelectedProgramChanged="@OnSelectedProgramsChanged" Loading="@_isLoading"/>
             </MudExpansionPanel>
             <SubjectsPanel TGroupKey="int"
-                           HeaderTemplate="@(x => $"{x}. {LanguageHelper.Semester}")"
+                           HeaderTemplate="@LanguageHelperExtensions.Semester"
                            GroupBy="@(x => x.Subject.MinSemester)"
                            SubjectChanged="@SubjectChanged"
                            Title="@LanguageHelper.Compulsory"
@@ -95,6 +95,7 @@
                            Subjects="@CompulsorySubjects"
                            IsLoading="@_isLoading"
                            FixedPixels="382"
+                           @bind-Expanded="_panelsExpanded"
                            ReadOnly/>
             <SubjectsPanel TGroupKey="string"
                            GroupBy="@(x => x.Subject.GroupId!)"
@@ -104,6 +105,7 @@
                            Subjects="@CompulsoryElectiveSubjects"
                            IsLoading="@_isLoading"
                            FixedPixels="382"
+                           @bind-Expanded="_panelsExpanded"
                            CompulsoryGroups/>
             <SubjectsPanel TGroupKey="SemesterSeason"
                            GroupBy="@(x => x.Subject.SemesterSeason)"
@@ -113,7 +115,8 @@
                            Disabled="@Disabled"
                            Subjects="@ElectiveSubjects"
                            IsLoading="@_isLoading"
-                           FixedPixels="382"/>
+                           FixedPixels="382"
+                           @bind-Expanded="_panelsExpanded"/>
             <SubjectsPanel TGroupKey="SemesterSeason"
                            GroupBy="@(x => x.Subject.SemesterSeason)"
                            HeaderTemplate="@(x => x.ToLabel())"
@@ -122,7 +125,8 @@
                            Disabled="@Disabled"
                            Subjects="@SportSubjects"
                            IsLoading="@_isLoading"
-                           FixedPixels="366"/>
+                           FixedPixels="366"
+                           @bind-Expanded="_panelsExpanded"/>
         </MudExpansionPanels>
     </OpenedDrawerContent>
     <AlwaysVisible>
@@ -180,7 +184,9 @@
     private bool _isLoading;
     private bool _dropZoneContainerLoading;
     private bool _recognizedYear;
+    private bool _panelsExpanded;
     private StudiumDropContainer? _dropContainer;
+    private MudExpansionPanels? _expansionPanels;
 
     private readonly StudyContext _studyContext = new();
 
@@ -274,6 +280,19 @@
         await InvokeAsync(StateHasChanged);
 
         _selectedProgram = program;
+
+        _studyContext.ProgramAbbreviation = program?.Abbreviation;
+        _studyContext.ProgramSpecialization = program?.Specialization;
+
+        if (program != null)
+        {
+            var faculties = await UniversityService.GetFacultiesWithProgramsAsync();
+            _studyContext.FacultyAbbreviation = faculties.Value.FirstOrDefault(f => f.Programs.Any(p => p.Abbreviation == program.Abbreviation && p.Specialization == program.Specialization))?.Abbreviation;
+        }
+        else
+        {
+            _studyContext.FacultyAbbreviation = null;
+        }
 
         var savedAbbreviation = await LocalStorageService.LoadProgramAbbreviation();
         var savedSpecialization = await LocalStorageService.LoadProgramSpecialization();
@@ -456,6 +475,9 @@
             if (program != null)
             {
                 _selectedProgram = program;
+                _studyContext.ProgramAbbreviation = program.Abbreviation;
+                _studyContext.ProgramSpecialization = program.Specialization;
+                _studyContext.FacultyAbbreviation = faculties.Value.FirstOrDefault(f => f.Programs.Any(p => p.Abbreviation == program.Abbreviation && p.Specialization == program.Specialization))?.Abbreviation;
                 await LoadData(program, true);
             }
         }
@@ -511,4 +533,12 @@
     }
 
     private async Task OnShareClick() => await ShareDialog.ShowAsync(DialogService);
+
+    private void ToggleExpansionPanels(bool open)
+    {
+        if (!open)
+        {
+            _panelsExpanded = false;
+        }
+    }
 }

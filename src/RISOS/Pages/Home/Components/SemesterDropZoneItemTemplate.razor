@@ -21,7 +21,7 @@
     }
 </style>
 
-<MudPaper Elevation="2" Style="cursor: grab; min-width: 280px">
+<MudPaper Elevation="2" Style="cursor: grab; min-width: 280px; transform: translate3d(0,0,0); -webkit-user-select: none; user-select: none;">
     <MudMenu ActivationEvent="MouseEvent.RightClick" Dense Class="pa-2 d-flex align-center" Style="width: 100%">
         <ActivatorContent>
             <div @oncontextmenu="@context.ToggleAsync" @oncontextmenu:preventDefault style="width: 100%">
@@ -96,11 +96,18 @@
                                  OnClick="@(() => MoveEntry(SubjectEntry.Unassigned))"/>
                 }
 
+                @if (RecognizedYear && Entry.Semester != "-1" && Entry.Semester != "0")
+                {
+                    var preferredRecognized = Entry.Subject.SemesterSeason == SemesterSeason.Summer ? 0 : -1;
+                    <MudMenuItem Label="@LanguageHelperExtensions.Semester(preferredRecognized)"
+                                 OnClick="@(() => MoveEntry(preferredRecognized.ToString()))"/>
+                }
+
                 @foreach (var semester in Enumerable.Range(1, SemesterCount))
                 {
                     if (CanMove(semester))
                     {
-                        <MudMenuItem Label="@($"{semester}. {LanguageHelper.Semester}")"
+                        <MudMenuItem Label="@LanguageHelperExtensions.Semester(semester)"
                                      OnClick="@(() => MoveEntry(semester.ToString()))"/>
                     }
                 }
@@ -137,6 +144,9 @@
     public int SemesterCount { get; set; }
 
     [Parameter]
+    public bool RecognizedYear { get; set; }
+
+    [Parameter]
     public EventCallback<SubjectEntry> RemoveEntry { get; set; }
 
     [Parameter]
@@ -145,9 +155,18 @@
     [Parameter]
     public EventCallback<SubjectEntry> RetakeEntry { get; set; }
 
-    private bool CanMove(int semester) => Entry.Semester != semester.ToString() &&
-                                          Entry.Subject.MinSemester <= semester &&
-                                          Entry.Subject.SemesterSeason.IsValidForSemester(semester);
+    private bool CanMove(int semester)
+    {
+        if (semester <= 0)
+        {
+            return Entry.Semester != semester.ToString() &&
+                   Entry.Subject.SemesterSeason.IsValidForSemester(semester);
+        }
+
+        return Entry.Semester != semester.ToString() &&
+               Entry.Subject.MinSemester <= semester &&
+               Entry.Subject.SemesterSeason.IsValidForSemester(semester);
+    }
 
     private async Task MoveEntry(string zone)
     {

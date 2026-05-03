@@ -93,13 +93,14 @@
                       CanDropClass="mud-alert-text-success mud-border-success"
                       NoDropClass="mud-alert-text-error mud-border-error">
         <ChildContent>
-            <MudStack Row Spacing="0" Class="w-100">
-                <div class="rounded-lg border-2 border-dashed mud-border-lines-default mud-background-gray flex-grow-1 d-flex flex-column">
-                    <MudStack Row Spacing="3" Class="px-4 pt-2 pb-2" AlignItems="AlignItems.Center">
+            <MudStack Row Spacing="0" Class="w-100 hide-in-export px-0 px-md-1 pb-1" Style="z-index: 1000; position: relative;">
+                <div class="rounded-lg border-2 border-dashed mud-border-lines-default mud-background-gray flex-grow-1 d-flex flex-column"
+                     style="max-height: 250px; min-height: 120px;">
+                    <MudStack Row Spacing="3" Class="px-4 pt-2 pb-1" AlignItems="AlignItems.Center">
                         <MudText Typo="Typo.h6">@LanguageHelper.UnassignedSubjects</MudText>
                         <MudTooltip Text="@LanguageHelper.AddCustomSubject">
                             <MudButton
-                                Variant="Variant.Text"
+                                Variant="Variant.Outlined"
                                 StartIcon="@Icons.Material.Filled.AddCircleOutline"
                                 IconColor="Color.Primary"
                                 Color="Color.Primary"
@@ -108,11 +109,13 @@
                             </MudButton>
                         </MudTooltip>
                         <MudSpacer/>
-                        <SubjectTypeLegend Class="hide-in-export" />
+                        <SubjectTypeLegend Class="hide-in-export"/>
                     </MudStack>
-                    <MudDropZone T="SubjectEntry" Identifier="@SubjectEntry.Unassigned"
-                                 Class="px-4 pb-4 pt-2 d-flex flex-wrap gap-2 border-transparent rounded-b-lg overflow-y-auto"
-                                 Style="max-height: max(220px, 20vh); min-height: 100px;"/>
+                    <div class="flex-grow-1 overflow-y-auto">
+                        <MudDropZone T="SubjectEntry" Identifier="@SubjectEntry.Unassigned"
+                                     Class="px-4 pb-4 pt-1 d-flex flex-wrap gap-2 border-transparent"
+                                     Style="min-height: 100%;"/>
+                    </div>
                 </div>
 
                 <MudDropZone T="SubjectEntry" Identifier="Trash"
@@ -125,11 +128,11 @@
                 </MudDropZone>
             </MudStack>
 
-            <div id="export-zone" class="d-flex flex-column gap-3">
+            <div id="export-zone" class="d-flex flex-column gap-3 flex-grow-1" style="min-height: 0">
                 <ControlCenter RecognizedYear="@RecognizedYear" RecognizedYearChanged="@RecognizedYearChanged" YearsChanged="@OnYearsChanged"
                                TotalCredits="@TotalCredits" NeedConfirmation="@NeedConfirmation"/>
 
-                <div id="main-scroll-container" style="overflow: scroll; position: relative;">
+                <div id="main-scroll-container" style="overflow: scroll; position: relative; flex-grow: 1;">
 
                     <div class="indicator-anchor top">
                         <div class="scroll-indicator top">
@@ -146,9 +149,9 @@
                             <div class="rounded-lg pa-4 d-flex flex-column mt-4"
                                  style="position: relative; border: 2px dotted var(--mud-palette-lines-default); height: 100%; min-width: 336px; flex: 1;">
                                 <div
-                                    style="position: absolute; top: -16px; left: 15%; transform: translateX(-50%); background-color: var(--mud-palette-background); padding: 0 16px;">
+                                    style="position: absolute; top: -16px; left: 16px; background-color: var(--mud-palette-background); padding: 0 16px; white-space: nowrap; z-index: 10;">
                                     <MudText Typo="Typo.h6" Color="Color.Primary"
-                                             Class="font-weight-bold">@year. @LanguageHelper.Years_One</MudText>
+                                             Class="font-weight-bold">@(year == 0 ? LanguageHelper.RecognizedYearTitle : $"{year}. {LanguageHelper.Years_One}")</MudText>
                                 </div>
 
                                 <MudStack Class="flex-grow-1">
@@ -191,7 +194,8 @@
         <ItemRenderer>
             <SemesterDropZoneItemTemplate Entry="context"
                                           EntryChanged="@EntryChanged"
-                                          SemesterCount="@(Years * 2)"
+                                          SemesterCount="@(StudyContext.Years * 2)"
+                                          RecognizedYear="@RecognizedYear"
                                           RemoveEntry="@OnRemove"
                                           AddEntry="@AddSubjectAsync"
                                           RetakeEntry="@RetakeSubject"/>
@@ -244,6 +248,16 @@
         if (identifier == "Trash")
         {
             return item.Subject.Type != SubjectType.Compulsory || item.IsCustomSubject || item.Attempt > 1;
+        }
+
+        if (identifier == SubjectEntry.Unassigned)
+        {
+            return true;
+        }
+
+        if (int.TryParse(identifier, out var semester))
+        {
+            return item.Subject.SemesterSeason.IsValidForSemester(semester);
         }
 
         return true;
@@ -468,6 +482,6 @@
 
         await SubjectsChanged.InvokeAsync(Subjects);
         _dropContainer?.Refresh();
-        Snackbar.Add($"{LanguageHelper.Semester} {semester} {LanguageHelper.Completed}", Severity.Success);
+        Snackbar.Add($"{LanguageHelperExtensions.Semester(semester)} {LanguageHelper.Completed}", Severity.Success);
     }
 }
