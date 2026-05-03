@@ -19,7 +19,7 @@ public static class SubjectMapper
         var minSemester = 0;
         if (year > 0)
         {
-            minSemester = (year - 1) * 2 + (semesterSeason == SemesterSeason.Winter ? 1 : 2);
+            minSemester = (year - 1) * 2 + (semesterSeason == SemesterSeason.Summer ? 2 : 1);
         }
 
         var id = dto.Url.Split("/").LastOrDefault() ?? "" + dto.Name + dto.Code;
