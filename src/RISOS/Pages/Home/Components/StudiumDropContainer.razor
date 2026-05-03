@@ -93,43 +93,44 @@
                       CanDropClass="mud-alert-text-success mud-border-success"
                       NoDropClass="mud-alert-text-error mud-border-error">
         <ChildContent>
-            <MudStack Row Spacing="0" Class="w-100">
-                <div class="rounded-lg border-2 border-dashed mud-border-lines-default mud-background-gray flex-grow-1 d-flex flex-column">
-                    <MudStack Row Spacing="3" Class="px-4 pt-2 pb-2" AlignItems="AlignItems.Center">
-                        <MudText Typo="Typo.h6">@LanguageHelper.UnassignedSubjects</MudText>
-                        <MudTooltip Text="@LanguageHelper.AddCustomSubject">
-                            <MudButton
-                                Variant="Variant.Outlined"
-                                StartIcon="@Icons.Material.Filled.AddCircleOutline"
-                                IconColor="Color.Primary"
-                                Color="Color.Primary"
-                                OnClick="@OpenAddDialog">
-                                @LanguageHelper.Add
-                            </MudButton>
-                        </MudTooltip>
-                        <MudSpacer/>
-                        <SubjectTypeLegend Class="hide-in-export"/>
-                    </MudStack>
-                    <MudDropZone T="SubjectEntry" Identifier="@SubjectEntry.Unassigned"
-                                 Class="px-4 pb-4 pt-2 d-flex flex-wrap gap-2 border-transparent rounded-b-lg overflow-y-auto"
-                                 Style="max-height: max(220px, 20vh); min-height: 100px;"/>
-                </div>
+            <div class="d-flex flex-column gap-3 flex-grow-1" style="min-height: 0">
+                <MudStack Row Spacing="0" Class="w-100 hide-in-export">
+                    <div class="rounded-lg border-2 border-dashed mud-border-lines-default mud-background-gray flex-grow-1 d-flex flex-column">
+                        <MudStack Row Spacing="3" Class="px-4 pt-2 pb-2" AlignItems="AlignItems.Center">
+                            <MudText Typo="Typo.h6">@LanguageHelper.UnassignedSubjects</MudText>
+                            <MudTooltip Text="@LanguageHelper.AddCustomSubject">
+                                <MudButton
+                                    Variant="Variant.Outlined"
+                                    StartIcon="@Icons.Material.Filled.AddCircleOutline"
+                                    IconColor="Color.Primary"
+                                    Color="Color.Primary"
+                                    OnClick="@OpenAddDialog">
+                                    @LanguageHelper.Add
+                                </MudButton>
+                            </MudTooltip>
+                            <MudSpacer/>
+                            <SubjectTypeLegend Class="hide-in-export"/>
+                        </MudStack>
+                        <MudDropZone T="SubjectEntry" Identifier="@SubjectEntry.Unassigned"
+                                     Class="px-4 pb-4 pt-2 d-flex flex-wrap gap-2 border-transparent rounded-b-lg overflow-y-auto"
+                                     Style="max-height: max(220px, 20vh); min-height: 100px;"/>
+                    </div>
 
-                <MudDropZone T="SubjectEntry" Identifier="Trash"
-                             Class="trash-drop-zone rounded-lg d-flex flex-column align-center justify-center">
-                    <MudIcon Icon="@Icons.Material.Filled.DeleteForever" Size="Size.Large" Color="Color.Error" Class="trash-icon"/>
-                    <MudIcon Icon="@Icons.Material.Filled.Block" Size="Size.Large" Color="Color.Error" Class="trash-disabled-icon"/>
-                    <MudText Typo="Typo.caption" Color="Color.Error" Class="trash-error-text mt-1 px-2 text-center" Style="font-weight: bold; line-height: 1.2;">
-                        @LanguageHelper.CompulsorySubjectDeleteError
-                    </MudText>
-                </MudDropZone>
-            </MudStack>
+                    <MudDropZone T="SubjectEntry" Identifier="Trash"
+                                 Class="trash-drop-zone rounded-lg d-flex flex-column align-center justify-center">
+                        <MudIcon Icon="@Icons.Material.Filled.DeleteForever" Size="Size.Large" Color="Color.Error" Class="trash-icon"/>
+                        <MudIcon Icon="@Icons.Material.Filled.Block" Size="Size.Large" Color="Color.Error" Class="trash-disabled-icon"/>
+                        <MudText Typo="Typo.caption" Color="Color.Error" Class="trash-error-text mt-1 px-2 text-center" Style="font-weight: bold; line-height: 1.2;">
+                            @LanguageHelper.CompulsorySubjectDeleteError
+                        </MudText>
+                    </MudDropZone>
+                </MudStack>
 
-            <div id="export-zone" class="d-flex flex-column gap-3">
-                <ControlCenter RecognizedYear="@RecognizedYear" RecognizedYearChanged="@RecognizedYearChanged" YearsChanged="@OnYearsChanged"
-                               TotalCredits="@TotalCredits" NeedConfirmation="@NeedConfirmation"/>
+                <div id="export-zone" class="d-flex flex-column gap-3 flex-grow-1" style="min-height: 0">
+                    <ControlCenter RecognizedYear="@RecognizedYear" RecognizedYearChanged="@RecognizedYearChanged" YearsChanged="@OnYearsChanged"
+                                   TotalCredits="@TotalCredits" NeedConfirmation="@NeedConfirmation"/>
 
-                <div id="main-scroll-container" style="overflow: scroll; position: relative;">
+                    <div id="main-scroll-container" style="overflow: scroll; position: relative; flex-grow: 1;">
 
                     <div class="indicator-anchor top">
                         <div class="scroll-indicator top">
@@ -187,8 +188,8 @@
                     </div>
                 </div>
             </div>
-        </ChildContent>
-        <ItemRenderer>
+        </div>
+    </ChildContent>        <ItemRenderer>
             <SemesterDropZoneItemTemplate Entry="context"
                                           EntryChanged="@EntryChanged"
                                           SemesterCount="@(Years * 2)"

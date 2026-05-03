@@ -70,11 +70,17 @@ window.captureElementAsImage = async function (elementId, fileName) {
                 if (clonedExportZone) {
                     clonedExportZone.style.width = 'max-content';
                     clonedExportZone.style.height = 'auto';
+                    clonedExportZone.style.minHeight = 'auto';
+                    clonedExportZone.style.flex = 'none';
+                    clonedExportZone.style.flexGrow = '0';
                     clonedExportZone.style.overflow = 'visible';
                 }
                 if (clonedScrollContainer) {
                     clonedScrollContainer.style.width = 'max-content';
                     clonedScrollContainer.style.height = 'auto';
+                    clonedScrollContainer.style.minHeight = 'auto';
+                    clonedScrollContainer.style.flex = 'none';
+                    clonedScrollContainer.style.flexGrow = '0';
                     clonedScrollContainer.style.overflow = 'visible';
                     clonedScrollContainer.style.maxWidth = 'none';
                 }

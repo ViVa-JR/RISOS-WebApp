@@ -70,20 +70,20 @@
         </MudStack>
     </MudPaper>
 
-    <div id="export-zone" class="d-flex flex-column gap-2 flex-grow-1">
-        <div class="show-only-in-export">
-            <MudStack Spacing="0" Class="px-1">
-                <MudText Typo="Typo.h6" Color="Color.Primary" Class="font-weight-bold" Style="line-height: 1.1">
+    <div id="export-zone" class="d-flex flex-column gap-2">
+        <div class="show-only-in-export px-1">
+            <MudStack Spacing="0">
+                <MudText Typo="Typo.h5" Color="Color.Primary" Class="font-weight-bold" Style="line-height: 1.1">
                     @StudyContext.FacultyAbbreviation
                 </MudText>
                 <MudStack Row AlignItems="AlignItems.Center" Spacing="2">
-                    <MudText Typo="Typo.body2" Class="mud-text-secondary font-weight-bold">
+                    <MudText Typo="Typo.subtitle1" Class="mud-text-secondary font-weight-bold">
                         @StudyContext.ProgramAbbreviation
                     </MudText>
                     @if (!string.IsNullOrWhiteSpace(StudyContext.ProgramSpecialization))
                     {
-                        <MudDivider Vertical="true" FlexItem="true" Style="height: 12px; margin: auto 0; border-width: 2px;"/>
-                        <MudText Typo="Typo.body2" Class="mud-text-secondary">
+                        <MudDivider Vertical="true" FlexItem="true" Style="height: 16px; margin: auto 0; border-width: 2px;"/>
+                        <MudText Typo="Typo.subtitle1" Class="mud-text-secondary">
                             @StudyContext.ProgramSpecialization
                         </MudText>
                     }
@@ -93,7 +93,7 @@
 
         <ControlCenter RecognizedYear="@RecognizedYear" TotalCredits="@TotalCredits"/>
 
-        <div class="mobile-snap-container pt-2 flex-grow-1">
+        <div class="mobile-snap-container pt-2">
             @foreach (var year in Enumerable.Range(RecognizedYear ? 0 : 1, StudyContext.Years + (RecognizedYear ? 1 : 0)))
             {
                 var winterSemNumber = year * 2 - 1;
