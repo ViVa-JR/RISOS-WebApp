@@ -275,6 +275,19 @@
 
         _selectedProgram = program;
 
+        _studyContext.ProgramAbbreviation = program?.Abbreviation;
+        _studyContext.ProgramSpecialization = program?.Specialization;
+
+        if (program != null)
+        {
+            var faculties = await UniversityService.GetFacultiesWithProgramsAsync();
+            _studyContext.FacultyAbbreviation = faculties.Value.FirstOrDefault(f => f.Programs.Any(p => p.Abbreviation == program.Abbreviation && p.Specialization == program.Specialization))?.Abbreviation;
+        }
+        else
+        {
+            _studyContext.FacultyAbbreviation = null;
+        }
+
         var savedAbbreviation = await LocalStorageService.LoadProgramAbbreviation();
         var savedSpecialization = await LocalStorageService.LoadProgramSpecialization();
 
@@ -456,6 +469,9 @@
             if (program != null)
             {
                 _selectedProgram = program;
+                _studyContext.ProgramAbbreviation = program.Abbreviation;
+                _studyContext.ProgramSpecialization = program.Specialization;
+                _studyContext.FacultyAbbreviation = faculties.Value.FirstOrDefault(f => f.Programs.Any(p => p.Abbreviation == program.Abbreviation && p.Specialization == program.Specialization))?.Abbreviation;
                 await LoadData(program, true);
             }
         }

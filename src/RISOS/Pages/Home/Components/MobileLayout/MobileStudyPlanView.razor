@@ -47,53 +47,94 @@
         </MudStack>
     </MudOverlay>
 
-    <MudPaper Elevation="0" Class="pa-2 border-2 mud-border-lines-default rounded-lg">
-        <SubjectTypeLegend Spacing="4" Class="hide-in-export" />
+    <MudPaper Elevation="0" Class="pa-2 border-2 mud-border-lines-default rounded-lg hide-in-export">
+        <MudStack Row AlignItems="AlignItems.Center" Justify="Justify.SpaceBetween">
+            <MudStack Spacing="0">
+                <MudText Typo="Typo.subtitle1" Color="Color.Primary" Class="font-weight-bold" Style="line-height: 1.1">
+                    @StudyContext.FacultyAbbreviation
+                </MudText>
+                <MudStack Row AlignItems="AlignItems.Center" Spacing="1">
+                    <MudText Typo="Typo.caption" Class="mud-text-secondary font-weight-bold">
+                        @StudyContext.ProgramAbbreviation
+                    </MudText>
+                    @if (!string.IsNullOrWhiteSpace(StudyContext.ProgramSpecialization))
+                    {
+                        <MudDivider Vertical="true" FlexItem="true" Style="height: 10px; margin: auto 0; border-width: 1px;"/>
+                        <MudText Typo="Typo.caption" Class="mud-text-secondary">
+                            @StudyContext.ProgramSpecialization
+                        </MudText>
+                    }
+                </MudStack>
+            </MudStack>
+            <SubjectTypeLegend Spacing="2"/>
+        </MudStack>
     </MudPaper>
 
-    <ControlCenter RecognizedYear="@RecognizedYear" TotalCredits="@TotalCredits"/>
+    <div id="export-zone" class="d-flex flex-column gap-2 flex-grow-1">
+        <div class="show-only-in-export">
+            <MudStack Spacing="0" Class="px-1">
+                <MudText Typo="Typo.h6" Color="Color.Primary" Class="font-weight-bold" Style="line-height: 1.1">
+                    @StudyContext.FacultyAbbreviation
+                </MudText>
+                <MudStack Row AlignItems="AlignItems.Center" Spacing="2">
+                    <MudText Typo="Typo.body2" Class="mud-text-secondary font-weight-bold">
+                        @StudyContext.ProgramAbbreviation
+                    </MudText>
+                    @if (!string.IsNullOrWhiteSpace(StudyContext.ProgramSpecialization))
+                    {
+                        <MudDivider Vertical="true" FlexItem="true" Style="height: 12px; margin: auto 0; border-width: 2px;"/>
+                        <MudText Typo="Typo.body2" Class="mud-text-secondary">
+                            @StudyContext.ProgramSpecialization
+                        </MudText>
+                    }
+                </MudStack>
+            </MudStack>
+        </div>
 
-    <div class="mobile-snap-container pt-2 flex-grow-1">
-        @foreach (var year in Enumerable.Range(RecognizedYear ? 0 : 1, StudyContext.Years + (RecognizedYear ? 1 : 0)))
-        {
-            var winterSemNumber = year * 2 - 1;
-            var summerSemNumber = year * 2;
-            var winterSemCode = winterSemNumber.ToString();
-            var summerSemCode = summerSemNumber.ToString();
+        <ControlCenter RecognizedYear="@RecognizedYear" TotalCredits="@TotalCredits"/>
 
-            var yearSubjects = Subjects.Where(s => s.Semester == winterSemCode || s.Semester == summerSemCode).ToList();
-            var completedYearCredits = yearSubjects.Where(s => s.Completed == true).Sum(s => s.Subject.Credits);
-            var registeredYearCredits = yearSubjects.Sum(s => s.Subject.Credits);
+        <div class="mobile-snap-container pt-2 flex-grow-1">
+            @foreach (var year in Enumerable.Range(RecognizedYear ? 0 : 1, StudyContext.Years + (RecognizedYear ? 1 : 0)))
+            {
+                var winterSemNumber = year * 2 - 1;
+                var summerSemNumber = year * 2;
+                var winterSemCode = winterSemNumber.ToString();
+                var summerSemCode = summerSemNumber.ToString();
 
-            <div class="mobile-snap-item">
-                <div class="rounded-lg px-4 pb-2 d-flex flex-column mt-4 mb-2"
-                     style="position: relative; border: 2px dotted var(--mud-palette-lines-default);">
+                var yearSubjects = Subjects.Where(s => s.Semester == winterSemCode || s.Semester == summerSemCode).ToList();
+                var completedYearCredits = yearSubjects.Where(s => s.Completed == true).Sum(s => s.Subject.Credits);
+                var registeredYearCredits = yearSubjects.Sum(s => s.Subject.Credits);
 
-                    <div style="position: absolute; top: -16px; left: 16px; background-color: var(--mud-palette-background); padding: 0 8px; white-space: nowrap; z-index: 10;">
-                        <MudText Typo="Typo.h6" Color="Color.Primary" Class="font-weight-bold">@(year == 0 ? LanguageHelper.RecognizedYearTitle : $"{year}. {LanguageHelper.Years_One}")</MudText>
+                <div class="mobile-snap-item">
+                    <div class="rounded-lg px-4 pb-2 d-flex flex-column mt-4 mb-2"
+                         style="position: relative; border: 2px dotted var(--mud-palette-lines-default);">
+
+                        <div style="position: absolute; top: -16px; left: 16px; background-color: var(--mud-palette-background); padding: 0 8px; white-space: nowrap; z-index: 10;">
+                            <MudText Typo="Typo.h6" Color="Color.Primary" Class="font-weight-bold">@(year == 0 ? LanguageHelper.RecognizedYearTitle : $"{year}. {LanguageHelper.Years_One}")</MudText>
+                        </div>
+
+                        <MudStack Class="flex-grow-1 mt-4" Spacing="4">
+                            <MobileSemesterBlock SemesterNumber="@winterSemNumber"
+                                                 Season="SemesterSeason.Winter"
+                                                 Subjects="@GetSubjectsForSemester(winterSemCode)"/>
+
+                            <MobileSemesterBlock SemesterNumber="@summerSemNumber"
+                                                 Season="SemesterSeason.Summer"
+                                                 Subjects="@GetSubjectsForSemester(summerSemCode)"/>
+                        </MudStack>
+
+                        <MudStack AlignItems="AlignItems.Center" Row Justify="Justify.FlexEnd" Spacing="1" Class="pt-2">
+                            @if (completedYearCredits > 0)
+                            {
+                                <MudText Typo="Typo.body1" Color="Color.Success" Class="font-weight-bold">@completedYearCredits</MudText>
+                                <MudText Typo="Typo.body1" Color="Color.Primary">/</MudText>
+                            }
+                            <MudText Typo="Typo.body1" Color="Color.Primary"><b>@registeredYearCredits</b> @LanguageHelper.Credits</MudText>
+                        </MudStack>
                     </div>
-
-                    <MudStack Class="flex-grow-1 mt-4" Spacing="4">
-                        <MobileSemesterBlock SemesterNumber="@winterSemNumber"
-                                             Season="SemesterSeason.Winter"
-                                             Subjects="@GetSubjectsForSemester(winterSemCode)"/>
-
-                        <MobileSemesterBlock SemesterNumber="@summerSemNumber"
-                                             Season="SemesterSeason.Summer"
-                                             Subjects="@GetSubjectsForSemester(summerSemCode)"/>
-                    </MudStack>
-
-                    <MudStack AlignItems="AlignItems.Center" Row Justify="Justify.FlexEnd" Spacing="1" Class="pt-2">
-                        @if (completedYearCredits > 0)
-                        {
-                            <MudText Typo="Typo.body1" Color="Color.Success" Class="font-weight-bold">@completedYearCredits</MudText>
-                            <MudText Typo="Typo.body1" Color="Color.Primary">/</MudText>
-                        }
-                        <MudText Typo="Typo.body1" Color="Color.Primary"><b>@registeredYearCredits</b> @LanguageHelper.Credits</MudText>
-                    </MudStack>
                 </div>
-            </div>
-        }
+            }
+        </div>
     </div>
 </div>
 

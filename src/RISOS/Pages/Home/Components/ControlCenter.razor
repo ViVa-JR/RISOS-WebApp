@@ -16,30 +16,49 @@
 @inject NavigationManager NavigationManager
 @inject AnalyticsService AnalyticsService
 
+<style>
+    .mud-icon-button:focus-within {
+        background-color: transparent !important;
+    }
+
+    .mud-icon-button.mud-button-filled:focus-within {
+        background-color: var(--mud-palette-primary) !important;
+    }
+
+    .mud-icon-button.mud-button-filled.mud-button-filled-primary:hover {
+        background-color: var(--mud-palette-primary-hover) !important;
+    }
+</style>
+
 <MudPaper Elevation="0" Class="pa-3 border-2 mud-border-lines-default rounded-lg">
     <div class="d-flex flex-column flex-md-row align-center justify-space-between gap-0 gap-md-4">
 
         @if (!IsReadOnly)
         {
-            <div class="d-flex w-100 w-md-auto justify-center justify-md-start order-3 order-md-1 mt-3 mt-md-0">
-                <div class="hide-in-export">
-                    <MudButton Variant="@(RecognizedYear ? Variant.Filled : Variant.Outlined)"
-                               Color="@Color.Primary"
-                               OnClick="@OnRecognizedYearClick"
-                               StartIcon="@(RecognizedYear ? Icons.Material.Filled.BookmarkRemove : Icons.Material.Filled.BookmarkAdd)"
-                               Size="Size.Small">
-                        @(RecognizedYear ? LanguageHelper.RemoveRecognizedYear : LanguageHelper.AddRecognizedYear)
-                    </MudButton>
-                </div>
-                <div class="show-only-in-export">
-                    <SubjectTypeLegend />
-                </div>
+            <div class="d-flex w-100 w-md-auto justify-center justify-md-start order-1 mt-0 mt-md-0">
+                <MudStack Spacing="0">
+                    <MudText Typo="Typo.h5" Color="Color.Primary" Class="font-weight-bold" Style="line-height: 1.1">
+                        @StudyContext.FacultyAbbreviation
+                    </MudText>
+                    <MudStack Row AlignItems="AlignItems.Center" Spacing="2">
+                        <MudText Typo="Typo.subtitle1" Class="mud-text-secondary font-weight-bold">
+                            @StudyContext.ProgramAbbreviation
+                        </MudText>
+                        @if (!string.IsNullOrWhiteSpace(StudyContext.ProgramSpecialization))
+                        {
+                            <MudDivider Vertical="true" FlexItem="true" Style="height: 16px; margin: auto 0; border-width: 2px;"/>
+                            <MudText Typo="Typo.subtitle1" Class="mud-text-secondary">
+                                @StudyContext.ProgramSpecialization
+                            </MudText>
+                        }
+                    </MudStack>
+                </MudStack>
             </div>
         }
 
-        <div class="d-flex flex-column flex-grow-1 w-100 px-0 px-md-4 order-2 order-md-2 mt-2 mt-md-0">
+        <div class="d-flex flex-column flex-grow-1 w-100 px-0 px-md-4 order-2 mt-2 mt-md-0">
             <MudStack Row AlignItems="AlignItems.Center" Justify="Justify.Center" Spacing="2" Class="mb-1">
-                <MudText Typo="Typo.body2" Color="Color.Secondary">
+                <MudText Typo="Typo.body2" Color="Color.Secondary" Class="@(IsReadOnly ? "d-none" : "")">
                     @LanguageHelper.StudyProgress:
                 </MudText>
 
@@ -47,21 +66,21 @@
                     @if (TotalCredits.Completed > 0)
                     {
                         <MudTooltip Text="@LanguageHelper.Completed">
-                            <MudText Typo="Typo.h6" Color="Color.Success">@TotalCredits.Completed</MudText>
+                            <MudText Typo="Typo.h6" Color="Color.Success" Class="font-weight-bold">@TotalCredits.Completed</MudText>
                         </MudTooltip>
-                        <MudText Typo="Typo.h6" Color="Color.Secondary">/</MudText>
+                        <MudText Typo="Typo.h6" Color="Color.Secondary" Class="font-weight-bold">/</MudText>
                     }
 
                     @if (TotalCredits.Registered > 0)
                     {
                         <MudTooltip Text="@LanguageHelper.Registered">
-                            <MudText Typo="Typo.h6" Color="Color.Primary">@TotalCredits.Registered</MudText>
+                            <MudText Typo="Typo.h6" Color="Color.Primary" Class="font-weight-bold">@TotalCredits.Registered</MudText>
                         </MudTooltip>
-                        <MudText Typo="Typo.h6" Color="Color.Secondary">/</MudText>
+                        <MudText Typo="Typo.h6" Color="Color.Secondary" Class="font-weight-bold">/</MudText>
                     }
 
                     <MudTooltip Text="@LanguageHelper.Required">
-                        <MudText Typo="Typo.h6" Color="Color.Default">
+                        <MudText Typo="Typo.h6" Color="Color.Default" Class="font-weight-bold">
                             @StudyContext.Credits @LanguageHelper.Cr
                         </MudText>
                     </MudTooltip>
@@ -84,7 +103,7 @@
             </div>
         </div>
 
-        <div class="d-flex align-center justify-space-between justify-md-end gap-3 w-100 w-md-auto order-1 order-md-3 mb-2 mb-md-0">
+        <div class="d-flex align-center justify-space-between justify-md-end gap-3 w-100 w-md-auto order-3 mb-2 mb-md-0">
 
             @if (IsReadOnly)
             {
@@ -99,20 +118,39 @@
             }
 
             <div class="d-flex align-center gap-3">
-                <div class="text-right">
-                    <MudText Typo="Typo.caption" Color="Color.Secondary" Style="display: block; margin-bottom: -4px;">@LanguageHelper.Duration</MudText>
-                    <MudText Typo="Typo.subtitle2" Class="font-weight-bold" Style="text-align: center">@StudyContext.Years @LanguageHelperExtensions.Years(StudyContext.Years)</MudText>
-                </div>
-
                 @if (!IsReadOnly)
                 {
-                    <MudTooltip Text="@LanguageHelper.AdjustYears" RootClass="hide-in-export">
-                        <MudButtonGroup Variant="Variant.Outlined" Color="Color.Primary" Size="Size.Small">
-                            <MudIconButton Icon="@Icons.Material.Filled.Remove" Color="Color.Error" OnClick="@DecreaseYears" Disabled="@(StudyContext.Years <= 1)"/>
-                            <MudIconButton Icon="@Icons.Material.Filled.Add" Color="Color.Success" OnClick="@IncreaseYears"/>
-                        </MudButtonGroup>
-                    </MudTooltip>
+                    <div class="hide-in-export">
+                        <MudTooltip Text="@(RecognizedYear ? LanguageHelper.RemoveRecognizedYear : LanguageHelper.AddRecognizedYear)">
+                            <MudToggleIconButton Toggled="@RecognizedYear"
+                                                 ToggledChanged="@OnRecognizedYearClick"
+                                                 Icon="@Icons.Material.Filled.BookmarkAdd"
+                                                 ToggledIcon="@Icons.Material.Filled.BookmarkRemove"
+                                                 Color="@Color.Primary"
+                                                 ToggledColor="@Color.Primary"
+                                                 Variant="@Variant.Outlined"
+                                                 ToggledVariant="@Variant.Filled"
+                                                 Size="Size.Small"/>
+                        </MudTooltip>
+                    </div>
                 }
+
+                <div class="hide-in-export d-flex align-center gap-3">
+                    <div class="text-right">
+                        <MudText Typo="Typo.caption" Color="Color.Secondary" Style="display: block; margin-bottom: -4px;">@LanguageHelper.Duration</MudText>
+                        <MudText Typo="Typo.subtitle2" Class="font-weight-bold" Style="text-align: center">@StudyContext.Years @LanguageHelperExtensions.Years(StudyContext.Years)</MudText>
+                    </div>
+
+                    @if (!IsReadOnly)
+                    {
+                        <MudTooltip Text="@LanguageHelper.AdjustYears">
+                            <MudButtonGroup Variant="Variant.Outlined" Color="Color.Primary" Size="Size.Small">
+                                <MudIconButton Icon="@Icons.Material.Filled.Remove" Color="Color.Error" OnClick="@DecreaseYears" Disabled="@(StudyContext.Years <= 1)"/>
+                                <MudIconButton Icon="@Icons.Material.Filled.Add" Color="Color.Success" OnClick="@IncreaseYears"/>
+                            </MudButtonGroup>
+                        </MudTooltip>
+                    }
+                </div>
             </div>
         </div>
     </div>
@@ -160,9 +198,9 @@
         }
     }
 
-    private async Task OnRecognizedYearClick()
+    private async Task OnRecognizedYearClick(bool toggled)
     {
-        RecognizedYear = !RecognizedYear;
+        RecognizedYear = toggled;
         await AnalyticsService.TrackRecognizedYearToggleAsync(RecognizedYear);
         await LocalStorageService.SaveRecognizedYear(RecognizedYear);
         await RecognizedYearChanged.InvokeAsync(RecognizedYear);
