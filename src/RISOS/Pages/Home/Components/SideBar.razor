@@ -201,5 +201,12 @@
 
     private bool _drawerOpen = true;
 
-    private void DrawerToggle() => _drawerOpen = !_drawerOpen;
+    [Parameter]
+    public EventCallback<bool> DrawerOpenChanged { get; set; }
+
+    private async Task DrawerToggle()
+    {
+        _drawerOpen = !_drawerOpen;
+        await DrawerOpenChanged.InvokeAsync(_drawerOpen);
+    }
 }

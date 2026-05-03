@@ -14,7 +14,7 @@
     }
 </style>
 
-<MudExpansionPanel Disabled="@Disabled" @bind-Expanded="_expanded" HideIcon="true">
+<MudExpansionPanel Disabled="@Disabled" Expanded="@Expanded" ExpandedChanged="@ExpandedChanged" HideIcon="true">
     <TitleContent>
         <MudStack StretchItems="StretchItems.Start" Row Spacing="2" AlignItems="AlignItems.Center">
             <MudText Class="mud-expand-panel-text" Style="font-size: 15px">
@@ -36,7 +36,7 @@
             else
             {
                 <MudIcon
-                    Icon="@(_expanded ? Icons.Material.Filled.KeyboardArrowUp : Icons.Material.Filled.KeyboardArrowDown)"/>
+                    Icon="@(Expanded ? Icons.Material.Filled.KeyboardArrowUp : Icons.Material.Filled.KeyboardArrowDown)"/>
             }
         </MudStack>
     </TitleContent>
@@ -82,7 +82,11 @@
     [Parameter]
     public bool CompulsoryGroups { get; set; }
 
-    private bool _expanded;
+    [Parameter]
+    public bool Expanded { get; set; }
+
+    [Parameter]
+    public EventCallback<bool> ExpandedChanged { get; set; }
 
     private int Count => Subjects.Count;
 
