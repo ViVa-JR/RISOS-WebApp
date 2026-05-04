@@ -283,24 +283,33 @@
             return;
         }
 
-        dropItem.Item.Semester = dropItem.DropzoneIdentifier;
+        UpdateItemPosition(dropItem.Item, dropItem.DropzoneIdentifier, dropItem.IndexInZone);
+        await UpdateZoneIndexesAndSaveAsync(dropItem.DropzoneIdentifier);
+    }
 
-        Subjects.Remove(dropItem.Item);
-        var itemsInZone = Subjects.Where(x => x.Semester == dropItem.DropzoneIdentifier).ToList();
+    private void UpdateItemPosition(SubjectEntry item, string dropzone, int index)
+    {
+        item.Semester = dropzone;
+        Subjects.Remove(item);
 
-        if (dropItem.IndexInZone < 0 || dropItem.IndexInZone >= itemsInZone.Count)
+        var itemsInZone = Subjects.Where(x => x.Semester == dropzone).ToList();
+
+        if (index < 0 || index >= itemsInZone.Count)
         {
-            Subjects.Add(dropItem.Item);
+            Subjects.Add(item);
         }
         else
         {
-            var itemThatGotPushedDown = itemsInZone[dropItem.IndexInZone];
+            var itemThatGotPushedDown = itemsInZone[index];
             var realIndex = Subjects.IndexOf(itemThatGotPushedDown);
-            Subjects.Insert(realIndex, dropItem.Item);
+            Subjects.Insert(realIndex, item);
         }
+    }
 
+    private async Task UpdateZoneIndexesAndSaveAsync(string dropzone)
+    {
         var updatedZoneItems = Subjects
-            .Where(x => x.Semester == dropItem.DropzoneIdentifier)
+            .Where(x => x.Semester == dropzone)
             .ToList();
 
         for (var i = 0; i < updatedZoneItems.Count; i++)
@@ -326,16 +335,26 @@
 
         if (semesterIdentifier <= 0)
         {
-            var registered = semesterSubjects.Sum(s => s.Subject.Credits);
-            var completed = semesterSubjects.Where(s => s.Completed == true).Sum(s => s.Subject.Credits);
-
-            return new Credits(registered, completed, false, false, hasUnprocessed);
+            return CalculateSpecialSemesterCredits(semesterSubjects, hasUnprocessed);
         }
 
-        var registeredNormal = semesterSubjects.Where(s => !s.IsSport).Sum(s => s.Subject.Credits);
-        var completedNormal = semesterSubjects.Where(s => s is { Completed: true, IsSport: false }).Sum(s => s.Subject.Credits);
+        return CalculateNormalSemesterCredits(semesterSubjects, hasUnprocessed);
+    }
 
-        var sports = semesterSubjects.Where(s => s.IsSport).ToArray();
+    private static Credits CalculateSpecialSemesterCredits(SubjectEntry[] subjects, bool hasUnprocessed)
+    {
+        var registered = subjects.Sum(s => s.Subject.Credits);
+        var completed = subjects.Where(s => s.Completed == true).Sum(s => s.Subject.Credits);
+
+        return new Credits(registered, completed, false, false, hasUnprocessed);
+    }
+
+    private static Credits CalculateNormalSemesterCredits(SubjectEntry[] subjects, bool hasUnprocessed)
+    {
+        var registeredNormal = subjects.Where(s => !s.IsSport).Sum(s => s.Subject.Credits);
+        var completedNormal = subjects.Where(s => s is { Completed: true, IsSport: false }).Sum(s => s.Subject.Credits);
+
+        var sports = subjects.Where(s => s.IsSport).ToArray();
         var totalSportsRegistered = sports.Length;
         var uniqueSportsRegistered = sports.DistinctBy(s => s.Subject.ShortName).Count();
         var uniqueSportsCompleted = sports.Where(s => s.Completed == true).DistinctBy(s => s.Subject.ShortName).Count();
@@ -439,28 +458,38 @@
         }
 
         var newSem = result + 2;
-        var newEntry = new SubjectEntry(entry.Subject)
-        {
-            Semester = newSem.ToString(),
-            IsCustomSubject = entry.IsCustomSubject,
-            Completed = null,
-            Attempt = latestAttempt + 1
-        };
+        var newEntry = CreateRetakeEntry(entry, latestAttempt + 1, newSem);
         entry.LatestAttempt = false;
 
         Subjects.Add(newEntry);
 
-        if (newSem > Years * 2)
-        {
-            StudyContext.Years++;
-            await LocalStorageService.SaveStudyYears(Years);
-        }
+        await UpdateYearsIfNeededAsync(newSem);
 
         await LocalStorageService.UpdateSubjectAsync(entry);
         await LocalStorageService.UpdateSubjectAsync(newEntry);
         await SubjectsChanged.InvokeAsync(Subjects);
         _dropContainer?.Refresh();
         Snackbar.Add($"{LanguageHelper.RetakeSnackbarText} {newEntry.Semester}. {LanguageHelper.Semester_u}", Severity.Success);
+    }
+
+    private static SubjectEntry CreateRetakeEntry(SubjectEntry entry, int attempt, int semester)
+    {
+        return new SubjectEntry(entry.Subject)
+        {
+            Semester = semester.ToString(),
+            IsCustomSubject = entry.IsCustomSubject,
+            Completed = null,
+            Attempt = attempt
+        };
+    }
+
+    private async Task UpdateYearsIfNeededAsync(int newSemester)
+    {
+        if (newSemester > Years * 2)
+        {
+            StudyContext.Years++;
+            await LocalStorageService.SaveStudyYears(Years);
+        }
     }
 
     private async Task OnCompleteSemester(int semester)

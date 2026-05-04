@@ -33,6 +33,7 @@
         document.documentElement.style.setProperty(cssVariableName, `${initialHeight}px`);
     };
 </script>
+
 <style>
     .sidebar-header {
         display: flex;
@@ -53,11 +54,11 @@
         padding: 8px 0;
         width: 100%;
         justify-content: flex-start;
+        align-items: center;
     }
 
     .sidebar-header.drawer-closed .drawer-toggle-button,
     .sidebar-header.drawer-closed .theme-button {
-        width: 100%;
         display: flex;
         justify-content: center;
     }
@@ -123,9 +124,7 @@
         align-items: center !important;
         width: 100% !important;
     }
-</style>
 
-<style>
     .mobile-hidden-sidebar {
         display: none !important;
     }
@@ -137,7 +136,7 @@
     }
 </style>
 
-<MudDrawer @bind-Open="_drawerOpen" Elevation="1" Breakpoint="Breakpoint.None" Variant="@(IsReadOnly ? DrawerVariant.Temporary : DrawerVariant.Mini)"
+<MudDrawer @bind-Open="_drawerOpen" Elevation="1" Breakpoint="@Breakpoint.Always" Variant="@(IsReadOnly ? DrawerVariant.Temporary : DrawerVariant.Mini)"
            Class="@($"mt-n5 mobile-hidden-sidebar {Class}")" Width="260px" Overlay="false">
 
     <div class="@($"sidebar-header {(_drawerOpen ? "drawer-open" : "drawer-closed")}")">
@@ -189,6 +188,11 @@
     [Parameter]
     public string Class { get; set; } = string.Empty;
 
+    [Parameter]
+    public EventCallback<bool> DrawerOpenChanged { get; set; }
+
+    private bool _drawerOpen = true;
+
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         if (firstRender)
@@ -198,11 +202,6 @@
 
         await base.OnAfterRenderAsync(firstRender);
     }
-
-    private bool _drawerOpen = true;
-
-    [Parameter]
-    public EventCallback<bool> DrawerOpenChanged { get; set; }
 
     private async Task DrawerToggle()
     {
