@@ -158,6 +158,9 @@
         <value>Import</value>
     </data>
     <data name="Search" xml:space="preserve">
+        <value>Search</value>
+    </data>
+    <data name="SearchSubjectsTooltip" xml:space="preserve">
         <value>Search for subjects (Ctrl+F)</value>
     </data>
     <data name="RemoveRecognizedYear" xml:space="preserve">
@@ -522,6 +525,9 @@
     </data>
     <data name="Retake" xml:space="preserve">
         <value>Retake</value>
+    </data>
+    <data name="Repeat" xml:space="preserve">
+        <value>Duplicate</value>
     </data>
     <data name="SubjectAdded" xml:space="preserve">
         <value>Subject added</value>

@@ -111,10 +111,10 @@
                             </MudButton>
                         </MudTooltip>
 
-                        <MudTooltip Text="@LanguageHelper.Search">
+                        <MudTooltip Text="@LanguageHelper.SearchSubjectsTooltip">
                             <MudIconButton Icon="@Icons.Material.Filled.Search"
                                            Color="Color.Primary"
-                                           OnClick="@(() => _searchComponent?.Open())" />
+                                           OnClick="@(async () => { if (_searchComponent != null) await _searchComponent.Open(); })" />
                         </MudTooltip>
 
                         <div class="flex-grow-1"></div>
@@ -459,15 +459,73 @@
             return;
         }
 
-        subject.Selected = true;
-        await AddSubjectAsync(subject);
+        if (subject.IsSport)
+        {
+            var existingSports = Subjects
+                .Where(x => x.Subject.Id == subject.Subject.Id)
+                .ToList();
+
+            var latestAttempt = existingSports
+                .Select(x => x.Attempt)
+                .DefaultIfEmpty(0)
+                .Max();
+
+            foreach (var existing in existingSports.Where(x => x.LatestAttempt))
+            {
+                existing.LatestAttempt = false;
+                await LocalStorageService.UpdateSubjectAsync(existing);
+            }
+
+            var newEntry = new SubjectEntry(subject.Subject)
+            {
+                Semester = SubjectEntry.Unassigned,
+                Attempt = latestAttempt + 1,
+                Selected = true,
+                LatestAttempt = true
+            };
+
+            await AddSubjectAsync(newEntry);
+        }
+        else
+        {
+            subject.Selected = true;
+            await AddSubjectAsync(subject);
+        }
+
         _searchComponent?.Close();
     }
 
     private async Task RetakeSubject(SubjectEntry entry)
     {
-        var latestAttempt = Subjects
-            .FirstOrDefault(x => x.Subject.Id == entry.Subject.Id && x.LatestAttempt)?.Attempt ?? 0;
+        if (entry.IsSport)
+        {
+            var existingSports = Subjects
+                .Where(x => x.Subject.Id == entry.Subject.Id)
+                .ToList();
+
+            var maxAttempt = existingSports.Any() ? existingSports.Max(x => x.Attempt) : entry.Attempt;
+
+            foreach (var s in existingSports.Where(x => x.LatestAttempt))
+            {
+                s.LatestAttempt = false;
+                await LocalStorageService.UpdateSubjectAsync(s);
+            }
+
+            var newSportEntry = new SubjectEntry(entry.Subject)
+            {
+                Semester = SubjectEntry.Unassigned,
+                Attempt = maxAttempt + 1,
+                Selected = true,
+                LatestAttempt = true,
+                Completed = null
+            };
+
+            await AddSubjectAsync(newSportEntry);
+            return;
+        }
+
+        var latestEntry = Subjects.FirstOrDefault(x => x.Subject.Id == entry.Subject.Id && x.LatestAttempt);
+        var latestAttempt = latestEntry?.Attempt ?? 0;
 
         if (latestAttempt > entry.Attempt)
         {
@@ -480,18 +538,27 @@
         }
 
         var newSem = result + 2;
-        var newEntry = CreateRetakeEntry(entry, latestAttempt + 1, newSem);
-        entry.LatestAttempt = false;
+        var newRetakeEntry = CreateRetakeEntry(entry, latestAttempt + 1, newSem);
+        
+        if (latestEntry != null)
+        {
+            latestEntry.LatestAttempt = false;
+            await LocalStorageService.UpdateSubjectAsync(latestEntry);
+        }
+        else
+        {
+            entry.LatestAttempt = false;
+            await LocalStorageService.UpdateSubjectAsync(entry);
+        }
 
-        Subjects.Add(newEntry);
+        Subjects.Add(newRetakeEntry);
 
         await UpdateYearsIfNeededAsync(newSem);
 
-        await LocalStorageService.UpdateSubjectAsync(entry);
-        await LocalStorageService.UpdateSubjectAsync(newEntry);
+        await LocalStorageService.UpdateSubjectAsync(newRetakeEntry);
         await SubjectsChanged.InvokeAsync(Subjects);
         _dropContainer?.Refresh();
-        Snackbar.Add($"{LanguageHelper.RetakeSnackbarText} {newEntry.Semester}. {LanguageHelper.Semester_u}", Severity.Success);
+        Snackbar.Add($"{LanguageHelper.RetakeSnackbarText} {newRetakeEntry.Semester}. {LanguageHelper.Semester_u}", Severity.Success);
     }
 
     private static SubjectEntry CreateRetakeEntry(SubjectEntry entry, int attempt, int semester)

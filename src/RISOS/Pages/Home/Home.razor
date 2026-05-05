@@ -170,7 +170,7 @@
     }
     else
     {
-        <StudiumDropContainer @ref="@_dropContainer" Subjects="@_selectedSubjects" AllSubjects="@_subjects.Values" OnRemove="@OnRemove" @bind-RecognizedYear="@_recognizedYear" LocalStorageLoading="@_dropZoneContainerLoading"/>
+        <StudiumDropContainer @ref="@_dropContainer" @bind-Subjects="_selectedSubjects" AllSubjects="@_subjects.Values" OnRemove="@OnRemove" @bind-RecognizedYear="@_recognizedYear" LocalStorageLoading="@_dropZoneContainerLoading"/>
     }
 </CascadingValue>
 
@@ -383,17 +383,37 @@
     {
         entry.Selected = false;
         var affectedZones = new HashSet<string>();
+        var removeAll = false;
 
-        if (entry.Attempt != 1)
+        if (entry.IsSport)
+        {
+            affectedZones.Add(entry.Semester);
+            _selectedSubjects.Remove(entry);
+
+            if (entry.LatestAttempt)
+            {
+                var newLatest = _selectedSubjects
+                    .Where(x => x.Subject.Id == entry.Subject.Id)
+                    .MaxBy(x => x.Attempt);
+
+                if (newLatest != null)
+                {
+                    newLatest.LatestAttempt = true;
+                    await LocalStorageService.UpdateSubjectAsync(newLatest);
+                }
+            }
+        }
+        else if (entry.Attempt != 1)
         {
             await HandleRemoveRetryAttemptAsync(entry, affectedZones);
         }
         else
         {
             HandleRemoveFirstAttempt(entry, affectedZones);
+            removeAll = true;
         }
 
-        await LocalStorageService.RemoveSubjectAsync(entry.Key);
+        await LocalStorageService.RemoveSubjectAsync(entry.Key, removeAll);
 
         foreach (var zone in affectedZones)
         {
@@ -431,7 +451,7 @@
     {
         await AnalyticsService.TrackSubjectClickAsync(subject);
 
-        if (subject.Subject.Type == SubjectType.Sport)
+        if (subject.IsSport)
         {
             await AddNewSportEntry(subject);
             return;
@@ -468,7 +488,7 @@
             .ToList();
 
         _selectedSubjects.RemoveAll(s => s.Subject.Id == subject.Subject.Id);
-        await LocalStorageService.RemoveSubjectAsync(subject.Key);
+        await LocalStorageService.RemoveSubjectAsync(subject.Key, true);
         foreach (var zone in affectedZones)
         {
             await FixZoneIndexesAsync(zone);
@@ -477,18 +497,33 @@
 
     private async Task AddNewSportEntry(SubjectEntry subject)
     {
-        var clone = FastCloner.DeepClone(subject);
-        if (clone is null)
+        var existingSports = _selectedSubjects
+            .Where(x => x.Subject.Id == subject.Subject.Id)
+            .ToList();
+
+        var latestAttempt = existingSports
+            .Select(x => x.Attempt)
+            .DefaultIfEmpty(0)
+            .Max();
+
+        foreach (var existing in existingSports.Where(x => x.LatestAttempt))
         {
-            return;
+            existing.LatestAttempt = false;
+            await LocalStorageService.UpdateSubjectAsync(existing);
         }
 
-        clone.Subject.Id = CustomSubjectModel.GenerateNewId();
-        clone.Semester = SubjectEntry.Unassigned;
-        clone.IsCustomSubject = true;
-        _selectedSubjects.Add(clone);
-        await LocalStorageService.UpdateSubjectAsync(clone);
+        var newEntry = new SubjectEntry(subject.Subject)
+        {
+            Semester = SubjectEntry.Unassigned,
+            Attempt = latestAttempt + 1,
+            Selected = true,
+            LatestAttempt = true
+        };
+
+        _selectedSubjects.Add(newEntry);
+        await LocalStorageService.UpdateSubjectAsync(newEntry);
         _dropContainer?.Refresh();
+        await InvokeAsync(StateHasChanged);
     }
 
     private async Task OnSettingsClick()

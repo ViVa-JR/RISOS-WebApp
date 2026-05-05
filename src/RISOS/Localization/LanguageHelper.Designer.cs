@@ -123,6 +123,12 @@ namespace RISOS.Localization {
             }
         }
         
+        internal static string SearchSubjectsTooltip {
+            get {
+                return ResourceManager.GetString("SearchSubjectsTooltip", resourceCulture);
+            }
+        }
+        
         internal static string RemoveRecognizedYear {
             get {
                 return ResourceManager.GetString("RemoveRecognizedYear", resourceCulture);
@@ -846,6 +852,12 @@ namespace RISOS.Localization {
         internal static string Retake {
             get {
                 return ResourceManager.GetString("Retake", resourceCulture);
+            }
+        }
+        
+        internal static string Repeat {
+            get {
+                return ResourceManager.GetString("Repeat", resourceCulture);
             }
         }
         

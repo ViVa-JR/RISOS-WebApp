@@ -11,7 +11,6 @@ public class SubjectEntry(Subject subject)
     public bool? Completed { get; set; }
     public bool Selected { get; set; } = subject.Type == SubjectType.Compulsory;
     public bool IsAssigned => Semester != Unassigned;
-    public bool IsSport => Subject.Type == SubjectType.Sport;
 
     public string Semester { get; set; } = subject.Type == SubjectType.Compulsory
         ? $"{(subject.MinSemester == 0 ? Unassigned : subject.MinSemester)}"
@@ -21,6 +20,9 @@ public class SubjectEntry(Subject subject)
     public int Attempt { get; set; } = 1;
     public bool LatestAttempt { get; set; } = true;
     public int IndexInZone { get; set; }
+
+    [JsonIgnore]
+    public bool IsSport => Subject.Type == SubjectType.Sport;
 
     [JsonIgnore]
     public SubjectEntryKey Key => new(Subject.Id, Attempt);

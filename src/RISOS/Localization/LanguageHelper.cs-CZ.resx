@@ -158,6 +158,9 @@
     <value>Nahrát</value>
   </data>
     <data name="Search" xml:space="preserve">
+        <value>Hledat</value>
+    </data>
+    <data name="SearchSubjectsTooltip" xml:space="preserve">
         <value>Hledat předměty (Ctrl+F)</value>
     </data>
     <data name="RemoveRecognizedYear" xml:space="preserve">
@@ -522,6 +525,9 @@
     </data>
     <data name="Retake" xml:space="preserve">
       <value>Opakovat</value>
+  </data>
+    <data name="Repeat" xml:space="preserve">
+      <value>Duplikovat</value>
   </data>
     <data name="SubjectAdded" xml:space="preserve">
       <value>Předmět úspěšně přidán</value>
