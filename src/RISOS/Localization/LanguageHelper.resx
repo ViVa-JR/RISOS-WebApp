@@ -158,7 +158,7 @@
         <value>Import</value>
     </data>
     <data name="Search" xml:space="preserve">
-        <value>Search</value>
+        <value>Search for subjects (Ctrl+F)</value>
     </data>
     <data name="RemoveRecognizedYear" xml:space="preserve">
         <value>Hide recognized subjects</value>
@@ -195,6 +195,9 @@
     </data>
     <data name="AdjustYears" xml:space="preserve">
         <value>Adjust study duration</value>
+    </data>
+    <data name="SearchAllSubjects" xml:space="preserve">
+        <value>Search all subjects</value>
     </data>
     <data name="Add" xml:space="preserve">
         <value>Add</value>
@@ -522,6 +525,12 @@
     </data>
     <data name="SubjectAdded" xml:space="preserve">
         <value>Subject added</value>
+    </data>
+    <data name="SubjectAlreadyInPlan" xml:space="preserve">
+        <value>Subject is already in your study plan</value>
+    </data>
+    <data name="AlreadyRegistered" xml:space="preserve">
+        <value>Already registered</value>
     </data>
     <data name="RetakeSnackbarText" xml:space="preserve">
         <value>Retaken subject added to</value>

@@ -170,7 +170,7 @@
     }
     else
     {
-        <StudiumDropContainer @ref="@_dropContainer" Subjects="@_selectedSubjects" OnRemove="@OnRemove" @bind-RecognizedYear="@_recognizedYear" LocalStorageLoading="@_dropZoneContainerLoading"/>
+        <StudiumDropContainer @ref="@_dropContainer" Subjects="@_selectedSubjects" AllSubjects="@_subjects.Values" OnRemove="@OnRemove" @bind-RecognizedYear="@_recognizedYear" LocalStorageLoading="@_dropZoneContainerLoading"/>
     }
 </CascadingValue>
 

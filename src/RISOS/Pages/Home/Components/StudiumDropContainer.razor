@@ -72,6 +72,8 @@
 </style>
 
 <div style="position: relative;">
+    <GlobalSearch @ref="_searchComponent" AllSubjects="@AllSubjects" SelectedSubjects="@Subjects" OnSubjectSelected="@OnSearchSubject" />
+
     <MudOverlay Visible="LocalStorageLoading"
                 DarkBackground="true"
                 Absolute="true"
@@ -96,7 +98,7 @@
             <MudStack Row Spacing="0" Class="w-100 hide-in-export px-0 px-md-1 pb-1" Style="z-index: 1000; position: relative;">
                 <div class="rounded-lg border-2 border-dashed mud-border-lines-default mud-background-gray flex-grow-1 d-flex flex-column"
                      style="max-height: 250px; min-height: 120px;">
-                    <MudStack Row Spacing="3" Class="px-4 pt-2 pb-1" AlignItems="AlignItems.Center">
+                    <MudStack Row Spacing="3" Class="px-4 pt-2 pb-1" AlignItems="AlignItems.Center" Style="position: relative;">
                         <MudText Typo="Typo.h6">@LanguageHelper.UnassignedSubjects</MudText>
                         <MudTooltip Text="@LanguageHelper.AddCustomSubject">
                             <MudButton
@@ -108,7 +110,14 @@
                                 @LanguageHelper.Add
                             </MudButton>
                         </MudTooltip>
-                        <MudSpacer/>
+
+                        <MudTooltip Text="@LanguageHelper.Search">
+                            <MudIconButton Icon="@Icons.Material.Filled.Search"
+                                           Color="Color.Primary"
+                                           OnClick="@(() => _searchComponent?.Open())" />
+                        </MudTooltip>
+
+                        <div class="flex-grow-1"></div>
                         <SubjectTypeLegend Class="hide-in-export"/>
                     </MudStack>
                     <div class="flex-grow-1 overflow-y-auto">
@@ -214,6 +223,9 @@
     public List<SubjectEntry> Subjects { get; set; } = [];
 
     [Parameter]
+    public IEnumerable<SubjectEntry> AllSubjects { get; set; } = [];
+
+    [Parameter]
     public EventCallback<List<SubjectEntry>> SubjectsChanged { get; set; }
 
     [Parameter]
@@ -227,6 +239,8 @@
 
     [Parameter]
     public bool LocalStorageLoading { get; set; }
+
+    private GlobalSearch? _searchComponent;
 
     private int StartYear => RecognizedYear ? 0 : 1;
     private int Years => StudyContext.Years + (RecognizedYear ? 1 : 0);
@@ -431,6 +445,24 @@
     }
 
     public void Refresh() => _dropContainer?.Refresh();
+
+    private async Task OnSearchSubject(SubjectEntry subject)
+    {
+        if (subject == null)
+        {
+            return;
+        }
+
+        if (!subject.IsSport && Subjects.Any(x => x.Subject.Id == subject.Subject.Id))
+        {
+            Snackbar.Add(LanguageHelper.SubjectAlreadyInPlan, Severity.Info);
+            return;
+        }
+
+        subject.Selected = true;
+        await AddSubjectAsync(subject);
+        _searchComponent?.Close();
+    }
 
     private async Task RetakeSubject(SubjectEntry entry)
     {

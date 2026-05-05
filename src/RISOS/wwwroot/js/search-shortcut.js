@@ -1,0 +1,23 @@
+window.searchShortcut = {
+    dotNetHelper: null,
+    init: function (dotNetHelper) {
+        this.dotNetHelper = dotNetHelper;
+        window.addEventListener('keydown', this.handleKeyDown.bind(this));
+    },
+    handleKeyDown: function (e) {
+        if ((e.ctrlKey || e.metaKey) && e.key === 'f') {
+            e.preventDefault();
+            if (this.dotNetHelper) {
+                this.dotNetHelper.invokeMethodAsync('OpenSearchFromJs');
+            }
+        }
+        if (e.key === 'Escape') {
+            if (this.dotNetHelper) {
+                this.dotNetHelper.invokeMethodAsync('CloseSearchFromJs');
+            }
+        }
+    },
+    dispose: function () {
+        window.removeEventListener('keydown', this.handleKeyDown.bind(this));
+    }
+};

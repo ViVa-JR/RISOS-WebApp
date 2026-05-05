@@ -195,6 +195,12 @@ namespace RISOS.Localization {
             }
         }
         
+        internal static string SearchAllSubjects {
+            get {
+                return ResourceManager.GetString("SearchAllSubjects", resourceCulture);
+            }
+        }
+        
         internal static string Add {
             get {
                 return ResourceManager.GetString("Add", resourceCulture);
@@ -846,6 +852,18 @@ namespace RISOS.Localization {
         internal static string SubjectAdded {
             get {
                 return ResourceManager.GetString("SubjectAdded", resourceCulture);
+            }
+        }
+        
+        internal static string SubjectAlreadyInPlan {
+            get {
+                return ResourceManager.GetString("SubjectAlreadyInPlan", resourceCulture);
+            }
+        }
+        
+        internal static string AlreadyRegistered {
+            get {
+                return ResourceManager.GetString("AlreadyRegistered", resourceCulture);
             }
         }
         
