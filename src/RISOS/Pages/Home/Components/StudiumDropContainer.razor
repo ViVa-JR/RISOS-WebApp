@@ -157,10 +157,12 @@
                                 <MudStack Class="flex-grow-1">
                                     <SemesterDropZone Semester="@winterSem" Credits="@GetSemesterCredits(winterSem)"
                                                       SemesterSeason="SemesterSeason.Winter"
-                                                      CompleteSemester="@OnCompleteSemester"/>
+                                                      CompleteSemester="@OnCompleteSemester"
+                                                      SortSemester="@OnSortSemester"/>
                                     <SemesterDropZone Semester="@summerSem" Credits="@GetSemesterCredits(summerSem)"
                                                       SemesterSeason="SemesterSeason.Summer"
-                                                      CompleteSemester="@OnCompleteSemester"/>
+                                                      CompleteSemester="@OnCompleteSemester"
+                                                      SortSemester="@OnSortSemester"/>
                                 </MudStack>
                                 <MudStack AlignItems="AlignItems.Center" Row StretchItems="StretchItems.Start" Spacing="1" Class="pt-2">
                                     <MudText Typo="Typo.subtitle2" Color="Color.Default">@LanguageHelper.YearTotal</MudText>
@@ -192,7 +194,8 @@
             </div>
         </ChildContent>
         <ItemRenderer>
-            <SemesterDropZoneItemTemplate Entry="context"
+            <SemesterDropZoneItemTemplate @key="@context.Key.ToString()"
+                                          Entry="context"
                                           EntryChanged="@EntryChanged"
                                           SemesterCount="@(StudyContext.Years * 2)"
                                           RecognizedYear="@RecognizedYear"
@@ -512,5 +515,44 @@
         await SubjectsChanged.InvokeAsync(Subjects);
         _dropContainer?.Refresh();
         Snackbar.Add($"{LanguageHelperExtensions.Semester(semester)} {LanguageHelper.Completed}", Severity.Success);
+    }
+
+    private async Task OnSortSemester(int semester)
+    {
+        var semesterStr = semester.ToString();
+        var subjectsInSemester = Subjects
+            .Where(x => x.Semester == semesterStr)
+            .ToList();
+
+        if (subjectsInSemester.Count <= 1)
+        {
+            return;
+        }
+
+        var sortedSubjects = subjectsInSemester
+            .OrderBy(x => x.Subject.Type)
+            .ThenBy(x => x.Subject.Name)
+            .ToList();
+
+        // Check if already sorted to avoid unnecessary refreshes
+        if (subjectsInSemester.SequenceEqual(sortedSubjects))
+        {
+            return;
+        }
+
+        for (var i = 0; i < sortedSubjects.Count; i++)
+        {
+            sortedSubjects[i].IndexInZone = i;
+            await LocalStorageService.UpdateSubjectAsync(sortedSubjects[i]);
+        }
+
+        // We sort the list in-place to keep the same references and avoid duplicate key issues during render
+        var firstIndex = Subjects.FindIndex(x => x.Semester == semesterStr);
+        Subjects.RemoveAll(x => x.Semester == semesterStr);
+        Subjects.InsertRange(firstIndex, sortedSubjects);
+
+        await SubjectsChanged.InvokeAsync(Subjects);
+        _dropContainer?.Refresh();
+        Snackbar.Add($"{LanguageHelperExtensions.Semester(semester)} {LanguageHelper.Sorted}", Severity.Success);
     }
 }

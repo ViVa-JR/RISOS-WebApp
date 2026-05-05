@@ -94,12 +94,12 @@
         transition: border-color 0.2s ease;
     }
 
-    .semester-drop-zone .complete-semester-btn {
+    .semester-drop-zone .semester-hover-btn {
         opacity: 0;
         transition: opacity 0.2s ease;
     }
 
-    .semester-drop-zone:hover .complete-semester-btn {
+    .semester-drop-zone:hover .semester-hover-btn {
         opacity: 1;
     }
 </style>
@@ -121,13 +121,21 @@
                          Color="@SemesterSeason.ToColor()"/>
                 <MudSpacer/>
 
+                <MudTooltip Text="@LanguageHelper.SortSemesterSubjects">
+                    <MudIconButton Icon="@Icons.Material.Filled.SortByAlpha"
+                                   Color="Color.Default"
+                                   Size="Size.Small"
+                                   Class="semester-hover-btn hide-in-export"
+                                   OnClick="@(() => SortSemester.InvokeAsync(Semester))"/>
+                </MudTooltip>
+
                 @if (Credits.HasUnprocessed)
                 {
                     <MudTooltip Text="@LanguageHelper.CompleteAllSubjectsInSemester">
                         <MudIconButton Icon="@Icons.Material.Filled.DoneAll"
                                        Color="Color.Success"
                                        Size="Size.Small"
-                                       Class="complete-semester-btn hide-in-export"
+                                       Class="semester-hover-btn hide-in-export"
                                        OnClick="@(() => CompleteSemester.InvokeAsync(Semester))"/>
                     </MudTooltip>
                 }
@@ -173,6 +181,9 @@
 
     [Parameter]
     public EventCallback<int> CompleteSemester { get; set; }
+
+    [Parameter]
+    public EventCallback<int> SortSemester { get; set; }
 
     private bool IsOddSemester => Semester % 2 != 0;
     private string CssVariableName => IsOddSemester ? "--dropzone-height-odd" : "--dropzone-height-even";

@@ -172,8 +172,8 @@
     <data name="Completed" xml:space="preserve">
         <value>Completed</value>
     </data>
-    <data name="Registered" xml:space="preserve">
-        <value>Registered</value>
+    <data name="Sorted" xml:space="preserve">
+        <value>Sorted</value>
     </data>
     <data name="Required" xml:space="preserve">
         <value>Required</value>
@@ -650,6 +650,9 @@ Additional notes / screenshots:]]></value>
     </data>
     <data name="CompleteAllSubjectsInSemester" xml:space="preserve">
         <value>Complete all subjects in this semester</value>
+    </data>
+    <data name="SortSemesterSubjects" xml:space="preserve">
+        <value>Sort subjects in this semester</value>
     </data>
     <data name="RecognizedYearTitle" xml:space="preserve">
         <value>Recognized subjects</value>
