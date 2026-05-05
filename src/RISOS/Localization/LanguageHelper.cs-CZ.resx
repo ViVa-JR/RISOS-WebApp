@@ -158,8 +158,11 @@
     <value>Nahrát</value>
   </data>
     <data name="Search" xml:space="preserve">
-    <value>Vyhledat</value>
-  </data>
+        <value>Hledat</value>
+    </data>
+    <data name="SearchSubjectsTooltip" xml:space="preserve">
+        <value>Hledat předměty (Ctrl+F)</value>
+    </data>
     <data name="RemoveRecognizedYear" xml:space="preserve">
       <value>Skrýt uznané předměty</value>
     </data>
@@ -196,6 +199,9 @@
     <data name="AdjustYears" xml:space="preserve">
     <value>Úprava doby studia</value>
   </data>
+    <data name="SearchAllSubjects" xml:space="preserve">
+        <value>Hledat napříč všemi předměty</value>
+    </data>
     <data name="Add" xml:space="preserve">
     <value>Přidat</value>
   </data>
@@ -520,8 +526,17 @@
     <data name="Retake" xml:space="preserve">
       <value>Opakovat</value>
   </data>
+    <data name="Repeat" xml:space="preserve">
+      <value>Duplikovat</value>
+  </data>
     <data name="SubjectAdded" xml:space="preserve">
       <value>Předmět úspěšně přidán</value>
+  </data>
+    <data name="SubjectAlreadyInPlan" xml:space="preserve">
+      <value>Předmět již máte ve svém studijním plánu</value>
+  </data>
+    <data name="AlreadyRegistered" xml:space="preserve">
+      <value>Již zapsáno</value>
   </data>
     <data name="RetakeSnackbarText" xml:space="preserve">
       <value>Opakovaný předmět přidán do</value>

@@ -112,9 +112,9 @@
                     }
                 }
             </MudMenu>
-            @if (Entry is { Completed: false, LatestAttempt: true })
+            @if (Entry.IsSport || (Entry.LatestAttempt && Entry.Completed == false))
             {
-                <MudMenuItem Icon="@Icons.Material.Filled.RestartAlt" Label="@LanguageHelper.Retake"
+                <MudMenuItem Icon="@(Entry.IsSport ? Icons.Material.Filled.ContentCopy : Icons.Material.Filled.RestartAlt)" Label="@(Entry.IsSport ? LanguageHelper.Repeat : LanguageHelper.Retake)"
                              OnClick="@(() => RetakeEntry.InvokeAsync(Entry))"/>
             }
             @if (Entry.IsCustomSubject)

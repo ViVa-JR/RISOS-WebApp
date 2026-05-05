@@ -10,6 +10,7 @@
 @inject ISnackbar Snackbar
 @inject LocalStorageService LocalStorageService
 @inject AnalyticsService AnalyticsService
+@inject StudyPlanService PlanService
 
 <style>
     .card-text {
@@ -72,6 +73,8 @@
 </style>
 
 <div style="position: relative;">
+    <GlobalSearch @ref="_searchComponent" AllSubjects="@AllSubjects" SelectedSubjects="@PlanService.Subjects.ToList()" OnSubjectSelected="@OnSearchSubject" />
+
     <MudOverlay Visible="LocalStorageLoading"
                 DarkBackground="true"
                 Absolute="true"
@@ -84,7 +87,7 @@
         </MudStack>
     </MudOverlay>
 
-    <MudDropContainer T="SubjectEntry" @ref="_dropContainer" Items="@Subjects" ItemsSelector="@Selector"
+    <MudDropContainer T="SubjectEntry" @ref="_dropContainer" Items="@PlanService.Subjects.ToList()" ItemsSelector="@Selector"
                       ItemDropped="@ItemUpdated"
                       CanDrop="@CanDrop"
                       Class="d-flex flex-column gap-3 mb-2"
@@ -96,8 +99,13 @@
             <MudStack Row Spacing="0" Class="w-100 hide-in-export px-0 px-md-1 pb-1" Style="z-index: 1000; position: relative;">
                 <div class="rounded-lg border-2 border-dashed mud-border-lines-default mud-background-gray flex-grow-1 d-flex flex-column"
                      style="max-height: 250px; min-height: 120px;">
-                    <MudStack Row Spacing="3" Class="px-4 pt-2 pb-1" AlignItems="AlignItems.Center">
-                        <MudText Typo="Typo.h6">@LanguageHelper.UnassignedSubjects</MudText>
+                    <MudStack Row Spacing="0" Class="px-4 pt-2 pb-1" AlignItems="AlignItems.Center" Style="position: relative;">
+                        <MudTooltip Text="@LanguageHelper.SearchSubjectsTooltip">
+                            <MudIconButton Icon="@Icons.Material.Filled.Search"
+                                           Color="Color.Primary"
+                                           OnClick="@(async () => { if (_searchComponent != null) await _searchComponent.Open(); })" />
+                        </MudTooltip>
+                        <MudText Typo="Typo.h6" Class="me-3" Style="margin-left: 2px">@LanguageHelper.UnassignedSubjects</MudText>
                         <MudTooltip Text="@LanguageHelper.AddCustomSubject">
                             <MudButton
                                 Variant="Variant.Outlined"
@@ -155,11 +163,11 @@
                                 </div>
 
                                 <MudStack Class="flex-grow-1">
-                                    <SemesterDropZone Semester="@winterSem" Credits="@GetSemesterCredits(winterSem)"
+                                    <SemesterDropZone Semester="@winterSem" Credits="@CreditCalculator.CalculateSemesterCredits(PlanService.Subjects, winterSem)"
                                                       SemesterSeason="SemesterSeason.Winter"
                                                       CompleteSemester="@OnCompleteSemester"
                                                       SortSemester="@OnSortSemester"/>
-                                    <SemesterDropZone Semester="@summerSem" Credits="@GetSemesterCredits(summerSem)"
+                                    <SemesterDropZone Semester="@summerSem" Credits="@CreditCalculator.CalculateSemesterCredits(PlanService.Subjects, summerSem)"
                                                       SemesterSeason="SemesterSeason.Summer"
                                                       CompleteSemester="@OnCompleteSemester"
                                                       SortSemester="@OnSortSemester"/>
@@ -168,7 +176,8 @@
                                     <MudText Typo="Typo.subtitle2" Color="Color.Default">@LanguageHelper.YearTotal</MudText>
 
                                     @{
-                                        var yearCredits = GetYearCredits(year);
+                                        var yearCredits = CreditCalculator.CalculateSemesterCredits(PlanService.Subjects, year * 2 - 1) + 
+                                                         CreditCalculator.CalculateSemesterCredits(PlanService.Subjects, year * 2);
                                     }
 
                                     @if (yearCredits.Completed > 0)
@@ -211,13 +220,7 @@
     public required StudyContext StudyContext { get; set; }
 
     [Parameter]
-    public List<SubjectEntry> Subjects { get; set; } = [];
-
-    [Parameter]
-    public EventCallback<List<SubjectEntry>> SubjectsChanged { get; set; }
-
-    [Parameter]
-    public EventCallback<SubjectEntry> OnRemove { get; set; }
+    public IEnumerable<SubjectEntry> AllSubjects { get; set; } = [];
 
     [Parameter]
     public bool RecognizedYear { get; set; }
@@ -228,21 +231,20 @@
     [Parameter]
     public bool LocalStorageLoading { get; set; }
 
+    private GlobalSearch? _searchComponent;
+
     private int StartYear => RecognizedYear ? 0 : 1;
     private int Years => StudyContext.Years + (RecognizedYear ? 1 : 0);
-    private bool NeedConfirmation => Subjects.Any(x => x.Semester == (StudyContext.Years * 2).ToString() || x.Semester == (StudyContext.Years * 2 - 1).ToString());
+    private bool NeedConfirmation => PlanService.Subjects.Any(x => x.Semester == (StudyContext.Years * 2).ToString() || x.Semester == (StudyContext.Years * 2 - 1).ToString());
 
     private MudDropContainer<SubjectEntry>? _dropContainer;
 
-    protected override void OnParametersSet()
+    protected override void OnInitialized()
     {
-        if (_dropContainer is not null)
-        {
-            OnYearsChanged(StudyContext.Years);
-        }
+        PlanService.OnPlanChanged += Refresh;
     }
 
-    private Credits TotalCredits => GetTotalCredits();
+    private Credits TotalCredits => CreditCalculator.CalculateTotalCredits(PlanService.Subjects);
 
     private static bool Selector(SubjectEntry item, string dropzone) => item.Semester == dropzone;
 
@@ -258,240 +260,127 @@
 
     private async Task EntryChanged(SubjectEntry entry)
     {
-        await SubjectsChanged.InvokeAsync(Subjects);
-        await LocalStorageService.UpdateSubjectAsync(entry);
-        _dropContainer?.Refresh();
+        await PlanService.UpdateSubjectAsync(entry);
     }
 
     private async Task ItemUpdated(MudItemDropInfo<SubjectEntry> dropItem)
     {
-        if (dropItem.Item is null)
-        {
-            return;
-        }
+        if (dropItem.Item is null) return;
 
         if (dropItem.DropzoneIdentifier == "Trash")
         {
-            await OnRemove.InvokeAsync(dropItem.Item);
+            await OnRemove(dropItem.Item);
             return;
         }
 
         UpdateItemPosition(dropItem.Item, dropItem.DropzoneIdentifier, dropItem.IndexInZone);
-        await UpdateZoneIndexesAndSaveAsync(dropItem.DropzoneIdentifier);
+        await PlanService.FixZoneIndexesAsync(dropItem.DropzoneIdentifier);
     }
 
     private void UpdateItemPosition(SubjectEntry item, string dropzone, int index)
     {
         item.Semester = dropzone;
-        Subjects.Remove(item);
+        var list = PlanService.Subjects.ToList();
+        list.Remove(item);
 
-        var itemsInZone = Subjects.Where(x => x.Semester == dropzone).ToList();
+        var itemsInZone = list.Where(x => x.Semester == dropzone).ToList();
 
-        if (index < 0 || index >= itemsInZone.Count)
-        {
-            Subjects.Add(item);
-        }
+        if (index < 0 || index >= itemsInZone.Count) list.Add(item);
         else
         {
             var itemThatGotPushedDown = itemsInZone[index];
-            var realIndex = Subjects.IndexOf(itemThatGotPushedDown);
-            Subjects.Insert(realIndex, item);
+            var realIndex = list.IndexOf(itemThatGotPushedDown);
+            list.Insert(realIndex, item);
         }
+        PlanService.SetSubjects(list);
     }
 
-    private async Task UpdateZoneIndexesAndSaveAsync(string dropzone)
+    private async Task OnRemove(SubjectEntry entry)
     {
-        var updatedZoneItems = Subjects
-            .Where(x => x.Semester == dropzone)
-            .ToList();
-
-        for (var i = 0; i < updatedZoneItems.Count; i++)
-        {
-            updatedZoneItems[i].IndexInZone = i;
-        }
-
-        await SubjectsChanged.InvokeAsync(Subjects);
-
-        foreach (var item in updatedZoneItems)
-        {
-            await LocalStorageService.UpdateSubjectAsync(item);
-        }
-    }
-
-    private Credits GetSemesterCredits(int semesterIdentifier)
-    {
-        var semesterSubjects = Subjects
-            .Where(s => s.Semester == semesterIdentifier.ToString())
-            .ToArray();
-
-        var hasUnprocessed = semesterSubjects.Any(s => s.Completed == null);
-
-        return semesterIdentifier <= 0
-            ? CalculateSpecialSemesterCredits(semesterSubjects, hasUnprocessed)
-            : CalculateNormalSemesterCredits(semesterSubjects, hasUnprocessed);
-    }
-
-    private static Credits CalculateSpecialSemesterCredits(SubjectEntry[] subjects, bool hasUnprocessed)
-    {
-        var registered = subjects.Sum(s => s.Subject.Credits);
-        var completed = subjects.Where(s => s.Completed == true).Sum(s => s.Subject.Credits);
-
-        return new Credits(registered, completed, false, false, hasUnprocessed);
-    }
-
-    private static Credits CalculateNormalSemesterCredits(SubjectEntry[] subjects, bool hasUnprocessed)
-    {
-        var registeredNormal = subjects.Where(s => !s.IsSport).Sum(s => s.Subject.Credits);
-        var completedNormal = subjects.Where(s => s is { Completed: true, IsSport: false }).Sum(s => s.Subject.Credits);
-
-        var sports = subjects.Where(s => s.IsSport).ToArray();
-        var totalSportsRegistered = sports.Length;
-        var uniqueSportsRegistered = sports.DistinctBy(s => s.Subject.ShortName).Count();
-        var uniqueSportsCompleted = sports.Where(s => s.Completed == true).DistinctBy(s => s.Subject.ShortName).Count();
-
-        return new Credits(
-            Registered: registeredNormal + Math.Min(2, uniqueSportsRegistered),
-            Completed: completedNormal + Math.Min(2, uniqueSportsCompleted),
-            SportLimitReached: uniqueSportsRegistered > 2,
-            HasDuplicateSports: totalSportsRegistered > uniqueSportsRegistered,
-            HasUnprocessed: hasUnprocessed
-        );
-    }
-
-    private Credits GetYearCredits(int year)
-    {
-        var winterSem = year * 2 - 1;
-        var summerSem = year * 2;
-
-        return GetSemesterCredits(winterSem) + GetSemesterCredits(summerSem);
-    }
-
-    private Credits GetTotalCredits()
-    {
-        var assignedSubjects = Subjects.Where(x => x.Semester != SubjectEntry.Unassigned).ToArray();
-
-        var attemptedCredits = CalculateCredits(assignedSubjects.Where(x => x.Completed != false));
-        var completedCredits = CalculateCredits(assignedSubjects.Where(x => x.Completed == true));
-
-        return new Credits(attemptedCredits, completedCredits);
-
-        int CalculateCredits(IEnumerable<SubjectEntry> subjects)
-        {
-            return subjects.GroupBy(x => x.Semester).Sum(semester =>
-            {
-                if (semester.Key is "-1" or "0")
-                {
-                    return semester.Sum(x => x.Subject.Credits);
-                }
-
-                var normalCredits = semester.Where(x => !x.IsSport).Sum(x => x.Subject.Credits);
-                var sportCredits = semester.Where(x => x.IsSport).DistinctBy(x => x.Subject.ShortName).Count();
-
-                return normalCredits + Math.Min(2, sportCredits);
-            });
-        }
+        await PlanService.RemoveSubjectAsync(entry);
     }
 
     private void OnYearsChanged(int years)
     {
         StudyContext.Years = years;
         var maxValidSemester = years * 2;
-        Subjects.ForEach(x =>
+        var subjects = PlanService.Subjects.ToList();
+        subjects.ForEach(x =>
         {
-            if (!int.TryParse(x.Semester, out var semesterNum) || semesterNum <= maxValidSemester)
-            {
-                return;
-            }
-
+            if (!int.TryParse(x.Semester, out var semesterNum) || semesterNum <= maxValidSemester) return;
             x.Semester = SubjectEntry.Unassigned;
             x.Completed = null;
         });
-
-        _dropContainer?.Refresh();
+        PlanService.SetSubjects(subjects);
     }
 
     private async Task OpenAddDialog()
     {
         await AnalyticsService.TrackAddButtonClickAsync();
         var result = await CreateEditCustomSubjectDialog.ShowAsync(DialogService);
-        if (result.IsSuccess)
-        {
-            await AddSubjectAsync(result.Value);
-        }
+        if (result.IsSuccess) await AddSubjectAsync(result.Value);
     }
 
     private async Task AddSubjectAsync(SubjectEntry entry)
     {
-        entry.IndexInZone = Subjects.Count(x => x.Semester == entry.Semester);
-        Subjects.Add(entry);
-        await SubjectsChanged.InvokeAsync(Subjects);
-        await LocalStorageService.UpdateSubjectAsync(entry);
-        _dropContainer?.Refresh();
+        await PlanService.AddSubjectAsync(entry);
         Snackbar.Add(LanguageHelper.SubjectAdded, Severity.Success);
     }
 
-    public void Refresh() => _dropContainer?.Refresh();
+    public void Refresh()
+    {
+        _dropContainer?.Refresh();
+        StateHasChanged();
+    }
+
+    private async Task OnSearchSubject(SubjectEntry subject)
+    {
+        if (subject == null) return;
+
+        if (!subject.IsSport && PlanService.Subjects.Any(x => x.Subject.Id == subject.Subject.Id))
+        {
+            Snackbar.Add(LanguageHelper.SubjectAlreadyInPlan, Severity.Info);
+            return;
+        }
+
+        if (subject.IsSport) await PlanService.DuplicateSportAsync(subject);
+        else
+        {
+            subject.Selected = true;
+            await AddSubjectAsync(subject);
+        }
+        _searchComponent?.Close();
+    }
 
     private async Task RetakeSubject(SubjectEntry entry)
     {
-        var latestAttempt = Subjects
-            .FirstOrDefault(x => x.Subject.Id == entry.Subject.Id && x.LatestAttempt)?.Attempt ?? 0;
-
-        if (latestAttempt > entry.Attempt)
+        if (entry.IsSport)
         {
+            await PlanService.DuplicateSportAsync(entry);
             return;
         }
 
-        if (!int.TryParse(entry.Semester, out var result))
-        {
-            return;
-        }
+        if (!int.TryParse(entry.Semester, out var result)) return;
 
         var newSem = result + 2;
-        var newEntry = CreateRetakeEntry(entry, latestAttempt + 1, newSem);
-        entry.LatestAttempt = false;
+        await PlanService.RetakeSubjectAsync(entry, newSem);
 
-        Subjects.Add(newEntry);
-
-        await UpdateYearsIfNeededAsync(newSem);
-
-        await LocalStorageService.UpdateSubjectAsync(entry);
-        await LocalStorageService.UpdateSubjectAsync(newEntry);
-        await SubjectsChanged.InvokeAsync(Subjects);
-        _dropContainer?.Refresh();
-        Snackbar.Add($"{LanguageHelper.RetakeSnackbarText} {newEntry.Semester}. {LanguageHelper.Semester_u}", Severity.Success);
-    }
-
-    private static SubjectEntry CreateRetakeEntry(SubjectEntry entry, int attempt, int semester)
-    {
-        return new SubjectEntry(entry.Subject)
-        {
-            Semester = semester.ToString(),
-            IsCustomSubject = entry.IsCustomSubject,
-            Completed = null,
-            Attempt = attempt
-        };
-    }
-
-    private async Task UpdateYearsIfNeededAsync(int newSemester)
-    {
-        if (newSemester > Years * 2)
+        if (newSem > Years * 2)
         {
             StudyContext.Years++;
             await LocalStorageService.SaveStudyYears(Years);
         }
+
+        Snackbar.Add($"{LanguageHelper.RetakeSnackbarText} {newSem}. {LanguageHelper.Semester_u}", Severity.Success);
     }
 
     private async Task OnCompleteSemester(int semester)
     {
-        var subjectsToComplete = Subjects
+        var subjectsToComplete = PlanService.Subjects
             .Where(x => x.Semester == semester.ToString() && x.Completed == null)
             .ToList();
 
-        if (subjectsToComplete.Count == 0)
-        {
-            return;
-        }
+        if (subjectsToComplete.Count == 0) return;
 
         foreach (var subject in subjectsToComplete)
         {
@@ -499,32 +388,19 @@
             await LocalStorageService.UpdateSubjectAsync(subject);
         }
 
-        await SubjectsChanged.InvokeAsync(Subjects);
-        _dropContainer?.Refresh();
+        PlanService.SetSubjects(PlanService.Subjects);
         Snackbar.Add($"{LanguageHelperExtensions.Semester(semester)} {LanguageHelper.Completed}", Severity.Success);
     }
 
     private async Task OnSortSemester(int semester)
     {
         var semesterStr = semester.ToString();
-        var subjectsInSemester = Subjects
-            .Where(x => x.Semester == semesterStr)
-            .ToList();
+        var subjectsInSemester = PlanService.Subjects.Where(x => x.Semester == semesterStr).ToList();
 
-        if (subjectsInSemester.Count <= 1)
-        {
-            return;
-        }
+        if (subjectsInSemester.Count <= 1) return;
 
-        var sortedSubjects = subjectsInSemester
-            .OrderBy(x => x.Subject.Type)
-            .ThenBy(x => x.Subject.Name)
-            .ToList();
-
-        if (subjectsInSemester.SequenceEqual(sortedSubjects))
-        {
-            return;
-        }
+        var sortedSubjects = subjectsInSemester.OrderBy(x => x.Subject.Type).ThenBy(x => x.Subject.Name).ToList();
+        if (subjectsInSemester.SequenceEqual(sortedSubjects)) return;
 
         for (var i = 0; i < sortedSubjects.Count; i++)
         {
@@ -532,12 +408,12 @@
             await LocalStorageService.UpdateSubjectAsync(sortedSubjects[i]);
         }
 
-        var firstIndex = Subjects.FindIndex(x => x.Semester == semesterStr);
-        Subjects.RemoveAll(x => x.Semester == semesterStr);
-        Subjects.InsertRange(firstIndex, sortedSubjects);
+        var allSubjects = PlanService.Subjects.ToList();
+        var firstIndex = allSubjects.FindIndex(x => x.Semester == semesterStr);
+        allSubjects.RemoveAll(x => x.Semester == semesterStr);
+        allSubjects.InsertRange(firstIndex, sortedSubjects);
 
-        await SubjectsChanged.InvokeAsync(Subjects);
-        _dropContainer?.Refresh();
+        PlanService.SetSubjects(allSubjects);
         Snackbar.Add($"{LanguageHelperExtensions.Semester(semester)} {LanguageHelper.Sorted}", Severity.Success);
     }
 }

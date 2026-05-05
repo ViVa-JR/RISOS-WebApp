@@ -123,6 +123,12 @@ namespace RISOS.Localization {
             }
         }
         
+        internal static string SearchSubjectsTooltip {
+            get {
+                return ResourceManager.GetString("SearchSubjectsTooltip", resourceCulture);
+            }
+        }
+        
         internal static string RemoveRecognizedYear {
             get {
                 return ResourceManager.GetString("RemoveRecognizedYear", resourceCulture);
@@ -192,6 +198,12 @@ namespace RISOS.Localization {
         internal static string AdjustYears {
             get {
                 return ResourceManager.GetString("AdjustYears", resourceCulture);
+            }
+        }
+        
+        internal static string SearchAllSubjects {
+            get {
+                return ResourceManager.GetString("SearchAllSubjects", resourceCulture);
             }
         }
         
@@ -843,9 +855,27 @@ namespace RISOS.Localization {
             }
         }
         
+        internal static string Repeat {
+            get {
+                return ResourceManager.GetString("Repeat", resourceCulture);
+            }
+        }
+        
         internal static string SubjectAdded {
             get {
                 return ResourceManager.GetString("SubjectAdded", resourceCulture);
+            }
+        }
+        
+        internal static string SubjectAlreadyInPlan {
+            get {
+                return ResourceManager.GetString("SubjectAlreadyInPlan", resourceCulture);
+            }
+        }
+        
+        internal static string AlreadyRegistered {
+            get {
+                return ResourceManager.GetString("AlreadyRegistered", resourceCulture);
             }
         }
         

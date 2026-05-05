@@ -301,15 +301,15 @@ public class LocalStorageService(IJSRuntime js)
         await SaveSubjects(subjects);
     }
 
-    public async Task RemoveSubjectAsync(SubjectEntryKey subjectEntryKey)
+    public async Task RemoveSubjectAsync(SubjectEntryKey subjectEntryKey, bool removeAll = false)
     {
-        var subjects = await LoadSubjectsAsync();
-        if (subjectEntryKey.Attempt == 1)
+        if (removeAll)
         {
             await RemoveAllOfSubjectAsync(subjectEntryKey.Id);
             return;
         }
 
+        var subjects = await LoadSubjectsAsync();
         if (subjects.RemoveAll(s => s.SubjectId == subjectEntryKey.Id && s.Attempt == subjectEntryKey.Attempt) > 0)
         {
             await SaveSubjects(subjects);
