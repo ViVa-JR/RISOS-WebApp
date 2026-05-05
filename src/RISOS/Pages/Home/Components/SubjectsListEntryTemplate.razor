@@ -21,7 +21,7 @@
     }
 </style>
 
-<MudListItem @key="@Row.Subject!.Subject.Id" T="SubjectEntry" Value="@Row.Subject" OnClick="@(async () => await SelectedChanged(Row.Subject!))"
+<MudListItem @key="@Row.Subject!.Key.ToString()" T="SubjectEntry" Value="@Row.Subject" OnClick="@(async () => await SelectedChanged(Row.Subject!))"
              Class="subjects-list-item">
     <div class="d-flex align-center gap-3 px-2 w-100">
         <div class="d-flex align-center gap-2 w-100" style="min-width: 0;" title="@Row.Subject!.Subject.Name">

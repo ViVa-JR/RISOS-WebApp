@@ -87,7 +87,7 @@
                                       SelectedProgramChanged="@OnSelectedProgramsChanged" Loading="@_isLoading"/>
             </MudExpansionPanel>
             <SubjectsPanel TGroupKey="int"
-                           HeaderTemplate="@LanguageHelperExtensions.Semester"
+                           HeaderTemplate="@(n => n <= 0 ? LanguageHelper.Any : LanguageHelperExtensions.Semester(n))"
                            GroupBy="@(x => x.Subject.MinSemester)"
                            SubjectChanged="@SubjectChanged"
                            Title="@LanguageHelper.Compulsory"

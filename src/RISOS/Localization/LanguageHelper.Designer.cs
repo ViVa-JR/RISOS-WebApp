@@ -1071,6 +1071,18 @@ namespace RISOS.Localization {
             }
         }
         
+        internal static string SortSemesterSubjects {
+            get {
+                return ResourceManager.GetString("SortSemesterSubjects", resourceCulture);
+            }
+        }
+        
+        internal static string Sorted {
+            get {
+                return ResourceManager.GetString("Sorted", resourceCulture);
+            }
+        }
+        
         internal static string RecognizedYearTitle {
             get {
                 return ResourceManager.GetString("RecognizedYearTitle", resourceCulture);

@@ -157,10 +157,12 @@
                                 <MudStack Class="flex-grow-1">
                                     <SemesterDropZone Semester="@winterSem" Credits="@GetSemesterCredits(winterSem)"
                                                       SemesterSeason="SemesterSeason.Winter"
-                                                      CompleteSemester="@OnCompleteSemester"/>
+                                                      CompleteSemester="@OnCompleteSemester"
+                                                      SortSemester="@OnSortSemester"/>
                                     <SemesterDropZone Semester="@summerSem" Credits="@GetSemesterCredits(summerSem)"
                                                       SemesterSeason="SemesterSeason.Summer"
-                                                      CompleteSemester="@OnCompleteSemester"/>
+                                                      CompleteSemester="@OnCompleteSemester"
+                                                      SortSemester="@OnSortSemester"/>
                                 </MudStack>
                                 <MudStack AlignItems="AlignItems.Center" Row StretchItems="StretchItems.Start" Spacing="1" Class="pt-2">
                                     <MudText Typo="Typo.subtitle2" Color="Color.Default">@LanguageHelper.YearTotal</MudText>
@@ -192,7 +194,8 @@
             </div>
         </ChildContent>
         <ItemRenderer>
-            <SemesterDropZoneItemTemplate Entry="context"
+            <SemesterDropZoneItemTemplate @key="@context.Key.ToString()"
+                                          Entry="context"
                                           EntryChanged="@EntryChanged"
                                           SemesterCount="@(StudyContext.Years * 2)"
                                           RecognizedYear="@RecognizedYear"
@@ -245,22 +248,12 @@
 
     private static bool CanDrop(SubjectEntry item, string identifier)
     {
-        if (identifier == "Trash")
+        return identifier switch
         {
-            return item.Subject.Type != SubjectType.Compulsory || item.IsCustomSubject || item.Attempt > 1;
-        }
-
-        if (identifier == SubjectEntry.Unassigned)
-        {
-            return true;
-        }
-
-        if (int.TryParse(identifier, out var semester))
-        {
-            return item.Subject.SemesterSeason.IsValidForSemester(semester);
-        }
-
-        return true;
+            "Trash" => item.Subject.Type != SubjectType.Compulsory || item.IsCustomSubject || item.Attempt > 1,
+            SubjectEntry.Unassigned => true,
+            _ => !int.TryParse(identifier, out var semester) || item.Subject.SemesterSeason.IsValidForSemester(semester)
+        };
     }
 
     private async Task EntryChanged(SubjectEntry entry)
@@ -333,12 +326,9 @@
 
         var hasUnprocessed = semesterSubjects.Any(s => s.Completed == null);
 
-        if (semesterIdentifier <= 0)
-        {
-            return CalculateSpecialSemesterCredits(semesterSubjects, hasUnprocessed);
-        }
-
-        return CalculateNormalSemesterCredits(semesterSubjects, hasUnprocessed);
+        return semesterIdentifier <= 0
+            ? CalculateSpecialSemesterCredits(semesterSubjects, hasUnprocessed)
+            : CalculateNormalSemesterCredits(semesterSubjects, hasUnprocessed);
     }
 
     private static Credits CalculateSpecialSemesterCredits(SubjectEntry[] subjects, bool hasUnprocessed)
@@ -512,5 +502,42 @@
         await SubjectsChanged.InvokeAsync(Subjects);
         _dropContainer?.Refresh();
         Snackbar.Add($"{LanguageHelperExtensions.Semester(semester)} {LanguageHelper.Completed}", Severity.Success);
+    }
+
+    private async Task OnSortSemester(int semester)
+    {
+        var semesterStr = semester.ToString();
+        var subjectsInSemester = Subjects
+            .Where(x => x.Semester == semesterStr)
+            .ToList();
+
+        if (subjectsInSemester.Count <= 1)
+        {
+            return;
+        }
+
+        var sortedSubjects = subjectsInSemester
+            .OrderBy(x => x.Subject.Type)
+            .ThenBy(x => x.Subject.Name)
+            .ToList();
+
+        if (subjectsInSemester.SequenceEqual(sortedSubjects))
+        {
+            return;
+        }
+
+        for (var i = 0; i < sortedSubjects.Count; i++)
+        {
+            sortedSubjects[i].IndexInZone = i;
+            await LocalStorageService.UpdateSubjectAsync(sortedSubjects[i]);
+        }
+
+        var firstIndex = Subjects.FindIndex(x => x.Semester == semesterStr);
+        Subjects.RemoveAll(x => x.Semester == semesterStr);
+        Subjects.InsertRange(firstIndex, sortedSubjects);
+
+        await SubjectsChanged.InvokeAsync(Subjects);
+        _dropContainer?.Refresh();
+        Snackbar.Add($"{LanguageHelperExtensions.Semester(semester)} {LanguageHelper.Sorted}", Severity.Success);
     }
 }

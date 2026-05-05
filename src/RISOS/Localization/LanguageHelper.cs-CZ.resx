@@ -170,11 +170,11 @@
     <value>Průběh studia</value>
   </data>
     <data name="Completed" xml:space="preserve">
-    <value>Dokončené</value>
-  </data>
-    <data name="Registered" xml:space="preserve">
-    <value>Registrované</value>
-  </data>
+        <value>Dokončeno</value>
+    </data>
+    <data name="Sorted" xml:space="preserve">
+        <value>Seřazeno</value>
+    </data>
     <data name="Required" xml:space="preserve">
     <value>Požadované</value>
   </data>
@@ -440,7 +440,7 @@
     <value>Potvrdit</value>
   </data>
     <data name="Any" xml:space="preserve">
-    <value>Libovolný</value>
+    <value>Libovolné</value>
   </data>
     <data name="IMAAbbreviation" xml:space="preserve">
     <value>nepř.: IMA1, IMA2</value>
@@ -647,6 +647,9 @@ Další poznámky / screenshoty:]]></value>
     </data>
     <data name="CompleteAllSubjectsInSemester" xml:space="preserve">
         <value>Dokončit všechny předměty v tomto semestru</value>
+    </data>
+    <data name="SortSemesterSubjects" xml:space="preserve">
+        <value>Seřadit předměty v tomto semestru</value>
     </data>
     <data name="RecognizedYearTitle" xml:space="preserve">
         <value>Uznané předměty</value>
