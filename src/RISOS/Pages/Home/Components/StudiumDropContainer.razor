@@ -248,22 +248,12 @@
 
     private static bool CanDrop(SubjectEntry item, string identifier)
     {
-        if (identifier == "Trash")
+        return identifier switch
         {
-            return item.Subject.Type != SubjectType.Compulsory || item.IsCustomSubject || item.Attempt > 1;
-        }
-
-        if (identifier == SubjectEntry.Unassigned)
-        {
-            return true;
-        }
-
-        if (int.TryParse(identifier, out var semester))
-        {
-            return item.Subject.SemesterSeason.IsValidForSemester(semester);
-        }
-
-        return true;
+            "Trash" => item.Subject.Type != SubjectType.Compulsory || item.IsCustomSubject || item.Attempt > 1,
+            SubjectEntry.Unassigned => true,
+            _ => !int.TryParse(identifier, out var semester) || item.Subject.SemesterSeason.IsValidForSemester(semester)
+        };
     }
 
     private async Task EntryChanged(SubjectEntry entry)
@@ -336,12 +326,9 @@
 
         var hasUnprocessed = semesterSubjects.Any(s => s.Completed == null);
 
-        if (semesterIdentifier <= 0)
-        {
-            return CalculateSpecialSemesterCredits(semesterSubjects, hasUnprocessed);
-        }
-
-        return CalculateNormalSemesterCredits(semesterSubjects, hasUnprocessed);
+        return semesterIdentifier <= 0
+            ? CalculateSpecialSemesterCredits(semesterSubjects, hasUnprocessed)
+            : CalculateNormalSemesterCredits(semesterSubjects, hasUnprocessed);
     }
 
     private static Credits CalculateSpecialSemesterCredits(SubjectEntry[] subjects, bool hasUnprocessed)
@@ -534,7 +521,6 @@
             .ThenBy(x => x.Subject.Name)
             .ToList();
 
-        // Check if already sorted to avoid unnecessary refreshes
         if (subjectsInSemester.SequenceEqual(sortedSubjects))
         {
             return;
@@ -546,7 +532,6 @@
             await LocalStorageService.UpdateSubjectAsync(sortedSubjects[i]);
         }
 
-        // We sort the list in-place to keep the same references and avoid duplicate key issues during render
         var firstIndex = Subjects.FindIndex(x => x.Semester == semesterStr);
         Subjects.RemoveAll(x => x.Semester == semesterStr);
         Subjects.InsertRange(firstIndex, sortedSubjects);
