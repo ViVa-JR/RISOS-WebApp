@@ -205,7 +205,7 @@
         {
             await Js.InvokeVoidAsync("searchShortcut.dispose");
         }
-        catch (Exception) { /* Browser closing or similar */ }
+        catch (Exception) { }
         _objRef?.Dispose();
     }
 }

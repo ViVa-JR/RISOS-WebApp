@@ -1,5 +1,4 @@
-﻿@page "/"
-@using FastCloner
+@page "/"
 @using RISOS.Common.Models
 @using RISOS.Enums
 @using RISOS.Extensions
@@ -8,7 +7,6 @@
 @using RISOS.Mappers
 @using RISOS.Pages.Home.Components
 @using RISOS.Pages.Home.Components.MobileLayout
-@using RISOS.Pages.Home.Dialogs.AddCustomSubjectDialog
 @using RISOS.Pages.Home.Dialogs.ImportDialog
 @using RISOS.Pages.Home.Dialogs.SettingsDialog
 @using RISOS.Pages.Home.Dialogs.ShareDialog
@@ -24,6 +22,7 @@
 @inject ImportService ImportService
 @inject ThemeStateService ThemeStateService
 @inject AnalyticsService AnalyticsService
+@inject StudyPlanService PlanService
 
 <style>
     :root {
@@ -166,11 +165,11 @@
 <CascadingValue Value="_studyContext">
     @if (IsReadOnly)
     {
-        <MobileStudyPlanView Subjects="@_selectedSubjects" RecognizedYear="@_recognizedYear" LocalStorageLoading="@_dropZoneContainerLoading"/>
+        <MobileStudyPlanView Subjects="@PlanService.Subjects.ToList()" RecognizedYear="@_recognizedYear" LocalStorageLoading="@_dropZoneContainerLoading"/>
     }
     else
     {
-        <StudiumDropContainer @ref="@_dropContainer" @bind-Subjects="_selectedSubjects" AllSubjects="@_subjects.Values" OnRemove="@OnRemove" @bind-RecognizedYear="@_recognizedYear" LocalStorageLoading="@_dropZoneContainerLoading"/>
+        <StudiumDropContainer @ref="@_dropContainer" @bind-RecognizedYear="@_recognizedYear" LocalStorageLoading="@_dropZoneContainerLoading"/>
     }
 </CascadingValue>
 
@@ -178,7 +177,7 @@
     [CascadingParameter]
     public bool IsReadOnly { get; set; }
 
-    private Dictionary<SubjectEntryKey, SubjectEntry> _subjects = [];
+    private Dictionary<SubjectEntryKey, SubjectEntry> _availableSubjects = [];
     private StudyProgram? _selectedProgram;
 
     private bool _isLoading;
@@ -193,45 +192,35 @@
 
     private readonly StudyContext _studyContext = new();
 
-    private Dictionary<SubjectEntryKey, SubjectEntry> CompulsorySubjects => _subjects.Where(s => s.Value.Subject.Type == SubjectType.Compulsory && !s.Value.IsCustomSubject).OrderBy(x => x.Value.Subject.ShortName).ToDictionary();
-    private Dictionary<SubjectEntryKey, SubjectEntry> CompulsoryElectiveSubjects => _subjects.Where(s => s.Value.Subject.Type == SubjectType.CompulsoryElective && !s.Value.IsCustomSubject).OrderBy(x => x.Value.Subject.ShortName).ToDictionary();
-    private Dictionary<SubjectEntryKey, SubjectEntry> ElectiveSubjects => _subjects.Where(s => s.Value.Subject.Type == SubjectType.Elective && !s.Value.IsCustomSubject).OrderBy(x => x.Value.Subject.ShortName).ToDictionary();
-    private Dictionary<SubjectEntryKey, SubjectEntry> SportSubjects => _subjects.Where(s => s.Value.Subject.Type == SubjectType.Sport && !s.Value.IsCustomSubject).OrderBy(x => x.Value.Subject.ShortName).ToDictionary();
+    private Dictionary<SubjectEntryKey, SubjectEntry> CompulsorySubjects => _availableSubjects.Where(s => s.Value.Subject.Type == SubjectType.Compulsory && !s.Value.IsCustomSubject).OrderBy(x => x.Value.Subject.ShortName).ToDictionary();
+    private Dictionary<SubjectEntryKey, SubjectEntry> CompulsoryElectiveSubjects => _availableSubjects.Where(s => s.Value.Subject.Type == SubjectType.CompulsoryElective && !s.Value.IsCustomSubject).OrderBy(x => x.Value.Subject.ShortName).ToDictionary();
+    private Dictionary<SubjectEntryKey, SubjectEntry> ElectiveSubjects => _availableSubjects.Where(s => s.Value.Subject.Type == SubjectType.Elective && !s.Value.IsCustomSubject).OrderBy(x => x.Value.Subject.ShortName).ToDictionary();
+    private Dictionary<SubjectEntryKey, SubjectEntry> SportSubjects => _availableSubjects.Where(s => s.Value.Subject.Type == SubjectType.Sport && !s.Value.IsCustomSubject).OrderBy(x => x.Value.Subject.ShortName).ToDictionary();
 
-    private List<SubjectEntry> _selectedSubjects = [];
     private bool Disabled => _selectedProgram is null;
 
     protected override async Task OnInitializedAsync()
     {
+        PlanService.OnPlanChanged += StateHasChanged;
         await HandleUrlStateAsync();
         await InitializeSelectedProgramAsync();
-        await base.OnInitializedAsync();
     }
 
     private async Task HandleUrlStateAsync()
     {
         var uri = new Uri(NavigationManager.Uri);
-
-        if (string.IsNullOrEmpty(uri.Fragment) || uri.Fragment.Length <= 1)
-        {
-            return;
-        }
+        if (string.IsNullOrEmpty(uri.Fragment) || uri.Fragment.Length <= 1) return;
 
         var encodedData = uri.Fragment[1..];
-
         try
         {
             var appState = AppStateEncoder.Decode<AppState>(encodedData);
-            if (appState is not null)
-            {
-                await ImportService.ApplyAppStateAsync(appState);
-            }
-
+            if (appState is not null) await ImportService.ApplyAppStateAsync(appState);
             NavigationManager.NavigateTo(uri.GetLeftPart(UriPartial.Path), replace: true);
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"Failed to load state from URL: {ex.Message}");
+            Console.WriteLine(ex.Message);
         }
     }
 
@@ -245,9 +234,7 @@
         {
             var program = faculties.Value
                 .SelectMany(f => f.Programs)
-                .FirstOrDefault(p =>
-                    p.Abbreviation == programAbbreviation &&
-                    p.Specialization == specialization);
+                .FirstOrDefault(p => p.Abbreviation == programAbbreviation && p.Specialization == specialization);
 
             if (program != null)
             {
@@ -266,17 +253,9 @@
         await InvokeAsync(StateHasChanged);
 
         var result = await UniversityService.GetSubjectsAsync(studyProgram);
-        if (result.IsSuccess)
-        {
-            await InitializeSubjectsAsync(result.Value, fromStorage);
-        }
+        if (result.IsSuccess) await InitializeSubjectsAsync(result.Value, fromStorage);
 
         await LoadUserPreferencesAsync();
-
-        _selectedSubjects = _selectedSubjects
-            .OrderBy(x => x.Semester)
-            .ThenBy(x => x.IndexInZone)
-            .ToList();
 
         _isLoading = false;
         await InvokeAsync(StateHasChanged);
@@ -285,11 +264,11 @@
 
     private async Task InitializeSubjectsAsync(IEnumerable<Subject> subjects, bool fromStorage)
     {
-        _subjects = subjects.Select(s => new SubjectEntry(s)).ToDictionary(x => x.Key);
+        _availableSubjects = subjects.Select(s => new SubjectEntry(s)).ToDictionary(x => x.Key);
         if (!fromStorage)
         {
-            _selectedSubjects = _subjects.Values.Where(x => x.Selected).ToList();
-            var groupedBySemester = _selectedSubjects.GroupBy(x => x.Semester);
+            var selected = _availableSubjects.Values.Where(x => x.Selected).ToList();
+            var groupedBySemester = selected.GroupBy(x => x.Semester);
             foreach (var semesterGroup in groupedBySemester)
             {
                 var currentIndex = 0;
@@ -299,8 +278,8 @@
                     currentIndex++;
                 }
             }
-
-            await LocalStorageService.SaveSubjects(SubjectStorageMapper.ToStorageList(_selectedSubjects));
+            PlanService.SetSubjects(selected);
+            await LocalStorageService.SaveSubjects(SubjectStorageMapper.ToStorageList(selected));
         }
         else
         {
@@ -311,11 +290,7 @@
     private async Task LoadUserPreferencesAsync()
     {
         var creditOverride = await LocalStorageService.LoadCreditOverride();
-        if (creditOverride.HasValue)
-        {
-            _studyContext.CreditOverride = creditOverride.Value;
-        }
-
+        if (creditOverride.HasValue) _studyContext.CreditOverride = creditOverride.Value;
         _recognizedYear = await LocalStorageService.LoadRecognizedYear();
     }
 
@@ -336,8 +311,8 @@
 
         if (_selectedProgram is null)
         {
-            _subjects.Clear();
-            _selectedSubjects.Clear();
+            _availableSubjects.Clear();
+            PlanService.SetSubjects(Enumerable.Empty<SubjectEntry>());
             await LocalStorageService.ResetSubjectsAsync();
         }
         else
@@ -379,151 +354,29 @@
         _studyContext.CreditsWarn = _selectedProgram?.CreditsWarn ?? true;
     }
 
-    private async Task OnRemove(SubjectEntry entry)
-    {
-        entry.Selected = false;
-        var affectedZones = new HashSet<string>();
-        var removeAll = false;
-
-        if (entry.IsSport)
-        {
-            affectedZones.Add(entry.Semester);
-            _selectedSubjects.Remove(entry);
-
-            if (entry.LatestAttempt)
-            {
-                var newLatest = _selectedSubjects
-                    .Where(x => x.Subject.Id == entry.Subject.Id)
-                    .MaxBy(x => x.Attempt);
-
-                if (newLatest != null)
-                {
-                    newLatest.LatestAttempt = true;
-                    await LocalStorageService.UpdateSubjectAsync(newLatest);
-                }
-            }
-        }
-        else if (entry.Attempt != 1)
-        {
-            await HandleRemoveRetryAttemptAsync(entry, affectedZones);
-        }
-        else
-        {
-            HandleRemoveFirstAttempt(entry, affectedZones);
-            removeAll = true;
-        }
-
-        await LocalStorageService.RemoveSubjectAsync(entry.Key, removeAll);
-
-        foreach (var zone in affectedZones)
-        {
-            await FixZoneIndexesAsync(zone);
-        }
-
-        _dropContainer?.Refresh();
-    }
-
-    private async Task HandleRemoveRetryAttemptAsync(SubjectEntry entry, HashSet<string> affectedZones)
-    {
-        affectedZones.Add(entry.Semester);
-        _selectedSubjects.Remove(entry);
-
-        var latestAttempt = _selectedSubjects.FirstOrDefault(x => x.Subject.Id == entry.Subject.Id && x.Attempt == entry.Attempt - 1);
-        if (latestAttempt is not null)
-        {
-            latestAttempt.LatestAttempt = true;
-            await LocalStorageService.UpdateSubjectAsync(latestAttempt);
-        }
-    }
-
-    private void HandleRemoveFirstAttempt(SubjectEntry entry, HashSet<string> affectedZones)
-    {
-        var itemsToRemove = _selectedSubjects.Where(x => x.Subject.Id == entry.Subject.Id);
-        foreach (var item in itemsToRemove)
-        {
-            affectedZones.Add(item.Semester);
-        }
-
-        _selectedSubjects.RemoveAll(x => x.Subject.Id == entry.Subject.Id);
-    }
-
     private async Task SubjectChanged(SubjectEntry subject)
     {
         await AnalyticsService.TrackSubjectClickAsync(subject);
 
         if (subject.IsSport)
         {
-            await AddNewSportEntry(subject);
+            await PlanService.DuplicateSportAsync(subject);
             return;
         }
 
-        _subjects[subject.Key] = subject;
+        _availableSubjects[subject.Key] = subject;
 
         if (subject.Selected)
         {
-            await HandleSubjectSelectionAsync(subject);
+            subject.IndexInZone = PlanService.Subjects.Count(x => x.Semester == subject.Semester);
+            await PlanService.AddSubjectAsync(subject);
         }
         else
         {
-            await HandleSubjectDeselectionAsync(subject);
+            await PlanService.RemoveSubjectAsync(subject);
         }
 
         _dropContainer?.Refresh();
-    }
-
-    private async Task HandleSubjectSelectionAsync(SubjectEntry subject)
-    {
-        subject.IndexInZone = _selectedSubjects.Count(x => x.Semester == subject.Semester);
-        _selectedSubjects.Add(subject);
-        await LocalStorageService.UpdateSubjectAsync(subject);
-    }
-
-    private async Task HandleSubjectDeselectionAsync(SubjectEntry subject)
-    {
-        subject.LatestAttempt = true;
-        var affectedZones = _selectedSubjects
-            .Where(s => s.Subject.Id == subject.Subject.Id)
-            .Select(s => s.Semester)
-            .Distinct()
-            .ToList();
-
-        _selectedSubjects.RemoveAll(s => s.Subject.Id == subject.Subject.Id);
-        await LocalStorageService.RemoveSubjectAsync(subject.Key, true);
-        foreach (var zone in affectedZones)
-        {
-            await FixZoneIndexesAsync(zone);
-        }
-    }
-
-    private async Task AddNewSportEntry(SubjectEntry subject)
-    {
-        var existingSports = _selectedSubjects
-            .Where(x => x.Subject.Id == subject.Subject.Id)
-            .ToList();
-
-        var latestAttempt = existingSports
-            .Select(x => x.Attempt)
-            .DefaultIfEmpty(0)
-            .Max();
-
-        foreach (var existing in existingSports.Where(x => x.LatestAttempt))
-        {
-            existing.LatestAttempt = false;
-            await LocalStorageService.UpdateSubjectAsync(existing);
-        }
-
-        var newEntry = new SubjectEntry(subject.Subject)
-        {
-            Semester = SubjectEntry.Unassigned,
-            Attempt = latestAttempt + 1,
-            Selected = true,
-            LatestAttempt = true
-        };
-
-        _selectedSubjects.Add(newEntry);
-        await LocalStorageService.UpdateSubjectAsync(newEntry);
-        _dropContainer?.Refresh();
-        await InvokeAsync(StateHasChanged);
     }
 
     private async Task OnSettingsClick()
@@ -532,18 +385,12 @@
         var previousLanguage = await LanguageService.GetAppLanguageAsync();
 
         var result = await SettingsDialog.ShowAsync(DialogService, _studyContext);
-        if (result.IsCancelled || result.IsFailure)
-        {
-            return;
-        }
+        if (result.IsCancelled || result.IsFailure) return;
 
         _studyContext.CreditOverride = result.Value.Credits;
         await LocalStorageService.SaveCreditOverride(result.Value.Credits);
         await ThemeStateService.SetThemeType(result.Value.SelectedTheme);
-        if (result.Value.SelectedTheme != previousTheme)
-        {
-            await AnalyticsService.TrackThemeChangedAsync(previousTheme, result.Value.SelectedTheme);
-        }
+        if (result.Value.SelectedTheme != previousTheme) await AnalyticsService.TrackThemeChangedAsync(previousTheme, result.Value.SelectedTheme);
 
         if (result.Value.Language != previousLanguage)
         {
@@ -558,10 +405,7 @@
     private async Task OnImportClick()
     {
         var result = await ImportDialog.ShowAsync(DialogService);
-        if (result.IsCancelled || result.IsFailure)
-        {
-            return;
-        }
+        if (result.IsCancelled || result.IsFailure) return;
 
         _dropZoneContainerLoading = true;
         await ImportService.ApplyAppStateAsync(result.Value);
@@ -572,18 +416,12 @@
     private async Task RestoreStateAsync()
     {
         var faculties = await UniversityService.GetFacultiesWithProgramsAsync();
-
         var programAbbreviation = await LocalStorageService.LoadProgramAbbreviation();
         var specialization = await LocalStorageService.LoadProgramSpecialization();
 
         if (faculties.IsSuccess && !string.IsNullOrEmpty(programAbbreviation))
         {
-            var program = faculties.Value
-                .SelectMany(f => f.Programs)
-                .FirstOrDefault(p =>
-                    p.Abbreviation == programAbbreviation &&
-                    p.Specialization == specialization);
-
+            var program = faculties.Value.SelectMany(f => f.Programs).FirstOrDefault(p => p.Abbreviation == programAbbreviation && p.Specialization == specialization);
             if (program != null)
             {
                 _selectedProgram = program;
@@ -597,59 +435,29 @@
         _recognizedYear = await LocalStorageService.LoadRecognizedYear();
     }
 
-    private async Task FixZoneIndexesAsync(string semesterZone)
-    {
-        var remainingItems = _selectedSubjects
-            .Where(x => x.Semester == semesterZone)
-            .OrderBy(x => x.IndexInZone)
-            .ToList();
-
-        for (var i = 0; i < remainingItems.Count; i++)
-        {
-            if (remainingItems[i].IndexInZone == i)
-            {
-                continue;
-            }
-
-            remainingItems[i].IndexInZone = i;
-            await LocalStorageService.UpdateSubjectAsync(remainingItems[i]);
-        }
-    }
-
     private async Task SyncSubjectsFromStorage()
     {
-        _selectedSubjects.Clear();
-        foreach (var subject in _subjects.Values)
-        {
-            subject.Selected = false;
-        }
+        foreach (var subject in _availableSubjects.Values) subject.Selected = false;
 
         var storedSubjects = await LocalStorageService.LoadSubjectsAsync();
-
+        var selected = new List<SubjectEntry>();
         foreach (var storageItem in storedSubjects)
         {
-            if (!_subjects.TryGetValue(new SubjectEntryKey(storageItem.SubjectId, 1), out var subject))
-            {
-                continue;
-            }
-
+            if (!_availableSubjects.TryGetValue(new SubjectEntryKey(storageItem.SubjectId, 1), out var subject)) continue;
             var updatedEntry = SubjectStorageMapper.AplyStorageData(storageItem, subject);
-            _selectedSubjects.Add(updatedEntry);
+            selected.Add(updatedEntry);
         }
 
         var customSubjects = await LocalStorageService.LoadCustomSubjectsAsync();
-        _selectedSubjects.AddRange(customSubjects);
+        selected.AddRange(customSubjects);
+        PlanService.SetSubjects(selected);
     }
 
     private async Task OnShareClick() => await ShareDialog.ShowAsync(DialogService);
 
     private void ToggleExpansionPanels(bool open)
     {
-        if (open)
-        {
-            return;
-        }
-
+        if (open) return;
         _studyProgramExpanded = false;
         _compulsoryExpanded = false;
         _compulsoryElectiveExpanded = false;
