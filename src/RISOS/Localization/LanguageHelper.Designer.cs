@@ -1124,5 +1124,17 @@ namespace RISOS.Localization {
                 return ResourceManager.GetString("RecognizedSemester", resourceCulture);
             }
         }
+        
+        internal static string WhatsNew {
+            get {
+                return ResourceManager.GetString("WhatsNew", resourceCulture);
+            }
+        }
+        
+        internal static string LatestUpdates {
+            get {
+                return ResourceManager.GetString("LatestUpdates", resourceCulture);
+            }
+        }
     }
 }

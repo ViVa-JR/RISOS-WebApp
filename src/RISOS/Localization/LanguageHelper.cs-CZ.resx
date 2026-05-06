@@ -672,4 +672,10 @@ Další poznámky / screenshoty:]]></value>
     <data name="RecognizedSemester" xml:space="preserve">
         <value>Uznané</value>
     </data>
+    <data name="WhatsNew" xml:space="preserve">
+        <value>Co je nového</value>
+    </data>
+    <data name="LatestUpdates" xml:space="preserve">
+        <value>Poslední aktualizace</value>
+    </data>
 </root>

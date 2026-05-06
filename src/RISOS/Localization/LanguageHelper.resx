@@ -675,4 +675,10 @@ Additional notes / screenshots:]]></value>
     <data name="RecognizedSemester" xml:space="preserve">
         <value>Recognized</value>
     </data>
+    <data name="WhatsNew" xml:space="preserve">
+        <value>What's New</value>
+    </data>
+    <data name="LatestUpdates" xml:space="preserve">
+        <value>Latest Updates</value>
+    </data>
 </root>

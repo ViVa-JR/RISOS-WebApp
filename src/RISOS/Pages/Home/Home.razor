@@ -10,6 +10,7 @@
 @using RISOS.Pages.Home.Dialogs.ImportDialog
 @using RISOS.Pages.Home.Dialogs.SettingsDialog
 @using RISOS.Pages.Home.Dialogs.ShareDialog
+@using RISOS.Pages.Home.Dialogs.WhatsNewDialog
 @using RISOS.Pages.Home.Models
 @using RISOS.Services
 
@@ -129,8 +130,14 @@
         </MudExpansionPanels>
     </OpenedDrawerContent>
     <AlwaysVisible>
-        <MudStack Row Justify="Justify.Center" Spacing="2" AlignItems="AlignItems.Center" Wrap="Wrap.Wrap"
-                  Class="px-2 pb-2" Style="width: 100%">
+        <MudStack Row Justify="Justify.SpaceAround" Spacing="0" AlignItems="AlignItems.Center" Wrap="Wrap.NoWrap"
+                  Class="px-1 pb-2" Style="width: 100%">
+            <MudTooltip Text="@LanguageHelper.WhatsNew">
+                <MudIconButton
+                    Icon="@Icons.Material.Filled.Info"
+                    Style="color: var(--mud-palette-drawer-text)"
+                    OnClick="@OnWhatsNewClick"/>
+            </MudTooltip>
             <MudTooltip Text="@LanguageHelper.Settings">
                 <MudIconButton Icon="@Icons.Material.Filled.Settings" Style="color: var(--mud-palette-drawer-text)"
                                OnClick="@OnSettingsClick"/>
@@ -169,7 +176,7 @@
     }
     else
     {
-        <StudiumDropContainer @ref="@_dropContainer" @bind-RecognizedYear="@_recognizedYear" LocalStorageLoading="@_dropZoneContainerLoading"/>
+        <StudiumDropContainer @ref="@_dropContainer" @bind-RecognizedYear="@_recognizedYear" LocalStorageLoading="@_dropZoneContainerLoading" AllSubjects="@_availableSubjects.Values" />
     }
 </CascadingValue>
 
@@ -209,13 +216,13 @@
     private async Task HandleUrlStateAsync()
     {
         var uri = new Uri(NavigationManager.Uri);
-        if (string.IsNullOrEmpty(uri.Fragment) || uri.Fragment.Length <= 1) return;
+        if (string.IsNullOrEmpty(uri.Fragment) || uri.Fragment.Length <= 1) { return; }
 
         var encodedData = uri.Fragment[1..];
         try
         {
             var appState = AppStateEncoder.Decode<AppState>(encodedData);
-            if (appState is not null) await ImportService.ApplyAppStateAsync(appState);
+            if (appState is not null) { await ImportService.ApplyAppStateAsync(appState); }
             NavigationManager.NavigateTo(uri.GetLeftPart(UriPartial.Path), replace: true);
         }
         catch (Exception ex)
@@ -253,7 +260,7 @@
         await InvokeAsync(StateHasChanged);
 
         var result = await UniversityService.GetSubjectsAsync(studyProgram);
-        if (result.IsSuccess) await InitializeSubjectsAsync(result.Value, fromStorage);
+        if (result.IsSuccess) { await InitializeSubjectsAsync(result.Value, fromStorage); }
 
         await LoadUserPreferencesAsync();
 
@@ -290,7 +297,7 @@
     private async Task LoadUserPreferencesAsync()
     {
         var creditOverride = await LocalStorageService.LoadCreditOverride();
-        if (creditOverride.HasValue) _studyContext.CreditOverride = creditOverride.Value;
+        if (creditOverride.HasValue) { _studyContext.CreditOverride = creditOverride.Value; }
         _recognizedYear = await LocalStorageService.LoadRecognizedYear();
     }
 
@@ -385,12 +392,18 @@
         var previousLanguage = await LanguageService.GetAppLanguageAsync();
 
         var result = await SettingsDialog.ShowAsync(DialogService, _studyContext);
-        if (result.IsCancelled || result.IsFailure) return;
+        if (result.IsCancelled || result.IsFailure)
+        {
+            return;
+        }
 
         _studyContext.CreditOverride = result.Value.Credits;
         await LocalStorageService.SaveCreditOverride(result.Value.Credits);
         await ThemeStateService.SetThemeType(result.Value.SelectedTheme);
-        if (result.Value.SelectedTheme != previousTheme) await AnalyticsService.TrackThemeChangedAsync(previousTheme, result.Value.SelectedTheme);
+        if (result.Value.SelectedTheme != previousTheme)
+        {
+            await AnalyticsService.TrackThemeChangedAsync(previousTheme, result.Value.SelectedTheme);
+        }
 
         if (result.Value.Language != previousLanguage)
         {
@@ -405,7 +418,10 @@
     private async Task OnImportClick()
     {
         var result = await ImportDialog.ShowAsync(DialogService);
-        if (result.IsCancelled || result.IsFailure) return;
+        if (result.IsCancelled || result.IsFailure)
+        {
+            return;
+        }
 
         _dropZoneContainerLoading = true;
         await ImportService.ApplyAppStateAsync(result.Value);
@@ -443,7 +459,11 @@
         var selected = new List<SubjectEntry>();
         foreach (var storageItem in storedSubjects)
         {
-            if (!_availableSubjects.TryGetValue(new SubjectEntryKey(storageItem.SubjectId, 1), out var subject)) continue;
+            if (!_availableSubjects.TryGetValue(new SubjectEntryKey(storageItem.SubjectId, 1), out var subject))
+            {
+                continue;
+            }
+
             var updatedEntry = SubjectStorageMapper.AplyStorageData(storageItem, subject);
             selected.Add(updatedEntry);
         }
@@ -455,9 +475,15 @@
 
     private async Task OnShareClick() => await ShareDialog.ShowAsync(DialogService);
 
+    private async Task OnWhatsNewClick() => await WhatsNewDialog.ShowAsync(DialogService);
+
     private void ToggleExpansionPanels(bool open)
     {
-        if (open) return;
+        if (open)
+        {
+            return;
+        }
+
         _studyProgramExpanded = false;
         _compulsoryExpanded = false;
         _compulsoryElectiveExpanded = false;

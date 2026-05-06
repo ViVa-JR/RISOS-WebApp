@@ -197,7 +197,10 @@
     {
         get
         {
-            if (TotalCredits.Registered <= TotalCredits.Completed) return 0;
+            if (TotalCredits.Registered <= TotalCredits.Completed)
+            {
+                return 0;
+            }
 
             var pendingCredits = TotalCredits.Registered - TotalCredits.Completed;
             var pct = (int)Math.Round((double)pendingCredits / SafeNeededCredits * 100);

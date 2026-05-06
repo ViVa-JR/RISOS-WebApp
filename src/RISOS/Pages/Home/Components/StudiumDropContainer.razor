@@ -103,7 +103,7 @@
                         <MudTooltip Text="@LanguageHelper.SearchSubjectsTooltip">
                             <MudIconButton Icon="@Icons.Material.Filled.Search"
                                            Color="Color.Primary"
-                                           OnClick="@(async () => { if (_searchComponent != null) await _searchComponent.Open(); })" />
+                                           OnClick="@(async () => { if (_searchComponent != null) { await _searchComponent.Open(); } })" />
                         </MudTooltip>
                         <MudText Typo="Typo.h6" Class="me-3" Style="margin-left: 2px">@LanguageHelper.UnassignedSubjects</MudText>
                         <MudTooltip Text="@LanguageHelper.AddCustomSubject">
@@ -265,7 +265,10 @@
 
     private async Task ItemUpdated(MudItemDropInfo<SubjectEntry> dropItem)
     {
-        if (dropItem.Item is null) return;
+        if (dropItem.Item is null)
+        {
+            return;
+        }
 
         if (dropItem.DropzoneIdentifier == "Trash")
         {
@@ -285,7 +288,10 @@
 
         var itemsInZone = list.Where(x => x.Semester == dropzone).ToList();
 
-        if (index < 0 || index >= itemsInZone.Count) list.Add(item);
+        if (index < 0 || index >= itemsInZone.Count)
+        {
+            list.Add(item);
+        }
         else
         {
             var itemThatGotPushedDown = itemsInZone[index];
@@ -307,7 +313,11 @@
         var subjects = PlanService.Subjects.ToList();
         subjects.ForEach(x =>
         {
-            if (!int.TryParse(x.Semester, out var semesterNum) || semesterNum <= maxValidSemester) return;
+            if (!int.TryParse(x.Semester, out var semesterNum) || semesterNum <= maxValidSemester)
+            {
+                return;
+            }
+
             x.Semester = SubjectEntry.Unassigned;
             x.Completed = null;
         });
@@ -318,7 +328,10 @@
     {
         await AnalyticsService.TrackAddButtonClickAsync();
         var result = await CreateEditCustomSubjectDialog.ShowAsync(DialogService);
-        if (result.IsSuccess) await AddSubjectAsync(result.Value);
+        if (result.IsSuccess)
+        {
+            await AddSubjectAsync(result.Value);
+        }
     }
 
     private async Task AddSubjectAsync(SubjectEntry entry)
@@ -333,22 +346,27 @@
         StateHasChanged();
     }
 
-    private async Task OnSearchSubject(SubjectEntry subject)
+    private async Task OnSearchSubject(SubjectEntry? subject)
     {
-        if (subject == null) return;
-
-        if (!subject.IsSport && PlanService.Subjects.Any(x => x.Subject.Id == subject.Subject.Id))
+        if (subject == null)
         {
-            Snackbar.Add(LanguageHelper.SubjectAlreadyInPlan, Severity.Info);
             return;
         }
 
-        if (subject.IsSport) await PlanService.DuplicateSportAsync(subject);
-        else
+        switch (subject.IsSport)
         {
-            subject.Selected = true;
-            await AddSubjectAsync(subject);
+            case false when PlanService.Subjects.Any(x => x.Subject.Id == subject.Subject.Id):
+                Snackbar.Add(LanguageHelper.SubjectAlreadyInPlan, Severity.Info);
+                return;
+            case true:
+                await PlanService.DuplicateSportAsync(subject);
+                break;
+            default:
+                subject.Selected = true;
+                await AddSubjectAsync(subject);
+                break;
         }
+
         _searchComponent?.Close();
     }
 
@@ -360,7 +378,7 @@
             return;
         }
 
-        if (!int.TryParse(entry.Semester, out var result)) return;
+        if (!int.TryParse(entry.Semester, out var result)) { return; }
 
         var newSem = result + 2;
         await PlanService.RetakeSubjectAsync(entry, newSem);
@@ -380,7 +398,7 @@
             .Where(x => x.Semester == semester.ToString() && x.Completed == null)
             .ToList();
 
-        if (subjectsToComplete.Count == 0) return;
+        if (subjectsToComplete.Count == 0) { return; }
 
         foreach (var subject in subjectsToComplete)
         {
@@ -397,10 +415,10 @@
         var semesterStr = semester.ToString();
         var subjectsInSemester = PlanService.Subjects.Where(x => x.Semester == semesterStr).ToList();
 
-        if (subjectsInSemester.Count <= 1) return;
+        if (subjectsInSemester.Count <= 1) { return; }
 
         var sortedSubjects = subjectsInSemester.OrderBy(x => x.Subject.Type).ThenBy(x => x.Subject.Name).ToList();
-        if (subjectsInSemester.SequenceEqual(sortedSubjects)) return;
+        if (subjectsInSemester.SequenceEqual(sortedSubjects)) { return; }
 
         for (var i = 0; i < sortedSubjects.Count; i++)
         {
