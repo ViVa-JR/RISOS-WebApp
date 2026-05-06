@@ -89,7 +89,10 @@ public class StudyPlanService(LocalStorageService localStorageService)
         var latestEntry = _subjects.FirstOrDefault(x => x.Subject.Id == entry.Subject.Id && x.LatestAttempt);
         var latestAttempt = latestEntry?.Attempt ?? 0;
 
-        if (latestAttempt > entry.Attempt) return;
+        if (latestAttempt > entry.Attempt)
+        {
+            return;
+        }
 
         var newEntry = new SubjectEntry(entry.Subject)
         {
@@ -126,7 +129,11 @@ public class StudyPlanService(LocalStorageService localStorageService)
         var items = _subjects.Where(x => x.Semester == semester).OrderBy(x => x.IndexInZone).ToList();
         for (var i = 0; i < items.Count; i++)
         {
-            if (items[i].IndexInZone == i) continue;
+            if (items[i].IndexInZone == i)
+            {
+                continue;
+            }
+
             items[i].IndexInZone = i;
             await localStorageService.UpdateSubjectAsync(items[i]);
         }

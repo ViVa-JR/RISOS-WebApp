@@ -1,5 +1,10 @@
 [*]
 insert_final_newline = true
 
+[*.{cs,razor}]
+# IDE0011: Add braces to control blocks
+csharp_prefer_braces = true:warning
+dotnet_diagnostic.IDE0011.severity = warning
+
 [*.razor]
 resharper_keep_blank_lines_in_code = 1
