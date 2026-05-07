@@ -4,7 +4,7 @@ namespace RISOS.Services;
 
 public class StudyPlanService(LocalStorageService localStorageService)
 {
-    private List<SubjectEntry> _subjects = new();
+    private List<SubjectEntry> _subjects = [];
 
     public IReadOnlyList<SubjectEntry> Subjects => _subjects.AsReadOnly();
 

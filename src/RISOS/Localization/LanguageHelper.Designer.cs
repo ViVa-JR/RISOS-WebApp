@@ -1136,5 +1136,71 @@ namespace RISOS.Localization {
                 return ResourceManager.GetString("LatestUpdates", resourceCulture);
             }
         }
+        
+        internal static string WhatsNew_GlobalSearch {
+            get {
+                return ResourceManager.GetString("WhatsNew_GlobalSearch", resourceCulture);
+            }
+        }
+        
+        internal static string WhatsNew_SemesterQuickActions {
+            get {
+                return ResourceManager.GetString("WhatsNew_SemesterQuickActions", resourceCulture);
+            }
+        }
+        
+        internal static string WhatsNew_SportsTracking {
+            get {
+                return ResourceManager.GetString("WhatsNew_SportsTracking", resourceCulture);
+            }
+        }
+        
+        internal static string WhatsNew_TrashDropzone {
+            get {
+                return ResourceManager.GetString("WhatsNew_TrashDropzone", resourceCulture);
+            }
+        }
+        
+        internal static string WhatsNew_MobileOptimized {
+            get {
+                return ResourceManager.GetString("WhatsNew_MobileOptimized", resourceCulture);
+            }
+        }
+        
+        internal static string WhatsNew_Export {
+            get {
+                return ResourceManager.GetString("WhatsNew_Export", resourceCulture);
+            }
+        }
+        
+        internal static string WhatsNew_ThemeCustomization {
+            get {
+                return ResourceManager.GetString("WhatsNew_ThemeCustomization", resourceCulture);
+            }
+        }
+        
+        internal static string WhatsNew_PlanSharing {
+            get {
+                return ResourceManager.GetString("WhatsNew_PlanSharing", resourceCulture);
+            }
+        }
+        
+        internal static string WhatsNew_FullLanguageSupport {
+            get {
+                return ResourceManager.GetString("WhatsNew_FullLanguageSupport", resourceCulture);
+            }
+        }
+        
+        internal static string WhatsNew_CustomSubjectCreation {
+            get {
+                return ResourceManager.GetString("WhatsNew_CustomSubjectCreation", resourceCulture);
+            }
+        }
+        
+        internal static string SelectProgramFirst {
+            get {
+                return ResourceManager.GetString("SelectProgramFirst", resourceCulture);
+            }
+        }
     }
 }

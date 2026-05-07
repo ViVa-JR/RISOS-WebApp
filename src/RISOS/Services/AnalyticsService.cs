@@ -82,5 +82,24 @@ public class AnalyticsService(IJSRuntime jsRuntime)
             ["is_enabled"] = isEnabled
         });
     }
+
+    public ValueTask TrackWhatsNewOpenedAsync()
+    {
+        return TrackEventAsync("whats_new_open");
+    }
+
+    public ValueTask TrackGlobalSearchOpenedAsync()
+    {
+        return TrackEventAsync("global_search_open");
+    }
+
+    public ValueTask TrackGlobalSearchSubjectSelectedAsync(SubjectEntry subjectEntry)
+    {
+        return TrackEventAsync("global_search_subject_select", new Dictionary<string, object?>
+        {
+            ["subject_code"] = subjectEntry.Subject.ShortName,
+            ["subject_name"] = subjectEntry.Subject.Name
+        });
+    }
 }
 

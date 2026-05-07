@@ -7,6 +7,9 @@ window.searchShortcut = {
     handleKeyDown: function (e) {
         if ((e.ctrlKey || e.metaKey) && e.key === 'f') {
             e.preventDefault();
+            if (window.risosAnalytics) {
+                window.risosAnalytics.trackEvent('global_search_shortcut');
+            }
             if (this.dotNetHelper) {
                 this.dotNetHelper.invokeMethodAsync('OpenSearchFromJs');
             }

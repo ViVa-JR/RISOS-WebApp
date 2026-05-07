@@ -678,4 +678,37 @@ Další poznámky / screenshoty:]]></value>
     <data name="LatestUpdates" xml:space="preserve">
         <value>Poslední aktualizace</value>
     </data>
+    <data name="WhatsNew_GlobalSearch" xml:space="preserve">
+        <value>Globální vyhledávání (CTRL + F)</value>
+    </data>
+    <data name="WhatsNew_SemesterQuickActions" xml:space="preserve">
+        <value>Rychlé akce v semestru</value>
+    </data>
+    <data name="WhatsNew_SportsTracking" xml:space="preserve">
+        <value>Zaznamenávání tělocviků</value>
+    </data>
+    <data name="WhatsNew_TrashDropzone" xml:space="preserve">
+        <value>Odpadkový koš</value>
+    </data>
+    <data name="WhatsNew_MobileOptimized" xml:space="preserve">
+        <value>Optimalizované zobrazení pro mobily (pouze pro čtení)</value>
+    </data>
+    <data name="WhatsNew_Export" xml:space="preserve">
+        <value>Export do obrázku a JSON</value>
+    </data>
+    <data name="WhatsNew_ThemeCustomization" xml:space="preserve">
+        <value>Přizpůsobení motivů</value>
+    </data>
+    <data name="WhatsNew_PlanSharing" xml:space="preserve">
+        <value>Sdílení plánu pomocí odkazu</value>
+    </data>
+    <data name="WhatsNew_FullLanguageSupport" xml:space="preserve">
+        <value>Plná podpora jazyků</value>
+    </data>
+    <data name="WhatsNew_CustomSubjectCreation" xml:space="preserve">
+        <value>Tvorba vlastních předmětů</value>
+    </data>
+    <data name="SelectProgramFirst" xml:space="preserve">
+        <value>Nejdříve musíte vybrat studijní program, abyste mohli vyhledávat předměty.</value>
+    </data>
 </root>
