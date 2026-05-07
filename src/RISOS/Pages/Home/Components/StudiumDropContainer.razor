@@ -73,7 +73,7 @@
 </style>
 
 <div style="position: relative;">
-    <GlobalSearch @ref="_searchComponent" AllSubjects="@AllSubjects" SelectedSubjects="@PlanService.Subjects.ToList()" OnSubjectSelected="@OnSearchSubject" />
+    <GlobalSearch @ref="_searchComponent" AllSubjects="@AllSubjects" OnSubjectSelected="@OnSearchSubject" />
 
     <MudOverlay Visible="LocalStorageLoading"
                 DarkBackground="true"
@@ -352,6 +352,8 @@
         {
             return;
         }
+
+        await AnalyticsService.TrackGlobalSearchSubjectSelectedAsync(subject);
 
         switch (subject.IsSport)
         {

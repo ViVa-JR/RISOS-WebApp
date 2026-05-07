@@ -475,7 +475,11 @@
 
     private async Task OnShareClick() => await ShareDialog.ShowAsync(DialogService);
 
-    private async Task OnWhatsNewClick() => await WhatsNewDialog.ShowAsync(DialogService);
+    private async Task OnWhatsNewClick()
+    {
+        await AnalyticsService.TrackWhatsNewOpenedAsync();
+        await WhatsNewDialog.ShowAsync(DialogService);
+    }
 
     private void ToggleExpansionPanels(bool open)
     {

@@ -679,6 +679,39 @@ Additional notes / screenshots:]]></value>
         <value>What's New</value>
     </data>
     <data name="LatestUpdates" xml:space="preserve">
-        <value>Latest Updates</value>
+        <value>Latest updates</value>
     </data>
-</root>
+    <data name="WhatsNew_GlobalSearch" xml:space="preserve">
+        <value>Global Search (CTRL + F)</value>
+    </data>
+    <data name="WhatsNew_SemesterQuickActions" xml:space="preserve">
+        <value>Semester Quick Actions</value>
+    </data>
+    <data name="WhatsNew_SportsTracking" xml:space="preserve">
+        <value>Sports Tracking</value>
+    </data>
+    <data name="WhatsNew_TrashDropzone" xml:space="preserve">
+        <value>Trash Drop-zone</value>
+    </data>
+    <data name="WhatsNew_MobileOptimized" xml:space="preserve">
+        <value>Mobile Optimized Readonly Layout</value>
+    </data>
+    <data name="WhatsNew_Export" xml:space="preserve">
+        <value>Export as Image &amp; JSON</value>
+    </data>
+    <data name="WhatsNew_ThemeCustomization" xml:space="preserve">
+        <value>Theme Customization</value>
+    </data>
+    <data name="WhatsNew_PlanSharing" xml:space="preserve">
+        <value>Plan Sharing via Link</value>
+    </data>
+    <data name="WhatsNew_FullLanguageSupport" xml:space="preserve">
+        <value>Full Language Support</value>
+    </data>
+    <data name="WhatsNew_CustomSubjectCreation" xml:space="preserve">
+        <value>Custom Subject Creation</value>
+    </data>
+    <data name="SelectProgramFirst" xml:space="preserve">
+        <value>You need to select the study program first to be able to search subjects.</value>
+    </data>
+    </root>
