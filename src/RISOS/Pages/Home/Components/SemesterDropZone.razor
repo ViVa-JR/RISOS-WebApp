@@ -3,7 +3,10 @@
 @using RISOS.Extensions
 @using RISOS.Localization
 @using RISOS.Pages.Home.Models
+@using RISOS.Services
+@using RISOS.Helpers
 @inject IJSRuntime Js
+@inject StudyPlanService PlanService
 
 <script>
     window.setupDropzoneHeightObserver = function (elementId, cssVariableName) {
@@ -157,6 +160,13 @@
     </MudDropZone>
     <MudStack AlignItems="AlignItems.Center" Row Justify="Justify.FlexEnd" Spacing="1"
               Class="border-2 border-t-0 border-dashed mud-border-lines-default rounded-b-lg pa-2">
+        <GpaStatisticsMenu Subjects="@PlanService.Subjects.Where(s => s.Semester == Semester.ToString())"
+                           WeightedLabel="@LanguageHelper.GpaSemesterWeighted"
+                           CompulsoryLabel="@LanguageHelper.GpaSemesterCompulsory"
+                           AnchorOrigin="Origin.TopLeft"
+                           TransformOrigin="Origin.BottomLeft"
+                           Class="mr-auto" />
+
         @if (Credits.Completed > 0)
         {
             <MudText Typo="Typo.body1" Color="Color.Success">@Credits.Completed</MudText>
@@ -169,6 +179,9 @@
 </MudStack>
 
 @code {
+    [CascadingParameter]
+    public StudyContext StudyContext { get; set; } = null!;
+
     [Parameter]
     [EditorRequired]
     public required int Semester { get; set; }

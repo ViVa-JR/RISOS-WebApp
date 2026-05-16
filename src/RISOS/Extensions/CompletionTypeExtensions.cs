@@ -64,5 +64,18 @@ public static class CompletionTypeExtensions
             CompletionType.RCol => LanguageHelper.CompletionTypeShortRCol,
             _ => LanguageHelper.CompletionTypeShortUnknown
         };
+
+        public bool IsGraded() => typ switch
+        {
+            CompletionType.GCr => true,
+            CompletionType.CrEx => true,
+            CompletionType.Ex => true,
+            CompletionType.Kp => true,
+            CompletionType.RgCr => true,
+            CompletionType.RCrEx => true,
+            CompletionType.REx => true,
+            CompletionType.CrFsp => true,
+            _ => false
+        };
     }
 }

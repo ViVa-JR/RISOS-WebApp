@@ -69,6 +69,7 @@
         {
             subject.Selected = !subject.Selected;
         }
+
         await SubjectChanged.InvokeAsync(subject);
         await InvokeAsync(StateHasChanged);
     }

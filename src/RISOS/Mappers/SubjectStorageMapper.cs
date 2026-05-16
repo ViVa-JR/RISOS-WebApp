@@ -10,6 +10,7 @@ public static class SubjectStorageMapper
         {
             SubjectId = subjectEntry.Subject.Id,
             Completed = subjectEntry.Completed,
+            Grade = subjectEntry.Grade,
             Semester = subjectEntry.Semester,
             Attempt = subjectEntry.Attempt,
             LatestAttempt = subjectEntry.LatestAttempt,
@@ -28,6 +29,7 @@ public static class SubjectStorageMapper
             return new SubjectEntry(subjectEntry.Subject)
             {
                 Completed = storage.Completed,
+                Grade = storage.Grade,
                 Semester = storage.Semester,
                 Attempt = storage.Attempt,
                 LatestAttempt = storage.LatestAttempt,
@@ -38,6 +40,7 @@ public static class SubjectStorageMapper
 
         subjectEntry.Selected = true;
         subjectEntry.Completed = storage.Completed;
+        subjectEntry.Grade = storage.Grade;
         subjectEntry.Semester = storage.Semester;
         subjectEntry.Attempt = storage.Attempt;
         subjectEntry.LatestAttempt = storage.LatestAttempt;

@@ -20,6 +20,7 @@ public class LocalStorageService(IJSRuntime js)
     private const string StudyYears = "study-years";
     private const string RecognizedYear = "recognized-years";
     private const string ThemeTypeKey = "app_theme_type";
+    private const string GpaPredictorKey = "gpa-predictor";
 
     public async Task SaveTheme(bool isDark) => await js.InvokeVoidAsync("localStorage.setItem", UserTheme, isDark ? "dark" : "light");
 
@@ -187,6 +188,27 @@ public class LocalStorageService(IJSRuntime js)
         catch
         {
             await js.InvokeVoidAsync("localStorage.removeItem", RecognizedYear);
+            return false;
+        }
+    }
+
+    public async Task SaveGpaPredictor(bool gpaPredictor) => await js.InvokeVoidAsync("localStorage.setItem", GpaPredictorKey, gpaPredictor.ToString());
+
+    public async Task<bool> LoadGpaPredictor()
+    {
+        try
+        {
+            var value = await js.InvokeAsync<string>("localStorage.getItem", GpaPredictorKey);
+            if (string.IsNullOrEmpty(value))
+            {
+                return false;
+            }
+
+            return bool.TryParse(value, out var result) && result;
+        }
+        catch
+        {
+            await js.InvokeVoidAsync("localStorage.removeItem", GpaPredictorKey);
             return false;
         }
     }
@@ -365,7 +387,8 @@ public class LocalStorageService(IJSRuntime js)
             CustomSubjects = await LoadCustomSubjectsAsync(),
             CreditOverride = await LoadCreditOverride(),
             StudyYears = await LoadStudyYears(),
-            RecognizedYear = await LoadRecognizedYear()
+            RecognizedYear = await LoadRecognizedYear(),
+            GpaPredictor = await LoadGpaPredictor()
         };
         return state;
     }
@@ -379,5 +402,6 @@ public class LocalStorageService(IJSRuntime js)
         await js.InvokeVoidAsync("localStorage.removeItem", CreditOverride);
         await js.InvokeVoidAsync("localStorage.removeItem", StudyYears);
         await js.InvokeVoidAsync("localStorage.removeItem", RecognizedYear);
+        await js.InvokeVoidAsync("localStorage.removeItem", GpaPredictorKey);
     }
 }

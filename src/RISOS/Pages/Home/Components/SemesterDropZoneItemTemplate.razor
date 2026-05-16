@@ -3,6 +3,7 @@
 @using RISOS.Extensions
 @using RISOS.Localization
 @using RISOS.Pages.Home.Dialogs.AddCustomSubjectDialog
+@using RISOS.Pages.Home.Dialogs.GradeSelectionDialog
 @using RISOS.Pages.Home.Models
 @using RISOS.Services
 @inject IDialogService DialogService
@@ -73,16 +74,7 @@
                     </div>
                     @if (Entry.IsAssigned)
                     {
-                        <MudCheckBox T="bool?"
-                                     Value="@Entry.Completed"
-                                     ValueChanged="@CompletedChanged"
-                                     TriState="true"
-                                     CheckedIcon="@Icons.Material.Filled.CheckCircle"
-                                     UncheckedIcon="@Icons.Material.Filled.Cancel"
-                                     IndeterminateIcon="@Icons.Material.Outlined.RadioButtonUnchecked"
-                                     Color="@Color.Success"
-                                     UnCheckedColor="@Color.Error"
-                                     Class="ma-0 pa-1"/>
+                        <SubjectStatusIndicator Entry="@Entry" OnClick="@ToggleGrade" />
                     }
                 </MudStack>
             </div>
@@ -112,6 +104,11 @@
                     }
                 }
             </MudMenu>
+            @if (StudyContext.GpaPredictor && Entry.Completed == true)
+            {
+                <MudMenuItem Icon="@Icons.Material.Filled.Grade" Label="@LanguageHelper.GradeSelection_Title"
+                             OnClick="@(() => CompletedChanged(true))"/>
+            }
             @if (Entry.IsSport || (Entry.LatestAttempt && Entry.Completed == false))
             {
                 <MudMenuItem Icon="@(Entry.IsSport ? Icons.Material.Filled.ContentCopy : Icons.Material.Filled.RestartAlt)" Label="@(Entry.IsSport ? LanguageHelper.Repeat : LanguageHelper.Retake)"
@@ -133,6 +130,9 @@
 </MudPaper>
 
 @code {
+    [CascadingParameter]
+    public StudyContext StudyContext { get; set; } = null!;
+
     [Parameter]
     [EditorRequired]
     public required SubjectEntry Entry { get; set; }
@@ -174,9 +174,77 @@
         await EntryChanged.InvokeAsync(Entry);
     }
 
+    private async Task ToggleGrade()
+    {
+        if (StudyContext.GpaPredictor && Entry.Subject.CompletionType.IsGraded())
+        {
+            await OpenGradeDialog();
+            return;
+        }
+
+        if (Entry.Completed == null)
+        {
+            await CompletedChanged(true);
+        }
+        else if (Entry.Completed == true)
+        {
+            await CompletedChanged(false);
+        }
+        else
+        {
+            await CompletedChanged(null);
+        }
+    }
+
+    private async Task OpenGradeDialog()
+    {
+        var result = await GradeSelectionDialog.ShowAsync(DialogService, Entry.Grade);
+        if (result.IsSuccess)
+        {
+            Entry.Grade = result.Value;
+            if (Entry.Grade == null)
+            {
+                Entry.Completed = null;
+            }
+            else
+            {
+                Entry.Completed = Entry.Grade != Grade.F;
+            }
+            await EntryChanged.InvokeAsync(Entry);
+        }
+    }
+
     private async Task CompletedChanged(bool? arg)
     {
+        if (StudyContext.GpaPredictor && Entry.Subject.CompletionType.IsGraded() && (arg == true || (arg == null && Entry.Grade != null)))
+        {
+            await OpenGradeDialog();
+            return;
+        }
+
         Entry.Completed = arg;
+
+        if (Entry.Subject.CompletionType.IsGraded())
+        {
+            if (arg == true)
+            {
+                // If it's now success, ensure it has a grade. 
+                // Default to A if it was null or F, so data matches the visual default.
+                if (Entry.Grade == null || Entry.Grade == Grade.F)
+                {
+                    Entry.Grade = Grade.A;
+                }
+            }
+            else if (arg == false)
+            {
+                Entry.Grade = Grade.F;
+            }
+            else
+            {
+                Entry.Grade = null;
+            }
+        }
+
         await EntryChanged.InvokeAsync(Entry);
     }
 

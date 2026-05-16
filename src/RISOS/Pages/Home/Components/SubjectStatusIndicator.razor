@@ -1,0 +1,83 @@
+@using RISOS.Extensions
+@using RISOS.Localization
+@using RISOS.Pages.Home.Models
+
+<style>
+    .grade-avatar-text {
+        color: var(--mud-palette-background) !important;
+    }
+</style>
+
+@if (ShowAsButton)
+{
+    <div class="d-flex align-center justify-center mr-1 flex-shrink-0" style="width: 40px; height: 40px;">
+        <MudIconButton OnClick="@OnClick" Ripple="true" Size="Size.Small" Class="pa-2"
+                       Style="width: 40px; height: 40px;"
+                       title="@Tooltip">
+            @RenderContent()
+        </MudIconButton>
+    </div>
+}
+else
+{
+    <div class="flex-shrink-0 d-flex align-center justify-center">
+        @RenderContent()
+    </div>
+}
+
+@code {
+    [CascadingParameter]
+    public StudyContext StudyContext { get; set; } = null!;
+
+    [Parameter]
+    [EditorRequired]
+    public required SubjectEntry Entry { get; set; }
+
+    [Parameter]
+    public bool ShowAsButton { get; set; } = true;
+
+    [Parameter]
+    public EventCallback OnClick { get; set; }
+
+    private string Tooltip => StudyContext.GpaPredictor && Entry.Subject.CompletionType.IsGraded() 
+        ? LanguageHelper.GradeSelection_Title 
+        : LanguageHelper.Completed;
+
+    private RenderFragment RenderContent() => __builder =>
+    {
+        @if (!StudyContext.GpaPredictor || !Entry.Subject.CompletionType.IsGraded())
+        {
+            @if (Entry.Completed == true)
+            {
+                <MudIcon Icon="@Icons.Material.Filled.CheckCircle" Color="Color.Success" Size="Size.Medium"/>
+            }
+            else if (Entry.Completed == false)
+            {
+                <MudIcon Icon="@Icons.Material.Filled.Cancel" Color="Color.Error" Size="Size.Medium"/>
+            }
+            else
+            {
+                <MudIcon Icon="@Icons.Material.Outlined.RadioButtonUnchecked" Color="Color.Default" Size="Size.Medium"/>
+            }
+        }
+        else
+        {
+            @if (Entry.Completed == true)
+            {
+                <MudAvatar Color="Color.Success" Size="Size.Small" Variant="Variant.Filled" Style="width: 20px; height: 20px; min-width: 20px;">
+                    <MudText Class="grade-avatar-text" Style="font-size: 0.65rem;"><b>@(Entry.Grade?.ToString() ?? "A")</b></MudText>
+                </MudAvatar>
+            }
+            else if (Entry.Completed == false)
+            {
+                <MudAvatar Color="Color.Error" Size="Size.Small" Variant="Variant.Filled" Style="width: 20px; height: 20px; min-width: 20px;">
+                    <MudText Class="grade-avatar-text" Style="font-size: 0.65rem;"><b>F</b></MudText>
+                </MudAvatar>
+            }
+            else
+            {
+                <MudIcon Icon="@Icons.Material.Outlined.RadioButtonUnchecked" Color="Color.Default" Size="Size.Small"/>
+            }
+        }
+    };
+}

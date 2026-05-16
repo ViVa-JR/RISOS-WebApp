@@ -1,0 +1,81 @@
+@using RISOS.Enums
+@using RISOS.Extensions
+@using RISOS.Localization
+@using RISOS.Pages.Home.Models
+@using RISOS.Services
+@using RISOS.Helpers
+
+<style>
+    .gpa-badge {
+        background-color: color-mix(in srgb, var(--mud-palette-primary) 15%, transparent) !important;
+        transition: background-color 0.2s ease-in-out;
+    }
+
+    .gpa-badge:hover {
+        background-color: color-mix(in srgb, var(--mud-palette-primary) 25%, transparent) !important;
+    }
+</style>
+
+@if (StudyContext.GpaPredictor && HasGpaStats)
+{
+    <MudMenu Dense AnchorOrigin="@AnchorOrigin" TransformOrigin="@TransformOrigin" Class="@Class">
+        <ActivatorContent>
+            <MudTooltip Text="@LanguageHelper.GpaStatistics">
+                <MudButton StartIcon="@Icons.Material.Filled.Calculate"
+                           Variant="Variant.Text"
+                           Color="Color.Primary"
+                           Size="Size.Small"
+                           OnClick="@context.ToggleAsync"
+                           Class="px-2 rounded gpa-badge"
+                           Style="font-weight: bold; text-transform: none; min-width: 0;">
+                    @GpaCalculator.FormatGpa(GpaCalculator.CalculateWeightedGpa(Subjects))
+                </MudButton>
+            </MudTooltip>
+        </ActivatorContent>
+        <ChildContent>
+            <div class="pa-3" style="width: calc(100vw - 32px); min-width: 200px; max-width: 300px;">
+                <MudText Typo="Typo.subtitle2" Color="Color.Primary" gutterBottom><b>@LanguageHelper.GpaStatistics</b></MudText>
+                <MudDivider Class="mb-2"/>
+                <MudStack Spacing="1">
+                    <div class="d-flex justify-space-between gap-4">
+                        <MudText Typo="Typo.body2">@WeightedLabel</MudText>
+                        <MudText Typo="Typo.body2" Color="Color.Primary"><b>@GpaCalculator.FormatGpa(GpaCalculator.CalculateWeightedGpa(Subjects))</b></MudText>
+                    </div>
+                    <div class="d-flex justify-space-between gap-4">
+                        <MudText Typo="Typo.body2">@CompulsoryLabel</MudText>
+                        <MudText Typo="Typo.body2" Color="Color.Primary"><b>@GpaCalculator.FormatGpa(GpaCalculator.CalculateWeightedGpa(Subjects, true))</b></MudText>
+                    </div>
+                </MudStack>
+            </div>
+        </ChildContent>
+    </MudMenu>
+}
+
+
+@code {
+    [CascadingParameter]
+    public StudyContext StudyContext { get; set; } = null!;
+
+    [Parameter]
+    [EditorRequired]
+    public required IEnumerable<SubjectEntry> Subjects { get; set; }
+
+    [Parameter]
+    [EditorRequired]
+    public required string WeightedLabel { get; set; }
+
+    [Parameter]
+    [EditorRequired]
+    public required string CompulsoryLabel { get; set; }
+
+    [Parameter]
+    public Origin AnchorOrigin { get; set; } = Origin.BottomLeft;
+
+    [Parameter]
+    public Origin TransformOrigin { get; set; } = Origin.TopLeft;
+
+    [Parameter]
+    public string Class { get; set; } = "";
+
+    private bool HasGpaStats => Subjects.Any(s => s.Grade.HasValue && s.Grade != Grade.F && s.Subject.CompletionType.IsGraded());
+}

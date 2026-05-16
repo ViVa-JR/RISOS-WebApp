@@ -9,6 +9,7 @@ public class StudyContext
     public int? CreditOverride { get; set; }
     public int Years { get; set; } = 3;
     public bool CreditsWarn { get; set; } = true;
+    public bool GpaPredictor { get; set; }
 
     public int Credits => CreditOverride ?? RequiredCredits;
 }

@@ -118,6 +118,11 @@
                                              Min="0"
                                              Adornment="Adornment.End"
                                              AdornmentText="@LanguageHelper.Cr"/>
+
+                            <MudSwitch T="bool"
+                                       @bind-Value="_model.GpaPredictor"
+                                       Color="Color.Primary"
+                                       Label="@LanguageHelper.SettingsDialog_GpaPredictor"/>
                         </MudStack>
                     </MudStack>
                 }
@@ -175,7 +180,8 @@
     private bool LanguageChanged => _model.Language != _originalLanguage;
     private bool ThemeChanged => _model.SelectedTheme != (ThemeService.CurrentThemeType ?? ThemeType.Default);
     private bool CreditsChanged => _overrideCredits != StudyContext.CreditOverride.HasValue || (_overrideCredits && _model.Credits != StudyContext.CreditOverride);
-    private bool HasChanges => LanguageChanged || ThemeChanged || CreditsChanged;
+    private bool GpaPredictorChanged => _model.GpaPredictor != StudyContext.GpaPredictor;
+    private bool HasChanges => LanguageChanged || ThemeChanged || CreditsChanged || GpaPredictorChanged;
     private static string MailToUri => $"mailto:xsafar26@vutbr.cz?subject={Uri.EscapeDataString(LanguageHelper.EmailSubject)}&body={Uri.EscapeDataString(LanguageHelper.EmailBody)}";
 
     @code {
@@ -205,6 +211,7 @@
         _model.Language = await LanguageService.GetAppLanguageAsync();
         _model.SelectedTheme = ThemeService.CurrentThemeType ?? ThemeType.Default;
         _model.Credits = StudyContext.CreditOverride;
+        _model.GpaPredictor = StudyContext.GpaPredictor;
         _originalLanguage = _model.Language;
         _overrideCredits = StudyContext.CreditOverride.HasValue;
 

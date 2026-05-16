@@ -3,6 +3,8 @@
 @using RISOS.Extensions
 @using RISOS.Localization
 @using RISOS.Pages.Home.Models
+@using RISOS.Services
+@using RISOS.Helpers
 
 <style>
     .mobile-snap-container {
@@ -102,8 +104,11 @@
                 var summerSemCode = summerSemNumber.ToString();
 
                 var yearSubjects = Subjects.Where(s => s.Semester == winterSemCode || s.Semester == summerSemCode).ToList();
-                var completedYearCredits = yearSubjects.Where(s => s.Completed == true).Sum(s => s.Subject.Credits);
-                var registeredYearCredits = yearSubjects.Sum(s => s.Subject.Credits);
+                var currentYear = DateTime.Now.Year;
+                var yearDisplay = $"{currentYear + year - 1}/{currentYear + year}";
+
+                var yearCredits = CreditCalculator.CalculateSemesterCredits(Subjects, winterSemNumber) + 
+                                  CreditCalculator.CalculateSemesterCredits(Subjects, summerSemNumber);
 
                 <div class="mobile-snap-item">
                     <div class="rounded-lg px-4 pb-2 d-flex flex-column mt-4 mb-2"
@@ -123,13 +128,22 @@
                                                  Subjects="@GetSubjectsForSemester(summerSemCode)"/>
                         </MudStack>
 
-                        <MudStack AlignItems="AlignItems.Center" Row Justify="Justify.FlexEnd" Spacing="1" Class="pt-2">
-                            @if (completedYearCredits > 0)
-                            {
-                                <MudText Typo="Typo.body1" Color="Color.Success" Class="font-weight-bold">@completedYearCredits</MudText>
-                                <MudText Typo="Typo.body1" Color="Color.Primary">/</MudText>
-                            }
-                            <MudText Typo="Typo.body1" Color="Color.Primary"><b>@registeredYearCredits</b> @LanguageHelper.Credits</MudText>
+                        <MudStack AlignItems="AlignItems.Center" Row Justify="Justify.SpaceBetween" Spacing="1" Class="pt-2">
+                            <div>
+                                <GpaStatisticsMenu Subjects="@yearSubjects"
+                                                   WeightedLabel="@string.Format(LanguageHelper.GpaYearlyWeighted, yearDisplay)"
+                                                   CompulsoryLabel="@LanguageHelper.GpaYearlyCompulsory"
+                                                   AnchorOrigin="Origin.TopLeft"
+                                                   TransformOrigin="Origin.BottomLeft" />
+                            </div>
+                            <div class="d-flex align-center gap-1">
+                                @if (yearCredits.Completed > 0)
+                                {
+                                    <MudText Typo="Typo.body1" Color="Color.Success" Class="font-weight-bold">@yearCredits.Completed</MudText>
+                                    <MudText Typo="Typo.body1" Color="Color.Primary">/</MudText>
+                                }
+                                <MudText Typo="Typo.body1" Color="Color.Primary"><b>@yearCredits.Registered</b> @LanguageHelper.Credits</MudText>
+                            </div>
                         </MudStack>
                     </div>
                 </div>
@@ -152,17 +166,7 @@
     [Parameter]
     public bool LocalStorageLoading { get; set; }
 
-    private Credits TotalCredits => GetTotalCredits();
-
-    private Credits GetTotalCredits()
-    {
-        var allSubjects = Subjects.Where(x => x.Semester != SubjectEntry.Unassigned).ToArray();
-
-        return new Credits(
-            allSubjects.Where(x => x.Completed != false).Sum(s => s.Subject.Credits),
-            allSubjects.Where(s => s.Completed == true).Sum(s => s.Subject.Credits)
-        );
-    }
+    private Credits TotalCredits => CreditCalculator.CalculateTotalCredits(Subjects);
 
     private IEnumerable<SubjectEntry> GetSubjectsForSemester(string semesterCode) => Subjects.Where(s => s.Semester == semesterCode).OrderBy(s => s.Subject.Name);
 }

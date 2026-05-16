@@ -10,6 +10,7 @@ public class AppState
     public int? CreditOverride { get; set; }
     public int? StudyYears { get; set; }
     public bool RecognizedYear { get; set; } = false;
+    public bool GpaPredictor { get; set; } = false;
     public List<SubjectStorageEntry> Subjects { get; set; } = new();
 
     public List<SubjectEntry> CustomSubjects { get; set; } = new();
