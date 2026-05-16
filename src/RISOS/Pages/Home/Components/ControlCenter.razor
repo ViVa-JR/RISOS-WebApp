@@ -15,6 +15,7 @@
 @inject LanguageService LanguageService
 @inject NavigationManager NavigationManager
 @inject AnalyticsService AnalyticsService
+@inject StudyPlanService PlanService
 
 <style>
     .mud-icon-button:focus-within {
@@ -30,9 +31,8 @@
     }
 </style>
 
-<MudPaper Elevation="0" Class="pa-3 border-2 mud-border-lines-default rounded-lg">
+<MudPaper Elevation="0" Class="py-2 px-3 border-2 mud-border-lines-default rounded-lg">
     <div class="d-flex flex-column flex-md-row align-center justify-space-between gap-0 gap-md-4">
-
         @if (!IsReadOnly)
         {
             <div class="d-flex w-100 w-md-auto justify-center justify-md-start order-1 mt-0 mt-md-0">
@@ -51,6 +51,10 @@
                                 @StudyContext.ProgramSpecialization
                             </MudText>
                         }
+
+                        <GpaStatisticsMenu Subjects="@PlanService.Subjects"
+                                           WeightedLabel="@LanguageHelper.GpaTotalWeighted"
+                                           CompulsoryLabel="@LanguageHelper.GpaTotalCompulsory"/>
                     </MudStack>
                 </MudStack>
             </div>
@@ -80,7 +84,7 @@
                     }
 
                     <MudTooltip Text="@LanguageHelper.Required">
-                        <MudText Typo="Typo.h6" Color="Color.Default" Class="font-weight-bold">
+                        <MudText Typo="Typo.h6" Color="Color.Default" Class="font-weight-bold" Style="white-space: nowrap">
                             @StudyContext.Credits @LanguageHelper.Cr
                         </MudText>
                     </MudTooltip>
@@ -103,10 +107,16 @@
             </div>
         </div>
 
-        <div class="d-flex align-center justify-space-between justify-md-end gap-3 w-100 w-md-auto order-3 mb-2 mb-md-0">
-
+        <div class="d-flex align-center justify-space-between justify-md-end gap-3 w-100 w-md-auto order-3 mb-2 mb-md-0 mt-1">
             @if (IsReadOnly)
             {
+                <GpaStatisticsMenu Subjects="@PlanService.Subjects"
+                                   WeightedLabel="@LanguageHelper.GpaTotalWeighted"
+                                   CompulsoryLabel="@LanguageHelper.GpaTotalCompulsory"
+                                   AnchorOrigin="Origin.BottomLeft"
+                                   TransformOrigin="Origin.TopLeft"
+                                   Class="d-inline-flex"/>
+
                 <div class="d-flex align-center hide-in-export">
                     <MudToggleIconButton Toggled="ThemeStateService.IsDarkMode"
                                          ToggledChanged="ThemeStateService.SetDarkMode"
@@ -153,7 +163,7 @@
                 </div>
                 <div class="show-only-in-export">
                     <div class="d-flex align-center gap-4">
-                        <SubjectTypeLegend />
+                        <SubjectTypeLegend/>
                         <MudText Typo="Typo.h5" Class="font-weight-bold mud-primary-text" Style="opacity: 0.15; letter-spacing: 4px; user-select: none;">
                             RISØS
                         </MudText>

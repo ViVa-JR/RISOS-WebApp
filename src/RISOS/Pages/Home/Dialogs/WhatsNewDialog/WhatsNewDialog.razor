@@ -7,10 +7,11 @@
             <MudText Typo="Typo.subtitle2" Color="Color.Primary">
                 <b>@LanguageHelper.LatestUpdates</b>
             </MudText>
-            
-            <MudDivider />
-            
+
+            <MudDivider/>
+
             <MudList T="string" Dense="true" Class="pa-0" ReadOnly>
+                <MudListItem Text="@LanguageHelper.WhatsNew_GpaPredictor" Icon="@Icons.Material.Filled.Calculate" IconColor="Color.Info"/>
                 <MudListItem Text="@LanguageHelper.WhatsNew_GlobalSearch" Icon="@Icons.Material.Filled.Search" IconColor="Color.Primary"/>
                 <MudListItem Text="@LanguageHelper.WhatsNew_SemesterQuickActions" Icon="@Icons.Material.Filled.FlashOn" IconColor="Color.Warning"/>
                 <MudListItem Text="@LanguageHelper.WhatsNew_SportsTracking" Icon="@Icons.Material.Filled.SportsSoccer" IconColor="Color.Success"/>
@@ -22,8 +23,8 @@
                 <MudListItem Text="@LanguageHelper.WhatsNew_FullLanguageSupport" Icon="@Icons.Material.Filled.Language" IconColor="Color.Primary"/>
                 <MudListItem Text="@LanguageHelper.WhatsNew_CustomSubjectCreation" Icon="@Icons.Material.Filled.AddBox" IconColor="Color.Success"/>
             </MudList>
-            
-            <MudDivider />
+
+            <MudDivider/>
         </MudStack>
     </ChildContent>
 </RDialog>

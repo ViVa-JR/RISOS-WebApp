@@ -10,7 +10,8 @@
     }
 </style>
 
-<MudPaper Elevation="2" Class="pa-2 d-flex align-center gap-2" Style="width: 100%">
+<MudPaper Elevation="1" Class="pa-2 d-flex align-center gap-2 rounded-lg" Style="width: 100%;">
+
 
     <MudAvatar Variant="Variant.Filled" Color="@Entry.Subject.Type.ToColor()" Class="rounded"
                Style="min-width: 48px; width: auto; padding: 0 8px; height: 48px; flex-shrink: 0;">
@@ -35,22 +36,14 @@
     </div>
 
     <div class="px-1 flex-shrink-0">
-        @if (Entry.Completed == true)
-        {
-            <MudIcon Icon="@Icons.Material.Filled.CheckCircle" Color="Color.Success"/>
-        }
-        else if (Entry.Completed == false)
-        {
-            <MudIcon Icon="@Icons.Material.Filled.Cancel" Color="Color.Error"/>
-        }
-        else
-        {
-            <MudIcon Icon="@Icons.Material.Outlined.RadioButtonUnchecked" Color="Color.Default"/>
-        }
+        <SubjectStatusIndicator Entry="@Entry" ShowAsButton="false" />
     </div>
 </MudPaper>
 
 @code {
+    [CascadingParameter]
+    public StudyContext StudyContext { get; set; } = null!;
+
     [Parameter]
     [EditorRequired]
     public required SubjectEntry Entry { get; set; }

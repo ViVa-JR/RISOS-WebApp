@@ -1,0 +1,74 @@
+@using RISOS.Enums
+@using RISOS.Localization
+@using RISOS.Extensions
+
+<RDialog TReturn="Grade?"
+         Title="@LanguageHelper.GradeSelection_Title"
+         OnlyClosable="true">
+    <FooterLeft>
+        @if (InitialGrade != null)
+        {
+            <MudButton Color="Color.Error" StartIcon="@Icons.Material.Filled.Clear" OnClick="@OnClear">
+                @LanguageHelper.Clear
+            </MudButton>
+        }
+    </FooterLeft>
+    <ChildContent>
+        <MudStack Spacing="4" Class="pa-4" AlignItems="AlignItems.Center">
+            <MudToggleGroup T="Grade?" Value="_selectedGrade" ValueChanged="@OnGradeSelected" Color="Color.Primary"
+                            SelectionMode="SelectionMode.SingleSelection" Class="w-100">
+                <MudToggleItem Value="@((Grade?)Grade.A)" Text="A" />
+                <MudToggleItem Value="@((Grade?)Grade.B)" Text="B" />
+                <MudToggleItem Value="@((Grade?)Grade.C)" Text="C" />
+                <MudToggleItem Value="@((Grade?)Grade.D)" Text="D" />
+                <MudToggleItem Value="@((Grade?)Grade.E)" Text="E" />
+                <MudToggleItem Value="@((Grade?)Grade.F)" Text="F" />
+            </MudToggleGroup>
+        </MudStack>
+    </ChildContent>
+</RDialog>
+
+@code {
+    [CascadingParameter]
+    IMudDialogInstance MudDialog { get; set; } = null!;
+
+    [Parameter]
+    public Grade? InitialGrade { get; set; }
+
+    private Grade? _selectedGrade;
+
+    protected override void OnInitialized()
+    {
+        _selectedGrade = InitialGrade;
+    }
+
+    private void OnClear()
+    {
+        MudDialog.Close(MudBlazor.DialogResult.Ok<Grade?>(null));
+    }
+
+    private void OnGradeSelected(Grade? grade)
+    {
+        _selectedGrade = grade;
+        if (_selectedGrade.HasValue)
+        {
+            MudDialog.Close(MudBlazor.DialogResult.Ok<Grade?>(_selectedGrade));
+        }
+    }
+
+    public static async Task<RISOS.Common.Models.DialogResult<Grade?>> ShowAsync(IDialogService dialogService, Grade? initialGrade = null)
+    {
+        var parameters = new DialogParameters<GradeSelectionDialog>
+        {
+            { x => x.InitialGrade, initialGrade }
+        };
+
+        var dialog = await dialogService.ShowAsync<GradeSelectionDialog>(string.Empty, parameters, new DialogOptions
+        {
+            FullWidth = true,
+            MaxWidth = MaxWidth.ExtraSmall
+        });
+
+        return await dialog.GetResultAsync<Grade?>();
+    }
+}

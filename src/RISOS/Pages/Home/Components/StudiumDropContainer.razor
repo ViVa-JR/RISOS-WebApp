@@ -5,6 +5,7 @@
 @using RISOS.Pages.Home.Dialogs.AddCustomSubjectDialog
 @using RISOS.Pages.Home.Models
 @using RISOS.Services
+@using RISOS.Helpers
 
 @inject IDialogService DialogService
 @inject ISnackbar Snackbar
@@ -172,8 +173,24 @@
                                                       CompleteSemester="@OnCompleteSemester"
                                                       SortSemester="@OnSortSemester"/>
                                 </MudStack>
-                                <MudStack AlignItems="AlignItems.Center" Row StretchItems="StretchItems.Start" Spacing="1" Class="pt-2">
-                                    <MudText Typo="Typo.subtitle2" Color="Color.Default">@LanguageHelper.YearTotal</MudText>
+                                <MudStack AlignItems="AlignItems.Center" Row StretchItems="StretchItems.Start" Spacing="1" Class="pt-2" Style="min-height: 40px">
+                                    @{
+                                        var yearSubjects = PlanService.Subjects.Where(s => s.Semester == (year * 2 - 1).ToString() || s.Semester == (year * 2).ToString()).ToList();
+                                        var currentYear = DateTime.Now.Year;
+                                        var yearDisplay = $"{currentYear + year - 1}/{currentYear + year}";
+                                    }
+                                    
+                                    <GpaStatisticsMenu Subjects="@yearSubjects"
+                                                       WeightedLabel="@string.Format(LanguageHelper.GpaYearlyWeighted, yearDisplay)"
+                                                       CompulsoryLabel="@LanguageHelper.GpaYearlyCompulsory"
+                                                       AnchorOrigin="Origin.TopLeft"
+                                                       TransformOrigin="Origin.BottomLeft"
+                                                       Class="mr-auto" />
+
+                                    @if (!StudyContext.GpaPredictor || !yearSubjects.Any(s => s.Grade.HasValue && s.Grade != Grade.F && s.Subject.CompletionType.IsGraded()))
+                                    {
+                                        <MudText Typo="Typo.subtitle2" Color="Color.Default" Class="mr-auto">@LanguageHelper.YearTotal</MudText>
+                                    }
 
                                     @{
                                         var yearCredits = CreditCalculator.CalculateSemesterCredits(PlanService.Subjects, year * 2 - 1) + 
@@ -405,11 +422,22 @@
         foreach (var subject in subjectsToComplete)
         {
             subject.Completed = true;
+            if (StudyContext.GpaPredictor && subject.Subject.CompletionType.IsGraded())
+            {
+                subject.Grade = Grade.A;
+            }
             await LocalStorageService.UpdateSubjectAsync(subject);
         }
 
         PlanService.SetSubjects(PlanService.Subjects);
-        Snackbar.Add($"{LanguageHelperExtensions.Semester(semester)} {LanguageHelper.Completed}", Severity.Success);
+        
+        var message = $"{LanguageHelperExtensions.Semester(semester)} {LanguageHelper.Completed}";
+        if (StudyContext.GpaPredictor && subjectsToComplete.Any(s => s.Subject.CompletionType.IsGraded()))
+        {
+            message += " (A)";
+        }
+        
+        Snackbar.Add(message, Severity.Success);
     }
 
     private async Task OnSortSemester(int semester)

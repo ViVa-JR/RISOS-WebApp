@@ -962,6 +962,66 @@ namespace RISOS.Localization {
                 return ResourceManager.GetString("SettingsDialog_Palette", resourceCulture);
             }
         }
+
+        internal static string SettingsDialog_GpaPredictor {
+            get {
+                return ResourceManager.GetString("SettingsDialog_GpaPredictor", resourceCulture);
+            }
+        }
+
+        internal static string GradeSelection_Title {
+            get {
+                return ResourceManager.GetString("GradeSelection_Title", resourceCulture);
+            }
+        }
+
+        internal static string Clear {
+            get {
+                return ResourceManager.GetString("Clear", resourceCulture);
+            }
+        }
+
+        internal static string GpaStatistics {
+            get {
+                return ResourceManager.GetString("GpaStatistics", resourceCulture);
+            }
+        }
+
+        internal static string GpaYearlyWeighted {
+            get {
+                return ResourceManager.GetString("GpaYearlyWeighted", resourceCulture);
+            }
+        }
+
+        internal static string GpaYearlyCompulsory {
+            get {
+                return ResourceManager.GetString("GpaYearlyCompulsory", resourceCulture);
+            }
+        }
+
+        internal static string GpaSemesterWeighted {
+            get {
+                return ResourceManager.GetString("GpaSemesterWeighted", resourceCulture);
+            }
+        }
+
+        internal static string GpaSemesterCompulsory {
+            get {
+                return ResourceManager.GetString("GpaSemesterCompulsory", resourceCulture);
+            }
+        }
+
+        internal static string GpaTotalWeighted {
+            get {
+                return ResourceManager.GetString("GpaTotalWeighted", resourceCulture);
+            }
+        }
+
+        internal static string GpaTotalCompulsory {
+            get {
+                return ResourceManager.GetString("GpaTotalCompulsory", resourceCulture);
+            }
+        }
         
         internal static string Theme_Default {
             get {
@@ -1196,10 +1256,22 @@ namespace RISOS.Localization {
                 return ResourceManager.GetString("WhatsNew_CustomSubjectCreation", resourceCulture);
             }
         }
-        
+
+        internal static string WhatsNew_GpaPredictor {
+            get {
+                return ResourceManager.GetString("WhatsNew_GpaPredictor", resourceCulture);
+            }
+        }
+
         internal static string SelectProgramFirst {
             get {
                 return ResourceManager.GetString("SelectProgramFirst", resourceCulture);
+            }
+        }
+
+        internal static string SemesterTotal {
+            get {
+                return ResourceManager.GetString("SemesterTotal", resourceCulture);
             }
         }
     }

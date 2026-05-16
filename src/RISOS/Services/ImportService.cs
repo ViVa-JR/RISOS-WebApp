@@ -11,5 +11,6 @@ public class ImportService(LocalStorageService localStorageService)
         await localStorageService.SaveCreditOverride(state.CreditOverride);
         await localStorageService.SaveStudyYears(state.StudyYears);
         await localStorageService.SaveRecognizedYear(state.RecognizedYear);
-    }
-}
+        await localStorageService.SaveGpaPredictor(state.GpaPredictor);
+        }
+        }

@@ -9,6 +9,7 @@ public class SubjectEntry(Subject subject)
     public const string Unassigned = "unassigned";
     public Subject Subject { get; } = subject;
     public bool? Completed { get; set; }
+    public Grade? Grade { get; set; }
     public bool Selected { get; set; } = subject.Type == SubjectType.Compulsory;
     public bool IsAssigned => Semester != Unassigned;
 

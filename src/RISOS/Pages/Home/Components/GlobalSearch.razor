@@ -111,7 +111,7 @@
                                      Size="Size.Small"
                                      Variant="Variant.Text"
                                      Color="@subjectContext.Subject.Type.ToColor()"
-                                     Class="ma-0" />
+                                     Class="ma-0"/>
                         </MudStack>
                     </div>
                     @if (subjectContext.Selected)
@@ -121,7 +121,7 @@
                                  Size="Size.Small"
                                  Color="Color.Success"
                                  Variant="Variant.Outlined"
-                                 Class="ml-2" />
+                                 Class="ml-2"/>
                     }
                 </div>
             </ItemTemplate>
@@ -129,7 +129,7 @@
         @if (!AllSubjects.Any())
         {
             <div class="pa-4 mud-alert-text-warning d-flex align-center gap-3 border-t mud-border-lines-default">
-                <MudIcon Icon="@Icons.Material.Filled.WarningAmber" Color="Color.Warning" />
+                <MudIcon Icon="@Icons.Material.Filled.WarningAmber" Color="Color.Warning"/>
                 <MudText Typo="Typo.body1" Style="font-weight: 500;">@LanguageHelper.SelectProgramFirst</MudText>
             </div>
         }

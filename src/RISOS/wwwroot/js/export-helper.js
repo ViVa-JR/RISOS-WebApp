@@ -21,81 +21,59 @@ window.captureElementAsImage = async function (elementId, fileName) {
     }
 
     const scrollContainer = document.getElementById('main-scroll-container');
-    const originalStyles = new Map();
+    
+    const captureWidth = scrollContainer ? Math.max(element.offsetWidth, scrollContainer.scrollWidth) : element.scrollWidth;
 
-    const saveStyle = (el) => {
-        if (el) originalStyles.set(el, el.getAttribute('style') || '');
-    };
-
-    const restoreStyles = () => {
-        originalStyles.forEach((style, el) => {
-            if (style) el.setAttribute('style', style);
-            else el.removeAttribute('style');
-        });
-    };
+    const scrollContainerVisibleHeight = scrollContainer ? scrollContainer.offsetHeight : 0;
+    const scrollContainerFullHeight = scrollContainer ? scrollContainer.scrollHeight : 0;
+    const captureHeight = element.offsetHeight - scrollContainerVisibleHeight + scrollContainerFullHeight;
 
     try {
-        // 1. Prepare for capture: Expand everything to full scroll size
-        saveStyle(element);
-        saveStyle(scrollContainer);
-
-        if (scrollContainer) {
-            // Force the scroll container to show all its horizontal content
-            scrollContainer.style.overflow = 'visible';
-            scrollContainer.style.width = 'max-content';
-            scrollContainer.style.height = 'auto';
-            scrollContainer.style.maxWidth = 'none';
-        }
-
-        element.style.overflow = 'visible';
-        element.style.width = 'max-content';
-        element.style.height = 'auto';
-        element.style.maxWidth = 'none';
-
-        // 2. Perform capture
         const canvas = await html2canvas(element, {
-            backgroundColor: getComputedStyle(document.body).getPropertyValue('--mud-palette-background'),
+            backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--mud-palette-background') || '#ffffff',
             scale: 2,
             useCORS: true,
             logging: false,
-            // Calculate actual scroll dimensions
-            width: element.scrollWidth,
-            height: element.scrollHeight,
-            windowWidth: element.scrollWidth,
-            windowHeight: element.scrollHeight,
+            width: captureWidth,
+            height: captureHeight,
+            windowWidth: captureWidth,
+            windowHeight: captureHeight,
             onclone: (clonedDoc) => {
-                const clonedExportZone = clonedDoc.getElementById(elementId);
+                const clonedElement = clonedDoc.getElementById(elementId);
                 const clonedScrollContainer = clonedDoc.getElementById('main-scroll-container');
                 
-                if (clonedExportZone) {
-                    clonedExportZone.style.width = 'max-content';
-                    clonedExportZone.style.height = 'auto';
-                    clonedExportZone.style.minHeight = 'auto';
-                    clonedExportZone.style.flex = 'none';
-                    clonedExportZone.style.flexGrow = '0';
-                    clonedExportZone.style.overflow = 'visible';
-                }
-                if (clonedScrollContainer) {
-                    clonedScrollContainer.style.width = 'max-content';
-                    clonedScrollContainer.style.height = 'auto';
-                    clonedScrollContainer.style.minHeight = 'auto';
-                    clonedScrollContainer.style.flex = 'none';
-                    clonedScrollContainer.style.flexGrow = '0';
-                    clonedScrollContainer.style.overflow = 'visible';
-                    clonedScrollContainer.style.maxWidth = 'none';
+                if (clonedElement) {
+                    clonedElement.style.width = captureWidth + 'px';
+                    clonedElement.style.height = 'auto';
+                    clonedElement.style.overflow = 'visible';
                 }
                 
-                // Hide scroll indicators and marked control elements in the export
-                const toHide = clonedDoc.querySelectorAll('.indicator-anchor, .hide-in-export');
-                toHide.forEach(el => el.style.setProperty('display', 'none', 'important'));
+                if (clonedScrollContainer) {
+                    clonedScrollContainer.style.width = '100%';
+                    clonedScrollContainer.style.height = 'auto';
+                    clonedScrollContainer.style.overflow = 'visible';
+                    clonedScrollContainer.style.maxWidth = 'none';
+                    clonedScrollContainer.style.display = 'block';
+                }
+                
+                const yearStack = clonedDoc.querySelector('#main-scroll-container > .mud-stack');
+                if (yearStack) {
+                    yearStack.style.width = 'max-content';
+                    yearStack.style.minWidth = '100%';
+                    yearStack.style.display = 'flex';
+                    yearStack.style.flexDirection = 'row';
+                }
 
-                // Show elements that are marked to be shown only in export
-                const toShow = clonedDoc.querySelectorAll('.show-only-in-export');
-                toShow.forEach(el => el.style.setProperty('display', 'flex', 'important'));
+                clonedDoc.querySelectorAll('.indicator-anchor, .hide-in-export').forEach(el => {
+                    el.style.setProperty('display', 'none', 'important');
+                });
+
+                clonedDoc.querySelectorAll('.show-only-in-export').forEach(el => {
+                    el.style.setProperty('display', 'flex', 'important');
+                });
             }
         });
 
-        // 3. Download
         const image = canvas.toDataURL("image/png");
         const link = document.createElement('a');
         link.download = fileName;
@@ -103,7 +81,5 @@ window.captureElementAsImage = async function (elementId, fileName) {
         link.click();
     } catch (err) {
         console.error('Failed to capture image:', err);
-    } finally {
-        restoreStyles();
     }
 };

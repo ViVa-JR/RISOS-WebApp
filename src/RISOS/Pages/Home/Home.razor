@@ -130,7 +130,7 @@
         </MudExpansionPanels>
     </OpenedDrawerContent>
     <AlwaysVisible>
-        <MudStack Row Justify="Justify.SpaceAround" Spacing="0" AlignItems="AlignItems.Center" Wrap="Wrap.NoWrap"
+        <MudStack Row Justify="Justify.SpaceAround" Spacing="0" AlignItems="AlignItems.Center" Wrap="Wrap.Wrap"
                   Class="px-1 pb-2" Style="width: 100%">
             <MudTooltip Text="@LanguageHelper.WhatsNew">
                 <MudIconButton
@@ -176,7 +176,7 @@
     }
     else
     {
-        <StudiumDropContainer @ref="@_dropContainer" @bind-RecognizedYear="@_recognizedYear" LocalStorageLoading="@_dropZoneContainerLoading" AllSubjects="@_availableSubjects.Values" />
+        <StudiumDropContainer @ref="@_dropContainer" @bind-RecognizedYear="@_recognizedYear" LocalStorageLoading="@_dropZoneContainerLoading" AllSubjects="@_availableSubjects.Values"/>
     }
 </CascadingValue>
 
@@ -216,13 +216,20 @@
     private async Task HandleUrlStateAsync()
     {
         var uri = new Uri(NavigationManager.Uri);
-        if (string.IsNullOrEmpty(uri.Fragment) || uri.Fragment.Length <= 1) { return; }
+        if (string.IsNullOrEmpty(uri.Fragment) || uri.Fragment.Length <= 1)
+        {
+            return;
+        }
 
         var encodedData = uri.Fragment[1..];
         try
         {
             var appState = AppStateEncoder.Decode<AppState>(encodedData);
-            if (appState is not null) { await ImportService.ApplyAppStateAsync(appState); }
+            if (appState is not null)
+            {
+                await ImportService.ApplyAppStateAsync(appState);
+            }
+
             NavigationManager.NavigateTo(uri.GetLeftPart(UriPartial.Path), replace: true);
         }
         catch (Exception ex)
@@ -260,7 +267,10 @@
         await InvokeAsync(StateHasChanged);
 
         var result = await UniversityService.GetSubjectsAsync(studyProgram);
-        if (result.IsSuccess) { await InitializeSubjectsAsync(result.Value, fromStorage); }
+        if (result.IsSuccess)
+        {
+            await InitializeSubjectsAsync(result.Value, fromStorage);
+        }
 
         await LoadUserPreferencesAsync();
 
@@ -285,6 +295,7 @@
                     currentIndex++;
                 }
             }
+
             PlanService.SetSubjects(selected);
             await LocalStorageService.SaveSubjects(SubjectStorageMapper.ToStorageList(selected));
         }
@@ -297,7 +308,12 @@
     private async Task LoadUserPreferencesAsync()
     {
         var creditOverride = await LocalStorageService.LoadCreditOverride();
-        if (creditOverride.HasValue) { _studyContext.CreditOverride = creditOverride.Value; }
+        if (creditOverride.HasValue)
+        {
+            _studyContext.CreditOverride = creditOverride.Value;
+        }
+
+        _studyContext.GpaPredictor = await LocalStorageService.LoadGpaPredictor();
         _recognizedYear = await LocalStorageService.LoadRecognizedYear();
     }
 
@@ -399,6 +415,8 @@
 
         _studyContext.CreditOverride = result.Value.Credits;
         await LocalStorageService.SaveCreditOverride(result.Value.Credits);
+        _studyContext.GpaPredictor = result.Value.GpaPredictor;
+        await LocalStorageService.SaveGpaPredictor(result.Value.GpaPredictor);
         await ThemeStateService.SetThemeType(result.Value.SelectedTheme);
         if (result.Value.SelectedTheme != previousTheme)
         {

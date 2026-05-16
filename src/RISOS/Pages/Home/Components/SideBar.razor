@@ -118,7 +118,7 @@
         height: 0;
     }
 
-    .drawer-closed-bottom-wrapper .mud-stack-row {
+    .drawer-closed-bottom-wrapper .mud-stack {
         flex-direction: column !important;
         gap: 0 !important;
         align-items: center !important;
@@ -169,7 +169,7 @@
     @if (AlwaysVisible is not null)
     {
         <MudSpacer/>
-        <div class="@($"pa-2 {(_drawerOpen ? "w-100" : "drawer-closed-bottom-wrapper d-flex flex-column align-center")}")">
+        <div class="@($"{(_drawerOpen ? "w-100" : "drawer-closed-bottom-wrapper d-flex flex-column align-center")}")">
             @AlwaysVisible
         </div>
     }

@@ -2,7 +2,7 @@ using RISOS.Common.Models;
 using RISOS.Enums;
 using RISOS.Pages.Home.Models;
 
-namespace RISOS.Services;
+namespace RISOS.Helpers;
 
 public static class CreditCalculator
 {

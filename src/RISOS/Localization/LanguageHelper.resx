@@ -388,6 +388,9 @@
     <data name="CompletionTypeShortUpZa" xml:space="preserve">
         <value>Up,Za</value>
     </data>
+    <data name="SemesterTotal" xml:space="preserve">
+        <value>Semester total</value>
+    </data>
     <data name="YearTotal" xml:space="preserve">
         <value>Year total</value>
     </data>
@@ -711,7 +714,40 @@ Additional notes / screenshots:]]></value>
     <data name="WhatsNew_CustomSubjectCreation" xml:space="preserve">
         <value>Custom Subject Creation</value>
     </data>
+    <data name="WhatsNew_GpaPredictor" xml:space="preserve">
+        <value>GPA Predictor &amp; Statistics (Enable in settings)</value>
+    </data>
     <data name="SelectProgramFirst" xml:space="preserve">
         <value>You need to select the study program first to be able to search subjects.</value>
+    </data>
+    <data name="SettingsDialog_GpaPredictor" xml:space="preserve">
+        <value>Enable GPA Predictor</value>
+    </data>
+    <data name="GradeSelection_Title" xml:space="preserve">
+        <value>Select grade</value>
+    </data>
+    <data name="Clear" xml:space="preserve">
+        <value>Clear</value>
+    </data>
+    <data name="GpaStatistics" xml:space="preserve">
+        <value>GPA Statistics</value>
+    </data>
+    <data name="GpaYearlyWeighted" xml:space="preserve">
+        <value>Weighted GPA (excluding F) for academic year {0}:</value>
+    </data>
+    <data name="GpaYearlyCompulsory" xml:space="preserve">
+        <value>Weighted GPA (excluding F) from compulsory subjects for year:</value>
+    </data>
+    <data name="GpaSemesterWeighted" xml:space="preserve">
+        <value>Weighted GPA (excluding F) for semester:</value>
+    </data>
+    <data name="GpaSemesterCompulsory" xml:space="preserve">
+        <value>Weighted GPA (excluding F) from compulsory subjects for semester:</value>
+    </data>
+    <data name="GpaTotalWeighted" xml:space="preserve">
+        <value>Total weighted GPA (excluding F):</value>
+    </data>
+    <data name="GpaTotalCompulsory" xml:space="preserve">
+        <value>Total weighted GPA (excluding F) from compulsory subjects:</value>
     </data>
     </root>

@@ -385,6 +385,9 @@
     <data name="CompletionTypeShortUpZa" xml:space="preserve">
     <value>upzá</value>
   </data>
+    <data name="SemesterTotal" xml:space="preserve">
+    <value>Celkem za semestr</value>
+  </data>
     <data name="YearTotal" xml:space="preserve">
     <value>Celkem za rok</value>
   </data>
@@ -708,7 +711,40 @@ Další poznámky / screenshoty:]]></value>
     <data name="WhatsNew_CustomSubjectCreation" xml:space="preserve">
         <value>Tvorba vlastních předmětů</value>
     </data>
+    <data name="WhatsNew_GpaPredictor" xml:space="preserve">
+        <value>Prediktor studijního průměru a statistik (Nutno zapnout v nastavení)</value>
+    </data>
     <data name="SelectProgramFirst" xml:space="preserve">
         <value>Nejdříve musíte vybrat studijní program, abyste mohli vyhledávat předměty.</value>
+    </data>
+    <data name="SettingsDialog_GpaPredictor" xml:space="preserve">
+        <value>Zapnout prediktor průměru</value>
+    </data>
+    <data name="GradeSelection_Title" xml:space="preserve">
+        <value>Zvolte známku</value>
+    </data>
+    <data name="Clear" xml:space="preserve">
+        <value>Vymazat</value>
+    </data>
+    <data name="GpaStatistics" xml:space="preserve">
+        <value>Statistiky průměru</value>
+    </data>
+    <data name="GpaYearlyWeighted" xml:space="preserve">
+        <value>Vážený průměr (bez F) za akademický rok {0}:</value>
+    </data>
+    <data name="GpaYearlyCompulsory" xml:space="preserve">
+        <value>Vážený průměr (bez F) z povinných předmětů za rok:</value>
+    </data>
+    <data name="GpaSemesterWeighted" xml:space="preserve">
+        <value>Vážený průměr (bez F) za semestr:</value>
+    </data>
+    <data name="GpaSemesterCompulsory" xml:space="preserve">
+        <value>Vážený průměr (bez F) z povinných předmětů za semestr:</value>
+    </data>
+    <data name="GpaTotalWeighted" xml:space="preserve">
+        <value>Celkový vážený průměr (bez F):</value>
+    </data>
+    <data name="GpaTotalCompulsory" xml:space="preserve">
+        <value>Celkový vážený průměr (bez F) z povinných předmětů:</value>
     </data>
 </root>
