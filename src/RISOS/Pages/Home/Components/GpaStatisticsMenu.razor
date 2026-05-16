@@ -2,19 +2,7 @@
 @using RISOS.Extensions
 @using RISOS.Localization
 @using RISOS.Pages.Home.Models
-@using RISOS.Services
 @using RISOS.Helpers
-
-<style>
-    .gpa-badge {
-        background-color: color-mix(in srgb, var(--mud-palette-primary) 15%, transparent) !important;
-        transition: background-color 0.2s ease-in-out;
-    }
-
-    .gpa-badge:hover {
-        background-color: color-mix(in srgb, var(--mud-palette-primary) 25%, transparent) !important;
-    }
-</style>
 
 @if (StudyContext.GpaPredictor && HasGpaStats)
 {
@@ -22,9 +10,9 @@
         <ActivatorContent>
             <MudTooltip Text="@LanguageHelper.GpaStatistics">
                 <MudButton StartIcon="@Icons.Material.Filled.Calculate"
-                           Variant="Variant.Text"
-                           Color="Color.Primary"
-                           Size="Size.Small"
+                           Variant="@Variant.Outlined"
+                           Color="@Color.Primary"
+                           Size="@Size.Small"
                            OnClick="@context.ToggleAsync"
                            Class="px-2 rounded gpa-badge"
                            Style="font-weight: bold; text-transform: none; min-width: 0;">
