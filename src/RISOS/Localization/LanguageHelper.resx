@@ -388,6 +388,9 @@
     <data name="CompletionTypeShortUpZa" xml:space="preserve">
         <value>Up,Za</value>
     </data>
+    <data name="SemesterTotal" xml:space="preserve">
+        <value>Semester total</value>
+    </data>
     <data name="YearTotal" xml:space="preserve">
         <value>Year total</value>
     </data>

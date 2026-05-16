@@ -173,7 +173,7 @@
                                                       CompleteSemester="@OnCompleteSemester"
                                                       SortSemester="@OnSortSemester"/>
                                 </MudStack>
-                                <MudStack AlignItems="AlignItems.Center" Row StretchItems="StretchItems.Start" Spacing="1" Class="pt-2">
+                                <MudStack AlignItems="AlignItems.Center" Row StretchItems="StretchItems.Start" Spacing="1" Class="pt-2" Style="min-height: 40px">
                                     @{
                                         var yearSubjects = PlanService.Subjects.Where(s => s.Semester == (year * 2 - 1).ToString() || s.Semester == (year * 2).ToString()).ToList();
                                         var currentYear = DateTime.Now.Year;

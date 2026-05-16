@@ -8,7 +8,7 @@
 {
     <MudMenu Dense AnchorOrigin="@AnchorOrigin" TransformOrigin="@TransformOrigin" Class="@Class">
         <ActivatorContent>
-            <MudTooltip Text="@LanguageHelper.GpaStatistics">
+            <MudTooltip Text="@LanguageHelper.GpaStatistics" Class="hide-in-export">
                 <MudButton StartIcon="@Icons.Material.Filled.Calculate"
                            Variant="@Variant.Outlined"
                            Color="@Color.Primary"
@@ -21,7 +21,7 @@
             </MudTooltip>
         </ActivatorContent>
         <ChildContent>
-            <div class="pa-3" style="width: calc(100vw - 32px); min-width: 200px; max-width: 300px;">
+            <div class="pa-3 hide-in-export" style="width: calc(100vw - 32px); min-width: 200px; max-width: 300px;">
                 <MudText Typo="Typo.subtitle2" Color="Color.Primary" gutterBottom><b>@LanguageHelper.GpaStatistics</b></MudText>
                 <MudDivider Class="mb-2"/>
                 <MudStack Spacing="1">
@@ -43,6 +43,9 @@
 @code {
     [CascadingParameter]
     public StudyContext StudyContext { get; set; } = null!;
+
+    [Parameter]
+    public bool ForceVisible { get; set; }
 
     [Parameter]
     [EditorRequired]

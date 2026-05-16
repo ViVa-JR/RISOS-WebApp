@@ -1268,5 +1268,11 @@ namespace RISOS.Localization {
                 return ResourceManager.GetString("SelectProgramFirst", resourceCulture);
             }
         }
+
+        internal static string SemesterTotal {
+            get {
+                return ResourceManager.GetString("SemesterTotal", resourceCulture);
+            }
+        }
     }
 }

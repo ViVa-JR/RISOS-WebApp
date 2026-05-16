@@ -54,8 +54,7 @@
 
                         <GpaStatisticsMenu Subjects="@PlanService.Subjects"
                                            WeightedLabel="@LanguageHelper.GpaTotalWeighted"
-                                           CompulsoryLabel="@LanguageHelper.GpaTotalCompulsory"
-                                           Class="d-none d-md-inline-flex"/>
+                                           CompulsoryLabel="@LanguageHelper.GpaTotalCompulsory"/>
                     </MudStack>
                 </MudStack>
             </div>
@@ -109,15 +108,15 @@
         </div>
 
         <div class="d-flex align-center justify-space-between justify-md-end gap-3 w-100 w-md-auto order-3 mb-2 mb-md-0 mt-1">
-            <GpaStatisticsMenu Subjects="@PlanService.Subjects"
-                               WeightedLabel="@LanguageHelper.GpaTotalWeighted"
-                               CompulsoryLabel="@LanguageHelper.GpaTotalCompulsory"
-                               AnchorOrigin="Origin.BottomLeft"
-                               TransformOrigin="Origin.TopLeft"
-                               Class="hide-in-export d-inline-flex d-md-none"/>
-
             @if (IsReadOnly)
             {
+                <GpaStatisticsMenu Subjects="@PlanService.Subjects"
+                                   WeightedLabel="@LanguageHelper.GpaTotalWeighted"
+                                   CompulsoryLabel="@LanguageHelper.GpaTotalCompulsory"
+                                   AnchorOrigin="Origin.BottomLeft"
+                                   TransformOrigin="Origin.TopLeft"
+                                   Class="d-inline-flex"/>
+
                 <div class="d-flex align-center hide-in-export">
                     <MudToggleIconButton Toggled="ThemeStateService.IsDarkMode"
                                          ToggledChanged="ThemeStateService.SetDarkMode"

@@ -385,6 +385,9 @@
     <data name="CompletionTypeShortUpZa" xml:space="preserve">
     <value>upzá</value>
   </data>
+    <data name="SemesterTotal" xml:space="preserve">
+    <value>Celkem za semestr</value>
+  </data>
     <data name="YearTotal" xml:space="preserve">
     <value>Celkem za rok</value>
   </data>
