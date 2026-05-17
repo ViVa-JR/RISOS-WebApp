@@ -14,7 +14,7 @@ public static class GpaCalculator
             .Where(s => !compulsoryOnly || s.Subject.Type == SubjectType.Compulsory)
             .ToList();
 
-        if (!filteredSubjects.Any())
+        if (filteredSubjects.Count == 0)
         {
             return null;
         }

@@ -520,9 +520,6 @@
     <data name="Edit" xml:space="preserve">
         <value>Edit</value>
     </data>
-    <data name="Clone" xml:space="preserve">
-        <value>Create clone</value>
-    </data>
     <data name="LastDataUpdate" xml:space="preserve">
         <value>Last data update</value>
     </data>
@@ -750,4 +747,7 @@ Additional notes / screenshots:]]></value>
     <data name="GpaTotalCompulsory" xml:space="preserve">
         <value>Total weighted GPA (excluding F) from compulsory subjects:</value>
     </data>
-    </root>
+    <data name="Registered" xml:space="preserve">
+        <value>Registered</value>
+    </data>
+</root>
