@@ -747,4 +747,7 @@ Další poznámky / screenshoty:]]></value>
     <data name="GpaTotalCompulsory" xml:space="preserve">
         <value>Celkový vážený průměr (bez F) z povinných předmětů:</value>
     </data>
+    <data name="Registered" xml:space="preserve">
+      <value>Registrováno</value>
+    </data>
 </root>

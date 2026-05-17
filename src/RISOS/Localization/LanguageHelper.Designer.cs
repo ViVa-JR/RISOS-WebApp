@@ -153,9 +153,9 @@ namespace RISOS.Localization {
             }
         }
         
-        internal static string Registered {
+        internal static string Sorted {
             get {
-                return ResourceManager.GetString("Registered", resourceCulture);
+                return ResourceManager.GetString("Sorted", resourceCulture);
             }
         }
         
@@ -579,6 +579,12 @@ namespace RISOS.Localization {
             }
         }
         
+        internal static string SemesterTotal {
+            get {
+                return ResourceManager.GetString("SemesterTotal", resourceCulture);
+            }
+        }
+        
         internal static string YearTotal {
             get {
                 return ResourceManager.GetString("YearTotal", resourceCulture);
@@ -837,12 +843,6 @@ namespace RISOS.Localization {
             }
         }
         
-        internal static string Clone {
-            get {
-                return ResourceManager.GetString("Clone", resourceCulture);
-            }
-        }
-        
         internal static string LastDataUpdate {
             get {
                 return ResourceManager.GetString("LastDataUpdate", resourceCulture);
@@ -960,66 +960,6 @@ namespace RISOS.Localization {
         internal static string SettingsDialog_Palette {
             get {
                 return ResourceManager.GetString("SettingsDialog_Palette", resourceCulture);
-            }
-        }
-
-        internal static string SettingsDialog_GpaPredictor {
-            get {
-                return ResourceManager.GetString("SettingsDialog_GpaPredictor", resourceCulture);
-            }
-        }
-
-        internal static string GradeSelection_Title {
-            get {
-                return ResourceManager.GetString("GradeSelection_Title", resourceCulture);
-            }
-        }
-
-        internal static string Clear {
-            get {
-                return ResourceManager.GetString("Clear", resourceCulture);
-            }
-        }
-
-        internal static string GpaStatistics {
-            get {
-                return ResourceManager.GetString("GpaStatistics", resourceCulture);
-            }
-        }
-
-        internal static string GpaYearlyWeighted {
-            get {
-                return ResourceManager.GetString("GpaYearlyWeighted", resourceCulture);
-            }
-        }
-
-        internal static string GpaYearlyCompulsory {
-            get {
-                return ResourceManager.GetString("GpaYearlyCompulsory", resourceCulture);
-            }
-        }
-
-        internal static string GpaSemesterWeighted {
-            get {
-                return ResourceManager.GetString("GpaSemesterWeighted", resourceCulture);
-            }
-        }
-
-        internal static string GpaSemesterCompulsory {
-            get {
-                return ResourceManager.GetString("GpaSemesterCompulsory", resourceCulture);
-            }
-        }
-
-        internal static string GpaTotalWeighted {
-            get {
-                return ResourceManager.GetString("GpaTotalWeighted", resourceCulture);
-            }
-        }
-
-        internal static string GpaTotalCompulsory {
-            get {
-                return ResourceManager.GetString("GpaTotalCompulsory", resourceCulture);
             }
         }
         
@@ -1167,12 +1107,6 @@ namespace RISOS.Localization {
             }
         }
         
-        internal static string Sorted {
-            get {
-                return ResourceManager.GetString("Sorted", resourceCulture);
-            }
-        }
-        
         internal static string RecognizedYearTitle {
             get {
                 return ResourceManager.GetString("RecognizedYearTitle", resourceCulture);
@@ -1256,22 +1190,82 @@ namespace RISOS.Localization {
                 return ResourceManager.GetString("WhatsNew_CustomSubjectCreation", resourceCulture);
             }
         }
-
+        
         internal static string WhatsNew_GpaPredictor {
             get {
                 return ResourceManager.GetString("WhatsNew_GpaPredictor", resourceCulture);
             }
         }
-
+        
         internal static string SelectProgramFirst {
             get {
                 return ResourceManager.GetString("SelectProgramFirst", resourceCulture);
             }
         }
-
-        internal static string SemesterTotal {
+        
+        internal static string SettingsDialog_GpaPredictor {
             get {
-                return ResourceManager.GetString("SemesterTotal", resourceCulture);
+                return ResourceManager.GetString("SettingsDialog_GpaPredictor", resourceCulture);
+            }
+        }
+        
+        internal static string GradeSelection_Title {
+            get {
+                return ResourceManager.GetString("GradeSelection_Title", resourceCulture);
+            }
+        }
+        
+        internal static string Clear {
+            get {
+                return ResourceManager.GetString("Clear", resourceCulture);
+            }
+        }
+        
+        internal static string GpaStatistics {
+            get {
+                return ResourceManager.GetString("GpaStatistics", resourceCulture);
+            }
+        }
+        
+        internal static string GpaYearlyWeighted {
+            get {
+                return ResourceManager.GetString("GpaYearlyWeighted", resourceCulture);
+            }
+        }
+        
+        internal static string GpaYearlyCompulsory {
+            get {
+                return ResourceManager.GetString("GpaYearlyCompulsory", resourceCulture);
+            }
+        }
+        
+        internal static string GpaSemesterWeighted {
+            get {
+                return ResourceManager.GetString("GpaSemesterWeighted", resourceCulture);
+            }
+        }
+        
+        internal static string GpaSemesterCompulsory {
+            get {
+                return ResourceManager.GetString("GpaSemesterCompulsory", resourceCulture);
+            }
+        }
+        
+        internal static string GpaTotalWeighted {
+            get {
+                return ResourceManager.GetString("GpaTotalWeighted", resourceCulture);
+            }
+        }
+        
+        internal static string GpaTotalCompulsory {
+            get {
+                return ResourceManager.GetString("GpaTotalCompulsory", resourceCulture);
+            }
+        }
+        
+        internal static string Registered {
+            get {
+                return ResourceManager.GetString("Registered", resourceCulture);
             }
         }
     }

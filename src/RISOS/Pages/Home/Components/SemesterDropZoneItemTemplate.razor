@@ -84,46 +84,40 @@
                      Dense>
                 @if (Entry.Semester != SubjectEntry.Unassigned)
                 {
-                    <MudMenuItem Label="@LanguageHelper.Unassigned"
-                                 OnClick="@(() => MoveEntry(SubjectEntry.Unassigned))"/>
+                    <MudMenuItem Label="@LanguageHelper.Unassigned" OnClick="@(() => MoveEntry(SubjectEntry.Unassigned))"/>
                 }
 
                 @if (RecognizedYear && Entry.Semester != "-1" && Entry.Semester != "0")
                 {
                     var preferredRecognized = Entry.Subject.SemesterSeason == SemesterSeason.Summer ? 0 : -1;
-                    <MudMenuItem Label="@LanguageHelperExtensions.Semester(preferredRecognized)"
-                                 OnClick="@(() => MoveEntry(preferredRecognized.ToString()))"/>
+                    <MudMenuItem Label="@LanguageHelperExtensions.Semester(preferredRecognized)" OnClick="@(() => MoveEntry(preferredRecognized.ToString()))"/>
                 }
 
                 @foreach (var semester in Enumerable.Range(1, SemesterCount))
                 {
                     if (CanMove(semester))
                     {
-                        <MudMenuItem Label="@LanguageHelperExtensions.Semester(semester)"
-                                     OnClick="@(() => MoveEntry(semester.ToString()))"/>
+                        <MudMenuItem Label="@LanguageHelperExtensions.Semester(semester)" OnClick="@(() => MoveEntry(semester.ToString()))"/>
                     }
                 }
             </MudMenu>
-            @if (StudyContext.GpaPredictor && Entry.Completed == true)
+            @if (StudyContext.GpaPredictor && Entry.Completed == true && Entry.Subject.CompletionType.IsGraded())
             {
-                <MudMenuItem Icon="@Icons.Material.Filled.Grade" Label="@LanguageHelper.GradeSelection_Title"
-                             OnClick="@(() => CompletedChanged(true))"/>
+                <MudMenuItem Icon="@Icons.Material.Filled.Grade" Label="@LanguageHelper.GradeSelection_Title" OnClick="@(() => CompletedChanged(true))"/>
             }
-            @if (Entry.IsSport || (Entry.LatestAttempt && Entry.Completed == false))
+            @if (Entry.IsSport || Entry is { LatestAttempt: true, Completed: false })
             {
                 <MudMenuItem Icon="@(Entry.IsSport ? Icons.Material.Filled.ContentCopy : Icons.Material.Filled.RestartAlt)" Label="@(Entry.IsSport ? LanguageHelper.Repeat : LanguageHelper.Retake)"
                              OnClick="@(() => RetakeEntry.InvokeAsync(Entry))"/>
             }
             @if (Entry.IsCustomSubject)
             {
-                <MudMenuItem Icon="@Icons.Material.Filled.ContentCopy" Label="@LanguageHelper.Clone"
-                             OnClick="@OnCloneClick"/>
+                <MudMenuItem Icon="@Icons.Material.Filled.ContentCopy" Label="@LanguageHelper.Repeat" OnClick="@OnCloneClick"/>
                 <MudMenuItem Icon="@Icons.Material.Filled.Edit" Label="@LanguageHelper.Edit" OnClick="@OnEditClick"/>
             }
             @if (Entry.Subject.Type != SubjectType.Compulsory || Entry.IsCustomSubject || Entry.Attempt > 1)
             {
-                <MudMenuItem Icon="@Icons.Material.Filled.Delete" IconColor="Color.Error" Label="@LanguageHelper.Delete"
-                             OnClick="@(() => RemoveEntry.InvokeAsync(Entry))"/>
+                <MudMenuItem Icon="@Icons.Material.Filled.Delete" IconColor="Color.Error" Label="@LanguageHelper.Delete" OnClick="@(() => RemoveEntry.InvokeAsync(Entry))"/>
             }
         </ChildContent>
     </MudMenu>
