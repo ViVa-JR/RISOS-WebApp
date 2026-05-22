@@ -1,7 +1,6 @@
 window.dataLayer = window.dataLayer || [];
 function gtag() { dataLayer.push(arguments); }
 
-// Initialize Consent Mode v2
 if (localStorage.getItem('analytics_consent') === 'granted') {
     gtag('consent', 'default', {
         'analytics_storage': 'granted',

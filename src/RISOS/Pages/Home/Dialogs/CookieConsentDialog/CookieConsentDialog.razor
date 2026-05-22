@@ -1,0 +1,71 @@
+@using RISOS.Services
+@using RISOS.Localization
+@using RISOS.Extensions
+@using DialogResult = MudBlazor.DialogResult
+
+<RDialog TReturn="bool"
+         Title="@LanguageHelper.Gdpr_Title"
+         HeaderIcon="@Icons.Material.Filled.Cookie">
+    <HeaderRight></HeaderRight>
+    <ChildContent>
+        <MudText Typo="Typo.body1" Class="mud-text-secondary">
+            @LanguageHelper.Gdpr_Description
+        </MudText>
+        <MudText Typo="Typo.caption" Class="mud-text-secondary mt-2 d-block">
+            <b>@LanguageHelper.Gdpr_StrictlyNecessary</b>
+        </MudText>
+    </ChildContent>
+    <ActionsContent>
+        <MudStack Row Spacing="2" Class="pa-2 w-100">
+            <MudButton 
+                Variant="Variant.Outlined" 
+                Color="Color.Default" 
+                OnClick="@(() => MudDialog.Close(DialogResult.Ok(false)))"
+                FullWidth="true"
+                Style="text-transform: none; font-weight: bold; border-width: 2px;">
+                @LanguageHelper.Gdpr_NecessaryOnly
+            </MudButton>
+            <MudButton 
+                Variant="Variant.Filled" 
+                Color="Color.Primary" 
+                OnClick="@(() => MudDialog.Close(DialogResult.Ok(true)))"
+                FullWidth="true"
+                Style="text-transform: none; font-weight: bold; box-shadow: none;">
+                @LanguageHelper.Gdpr_AcceptAll
+            </MudButton>
+        </MudStack>
+    </ActionsContent>
+</RDialog>
+
+@code {
+    [CascadingParameter]
+    IMudDialogInstance MudDialog { get; set; } = null!;
+
+    public static async Task ShowAsync(IDialogService dialogService, LocalStorageService localStorage, AnalyticsService analytics)
+    {
+        var options = new DialogOptions 
+        { 
+            CloseOnEscapeKey = false, 
+            CloseButton = false, 
+            BackdropClick = false,
+            MaxWidth = MaxWidth.Small,
+            FullWidth = true
+        };
+
+        var dialog = await dialogService.ShowAsync<CookieConsentDialog>(string.Empty, options);
+        var result = await dialog.GetResultAsync<bool>();
+
+        if (result is null || result.IsFailure || result.IsCancelled)
+        {
+            return;
+        }
+
+        var granted = result.Value;
+        
+        await localStorage.SaveAnalyticsConsent(granted);
+        if (granted)
+        {
+            await analytics.UpdateConsentAsync(true);
+        }
+    }
+}
