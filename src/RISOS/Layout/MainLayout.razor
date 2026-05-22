@@ -5,6 +5,8 @@
 
 @inject ThemeStateService ThemeStateService
 @inject IJSRuntime Js
+@inject IDialogService DialogService
+@inject LocalStorageService LocalStorage
 
 <MudThemeProvider
     @ref="_mudThemeProvider"
@@ -40,6 +42,12 @@
         {
             await _mudThemeProvider.WatchSystemDarkModeAsync(ThemeStateService.SetDarkMode);
             await Js.InvokeVoidAsync("initDragScroll");
+
+            var consent = await LocalStorage.LoadAnalyticsConsent();
+            if (consent == null)
+            {
+                await CookieConsentDialog.ShowAsync(DialogService);
+            }
         }
 
         await base.OnAfterRenderAsync(firstRender);
