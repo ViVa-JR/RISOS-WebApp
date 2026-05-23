@@ -6,6 +6,11 @@ namespace RISOS.Services;
 
 public class AnalyticsService(IJSRuntime jsRuntime)
 {
+    public ValueTask UpdateConsentAsync(bool granted)
+    {
+        return jsRuntime.InvokeVoidAsync("risosAnalytics.updateConsent", granted);
+    }
+
     public ValueTask TrackEventAsync(string eventName, Dictionary<string, object?>? parameters = null)
     {
         return jsRuntime.InvokeVoidAsync("risosAnalytics.trackEvent", eventName, parameters ?? new Dictionary<string, object?>());

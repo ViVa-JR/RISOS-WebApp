@@ -1,3 +1,4 @@
+@using RISOS.Pages.Home.Dialogs.CookieConsentDialog
 @using RISOS.Services
 
 @implements IDisposable
@@ -5,6 +6,9 @@
 
 @inject ThemeStateService ThemeStateService
 @inject IJSRuntime Js
+@inject IDialogService DialogService
+@inject LocalStorageService LocalStorage
+@inject AnalyticsService AnalyticsService
 
 <MudThemeProvider
     @ref="_mudThemeProvider"
@@ -40,6 +44,12 @@
         {
             await _mudThemeProvider.WatchSystemDarkModeAsync(ThemeStateService.SetDarkMode);
             await Js.InvokeVoidAsync("initDragScroll");
+
+            var consent = await LocalStorage.LoadAnalyticsConsent();
+            if (consent == null)
+            {
+                await CookieConsentDialog.ShowAsync(DialogService, LocalStorage, AnalyticsService);
+            }
         }
 
         await base.OnAfterRenderAsync(firstRender);

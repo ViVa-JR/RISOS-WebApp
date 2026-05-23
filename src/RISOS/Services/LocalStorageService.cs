@@ -21,8 +21,29 @@ public class LocalStorageService(IJSRuntime js)
     private const string RecognizedYear = "recognized-years";
     private const string ThemeTypeKey = "app_theme_type";
     private const string GpaPredictorKey = "gpa-predictor";
+    private const string AnalyticsConsent = "analytics_consent";
 
     public async Task SaveTheme(bool isDark) => await js.InvokeVoidAsync("localStorage.setItem", UserTheme, isDark ? "dark" : "light");
+
+    public async Task SaveAnalyticsConsent(bool granted) => await js.InvokeVoidAsync("localStorage.setItem", AnalyticsConsent, granted ? "granted" : "denied");
+
+    public async Task<bool?> LoadAnalyticsConsent()
+    {
+        try
+        {
+            var value = await js.InvokeAsync<string>("localStorage.getItem", AnalyticsConsent);
+            if (string.IsNullOrEmpty(value))
+            {
+                return null;
+            }
+
+            return value == "granted";
+        }
+        catch
+        {
+            return null;
+        }
+    }
 
     public async Task SaveThemeType(ThemeType theme) => await js.InvokeVoidAsync("localStorage.setItem", ThemeTypeKey, theme.ToString());
 

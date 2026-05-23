@@ -1268,5 +1268,35 @@ namespace RISOS.Localization {
                 return ResourceManager.GetString("Registered", resourceCulture);
             }
         }
+        
+        internal static string Gdpr_Title {
+            get {
+                return ResourceManager.GetString("Gdpr_Title", resourceCulture);
+            }
+        }
+        
+        internal static string Gdpr_Description {
+            get {
+                return ResourceManager.GetString("Gdpr_Description", resourceCulture);
+            }
+        }
+        
+        internal static string Gdpr_StrictlyNecessary {
+            get {
+                return ResourceManager.GetString("Gdpr_StrictlyNecessary", resourceCulture);
+            }
+        }
+        
+        internal static string Gdpr_NecessaryOnly {
+            get {
+                return ResourceManager.GetString("Gdpr_NecessaryOnly", resourceCulture);
+            }
+        }
+        
+        internal static string Gdpr_AcceptAll {
+            get {
+                return ResourceManager.GetString("Gdpr_AcceptAll", resourceCulture);
+            }
+        }
     }
 }
