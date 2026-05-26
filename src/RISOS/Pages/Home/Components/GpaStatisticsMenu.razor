@@ -25,11 +25,11 @@
                 <MudText Typo="Typo.subtitle2" Color="Color.Primary" gutterBottom><b>@LanguageHelper.GpaStatistics</b></MudText>
                 <MudDivider Class="mb-2"/>
                 <MudStack Spacing="1">
-                    <div class="d-flex justify-space-between gap-4">
+                    <div class="d-flex justify-space-between align-center gap-4">
                         <MudText Typo="Typo.body2">@WeightedLabel</MudText>
                         <MudText Typo="Typo.body2" Color="Color.Primary"><b>@GpaCalculator.FormatGpa(GpaCalculator.CalculateWeightedGpa(Subjects))</b></MudText>
                     </div>
-                    <div class="d-flex justify-space-between gap-4">
+                    <div class="d-flex justify-space-between align-center gap-4">
                         <MudText Typo="Typo.body2">@CompulsoryLabel</MudText>
                         <MudText Typo="Typo.body2" Color="Color.Primary"><b>@GpaCalculator.FormatGpa(GpaCalculator.CalculateWeightedGpa(Subjects, true))</b></MudText>
                     </div>
