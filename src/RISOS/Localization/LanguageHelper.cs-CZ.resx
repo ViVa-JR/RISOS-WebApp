@@ -765,4 +765,7 @@ Další poznámky / screenshoty:]]></value>
     <data name="Gdpr_AcceptAll" xml:space="preserve">
       <value>Přijmout vše</value>
     </data>
+    <data name="SearchNoResults" xml:space="preserve">
+      <value>Nebyly nalezeny žádné předměty odpovídající vašemu hledání</value>
+    </data>
 </root>
