@@ -32,7 +32,12 @@
         border-radius: 12px;
         box-shadow: var(--mud-elevation-25);
         border: 1px solid var(--mud-palette-lines-default);
-        overflow: hidden;
+        transition: border-radius 0.1s;
+    }
+
+    .floating-search-box.results-open {
+        border-bottom-left-radius: 0;
+        border-bottom-right-radius: 0;
     }
 
     .floating-search-box .mud-input-outlined-border {
@@ -51,6 +56,21 @@
     .floating-search-box .mud-input-slot {
         font-size: 1.25rem;
         padding: 16px 20px !important;
+    }
+
+    /* Align popover dropdown corners with the search box's 12px radius */
+    .global-search-popover {
+        border-radius: 0 0 12px 12px !important;
+        overflow: hidden;
+        margin-top: 0 !important;
+    }
+
+    .global-search-popover.has-results {
+        box-shadow: 
+            -1px 0 0 0 var(--mud-palette-lines-default), 
+             1px 0 0 0 var(--mud-palette-lines-default), 
+             0 1px 0 0 var(--mud-palette-lines-default), 
+             var(--mud-elevation-25) !important;
     }
 
     .search-item-disabled {
@@ -73,7 +93,7 @@
 </style>
 
 <MudOverlay Visible="@_visible" OnClick="@Close" Class="@($"floating-search-overlay {(string.IsNullOrEmpty(_searchString) ? "" : "searching")}")" AutoClose="false" LockScroll="true">
-    <div class="floating-search-box" @onclick:stopPropagation>
+    <div class="floating-search-box @(_hasResults ? "results-open" : "")" @onclick:stopPropagation>
         <MudAutocomplete T="SubjectEntry"
                          @ref="_autocomplete"
                          SearchFunc="@SearchSubjects"
@@ -91,7 +111,8 @@
                          SelectValueOnTab
                          OpenIcon="none"
                          CloseIcon="none"
-                         MaxItems="10">
+                         MaxItems="10"
+                         PopoverClass="@($"global-search-popover {(_hasResults ? "has-results" : "")}")">
             <ItemTemplate Context="subjectContext">
                 <div class="d-flex align-center gap-4 w-100 py-2 px-1 @(subjectContext.Selected ? "search-item-disabled" : "")" style="min-width: 400px;">
                     <div class="short-name-badge mud-theme-@subjectContext.Subject.Type.ToColor().ToString().ToLower() white-text font-weight-bold">
@@ -128,9 +149,16 @@
         </MudAutocomplete>
         @if (!AllSubjects.Any())
         {
-            <div class="pa-4 mud-alert-text-warning d-flex align-center gap-3 border-t mud-border-lines-default">
+            <div class="py-4 pr-4 mud-alert-text-warning d-flex align-center gap-3 border-t mud-border-lines-default" style="padding-left: 26px !important;">
                 <MudIcon Icon="@Icons.Material.Filled.WarningAmber" Color="Color.Warning"/>
                 <MudText Typo="Typo.body1" Style="font-weight: 500;">@LanguageHelper.SelectProgramFirst</MudText>
+            </div>
+        }
+        else if (_noResultsFound)
+        {
+            <div class="py-4 pr-4 mud-alert-text-info d-flex align-center gap-3 border-t mud-border-lines-default" style="padding-left: 26px !important;">
+                <MudIcon Icon="@Icons.Material.Filled.SearchOff" Color="Color.Info"/>
+                <MudText Typo="Typo.body1" Style="font-weight: 500;">@LanguageHelper.SearchNoResults</MudText>
             </div>
         }
     </div>
@@ -144,6 +172,9 @@
     public EventCallback<SubjectEntry?> OnSubjectSelected { get; set; }
 
     private bool _visible;
+    private bool _hasShifted;
+    private bool _noResultsFound;
+    private bool _hasResults;
     private string _searchString = string.Empty;
     private MudAutocomplete<SubjectEntry>? _autocomplete;
     private DotNetObjectReference<GlobalSearch>? _objRef;
@@ -152,6 +183,9 @@
     {
         await AnalyticsService.TrackGlobalSearchOpenedAsync();
         _visible = true;
+        _hasShifted = false;
+        _noResultsFound = false;
+        _hasResults = false;
         _searchString = string.Empty;
         StateHasChanged();
         await Task.Delay(100);
@@ -164,15 +198,34 @@
     public void Close()
     {
         _visible = false;
+        _hasShifted = false;
+        _noResultsFound = false;
+        _hasResults = false;
         _searchString = string.Empty;
         StateHasChanged();
     }
 
-    private Task<IEnumerable<SubjectEntry>> SearchSubjects(string? value, CancellationToken token)
+    private async Task<IEnumerable<SubjectEntry>> SearchSubjects(string? value, CancellationToken token)
     {
         if (string.IsNullOrEmpty(value))
         {
-            return Task.FromResult<IEnumerable<SubjectEntry>>([]);
+            _hasShifted = false;
+            _noResultsFound = false;
+            _hasResults = false;
+            _ = InvokeAsync(StateHasChanged);
+            return [];
+        }
+
+        // On the first keystroke, wait for the shift animation to finish
+        // before returning results so the popover positions correctly.
+        if (!_hasShifted)
+        {
+            _hasShifted = true;
+            await Task.Delay(350);
+            if (token.IsCancellationRequested)
+            {
+                return [];
+            }
         }
 
         var compareInfo = System.Globalization.CultureInfo.InvariantCulture.CompareInfo;
@@ -182,9 +235,13 @@
             (!string.IsNullOrWhiteSpace(x.Subject.Name) && compareInfo.IndexOf(x.Subject.Name, value, compareOptions) >= 0) ||
             (!string.IsNullOrWhiteSpace(x.Subject.ShortName) && compareInfo.IndexOf(x.Subject.ShortName, value, compareOptions) >= 0) ||
             (!string.IsNullOrWhiteSpace(x.Subject.GroupId) && compareInfo.IndexOf(x.Subject.GroupId, value, compareOptions) >= 0)
-        );
+        ).ToList();
 
-        return Task.FromResult(result);
+        _noResultsFound = result.Count == 0;
+        _hasResults = result.Count > 0;
+        await InvokeAsync(StateHasChanged);
+
+        return result;
     }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)

@@ -765,4 +765,7 @@ Additional notes / screenshots:]]></value>
     <data name="Gdpr_AcceptAll" xml:space="preserve">
         <value>Accept All</value>
     </data>
+    <data name="SearchNoResults" xml:space="preserve">
+        <value>No subjects found matching your search</value>
+    </data>
 </root>

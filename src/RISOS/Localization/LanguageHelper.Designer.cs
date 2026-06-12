@@ -1298,5 +1298,11 @@ namespace RISOS.Localization {
                 return ResourceManager.GetString("Gdpr_AcceptAll", resourceCulture);
             }
         }
+        
+        internal static string SearchNoResults {
+            get {
+                return ResourceManager.GetString("SearchNoResults", resourceCulture);
+            }
+        }
     }
 }
