@@ -172,7 +172,7 @@
     public EventCallback<SubjectEntry?> OnSubjectSelected { get; set; }
 
     private bool _visible;
-    private bool _hasShifted;
+    private bool _shiftStarted;
     private bool _noResultsFound;
     private bool _hasResults;
     private string _searchString = string.Empty;
@@ -183,7 +183,7 @@
     {
         await AnalyticsService.TrackGlobalSearchOpenedAsync();
         _visible = true;
-        _hasShifted = false;
+        _shiftStarted = false;
         _noResultsFound = false;
         _hasResults = false;
         _searchString = string.Empty;
@@ -198,7 +198,7 @@
     public void Close()
     {
         _visible = false;
-        _hasShifted = false;
+        _shiftStarted = false;
         _noResultsFound = false;
         _hasResults = false;
         _searchString = string.Empty;
@@ -209,23 +209,17 @@
     {
         if (string.IsNullOrEmpty(value))
         {
-            _hasShifted = false;
+            _shiftStarted = false;
             _noResultsFound = false;
             _hasResults = false;
             _ = InvokeAsync(StateHasChanged);
             return [];
         }
 
-        // On the first keystroke, wait for the shift animation to finish
-        // before returning results so the popover positions correctly.
-        if (!_hasShifted)
+        if (!_shiftStarted)
         {
-            _hasShifted = true;
-            await Task.Delay(350);
-            if (token.IsCancellationRequested)
-            {
-                return [];
-            }
+            _shiftStarted = true;
+            await Js.InvokeVoidAsync("searchShortcut.followAnchor", 400);
         }
 
         var compareInfo = System.Globalization.CultureInfo.InvariantCulture.CompareInfo;
