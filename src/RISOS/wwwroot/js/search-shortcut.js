@@ -22,5 +22,16 @@ window.searchShortcut = {
     },
     dispose: function () {
         window.removeEventListener('keydown', this.handleKeyDown.bind(this));
+    },
+    followAnchor: function (durationMs) {
+        const start = performance.now();
+        const tick = function (now) {
+            window.dispatchEvent(new Event('resize'));
+            window.dispatchEvent(new Event('scroll'));
+            if (now - start < durationMs) {
+                requestAnimationFrame(tick);
+            }
+        };
+        requestAnimationFrame(tick);
     }
 };
