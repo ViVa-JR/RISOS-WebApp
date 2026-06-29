@@ -1,4 +1,4 @@
-name: Build and Deploy RISOS
+name: Build and Deploy RISOS to GH Pages
 
 on:
   push:
@@ -6,9 +6,24 @@ on:
       - main
   workflow_dispatch:
 
+# Nezbytná práva pro publikování na GitHub Pages
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: "pages"
+  cancel-in-progress: true
+
 jobs:
   build-and-deploy:
-    runs-on: self-hosted
+    # Změněno ze self-hosted na veřejný runner (pro GH Pages ideální)
+    runs-on: ubuntu-latest
+
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
 
     steps:
       - name: Stažení kódu
@@ -16,8 +31,6 @@ jobs:
 
       - name: Nastavení .NET SDK
         uses: actions/setup-dotnet@v4
-        env:
-          DOTNET_INSTALL_DIR: ~/.dotnet
         with:
           dotnet-version: '10.0.x'
 
@@ -25,12 +38,22 @@ jobs:
         run: dotnet workload restore ./src/RISOS/RISOS.csproj
 
       - name: Sestavení projektu (dotnet publish)
-        run: dotnet publish ./src/RISOS/RISOS.csproj -c Release -o ./publish-linux      
+        # Výstup rovnou směrujeme do publish-web
+        run: dotnet publish ./src/RISOS/RISOS.csproj -c Release -o ./publish-web      
 
-      - name: Příprava SSH klíče
-        uses: webfactory/ssh-agent@v0.9.0
+      - name: Přidání .nojekyll souboru
+        # Zabrání ignorování složky _framework
+        run: touch ./publish-web/wwwroot/.nojekyll
+
+      - name: Úprava base href v index.html
+        # Změní cesty k souborům, aby odpovídaly názvu vašeho repozitáře
+        run: sed -i 's|<base href="/" />|<base href="/RISOS-WebApp/" />|g' ./publish-web/wwwroot/index.html
+
+      - name: Příprava souborů pro GitHub Pages
+        uses: actions/upload-pages-artifact@v3
         with:
-          ssh-private-key: ${{ secrets.SSH_KEY }}
-      
-      - name: Kopírování na server (Přímé SCP)
-        run: scp -o StrictHostKeyChecking=no -r ./publish-linux/wwwroot/* ${{ secrets.USER }}@${{ secrets.HOST }}:~/WWW/risos/
+          path: './publish-web/wwwroot'
+
+      - name: Nasazení na GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
